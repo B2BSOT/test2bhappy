@@ -86,7 +86,7 @@ module.exports = function(app, connectionPool) {
                                                             {
                                                                
                                                                 var like_state = "N";
-                                                                console.log(hd_reply_rows);
+                                                                //console.log(hd_reply_rows);
                 
                                                                 //이미 좋아요 누른 사람이 있을 경우
                                                                 connection.query('select * from happyday_like where happyday_id = ? and user_id = ?;', [req.params.id, req.session.user_id], function(error, hd_like_yn) {
@@ -98,7 +98,7 @@ module.exports = function(app, connectionPool) {
                                                                         like_state = "Y";
                                                                         res.render('happyday/detail', {data : rows[0], userList : rows1, HD_like : hd_like_rows[0], hd_reply:hd_reply_rows, session : req.session, reg_state : reg_state, like_state : like_state});
                                                                         connection.release();
-                                                                        console.log(like_state);
+                                                                        //console.log(like_state);
                                                                     }
                                                                     //이미 좋아요 누른 사람이 없는경우 ,, (굳이 이렇게 로직을 짜야하나..)
                                                                     else 
@@ -106,7 +106,7 @@ module.exports = function(app, connectionPool) {
                                                                         like_state = "N";
                                                                         res.render('happyday/detail', {data : rows[0], userList : rows1, HD_like : hd_like_rows[0], hd_reply:hd_reply_rows, session : req.session, reg_state : reg_state, like_state : like_state});
                                                                         connection.release();
-                                                                        console.log(like_state);
+                                                                        //console.log(like_state);
                                                                     }
                                                                 });
                                                                 
@@ -326,7 +326,7 @@ module.exports = function(app, connectionPool) {
                              '   set state = "n", modify_dtm = date_format(sysdate(), "%Y%m%d%H%i")' + 
                              ' where user_id = ? and happyday_id = ? and state = "y";', [req.session.user_id, req.body.happyday_id], function(error, rows){
             
-                console.log("cancel : " + JSON.stringify(req.body));
+                console.log("cancel : " + req.session.user_id);
                 if(error) {
                     connection.release();
                     throw error;

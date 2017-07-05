@@ -32,6 +32,7 @@ app.use(methodOverride('X-HTTP-Method-Override'));
 //app.use(app.router);
 app.use(serveStatic(__dirname + '/public'));
 app.use(serveStatic(__dirname + '/semantic'));
+app.use(serveStatic(__dirname + '/models'));
 
 // development only 
 if ('development' == app.get('env')) {
@@ -88,6 +89,7 @@ var postlist = require('./routes/happyday/postlist')(app, connectionPool);
 var mappopup = require('./routes/happyday/mappopup')(app, connectionPool);
 var hdregpopup = require('./routes/happyday/hdregpopup')(app, connectionPool);
 var hduppopup = require('./routes/happyday/hduppopup')(app, connectionPool);
+var quizboard = require('./routes/quizboard/quizboard')(app);
 
 var server = http.createServer(app)
 

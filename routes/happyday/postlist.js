@@ -4,7 +4,7 @@ module.exports = function(app, connectionPool) {
   
     // });
     
-    app.get('/happyday/detail/:id/postlist', function(req, res, next) {
+    app.get('/happyday/postlist/:id', function(req, res, next) {
         
         /* session 없을 땐 로그인 화면으로*/
         if(!req.session.user_name) {
