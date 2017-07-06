@@ -109,7 +109,9 @@ module.exports = function(app, connectionPool) {
                                     
                                     /* 4. 해피데이 등록 메일 발송 */
                                     req.body.user_name = req.session.user_name;
-                                    sendMail(req.body);
+                                    req.body.type = 'HDREG';
+                                    const common = new (require("../common/common.js"))();
+                                    common.sendMail(req.body);
                                 });
                             }
                         });
@@ -119,24 +121,4 @@ module.exports = function(app, connectionPool) {
         });//connectionPool.getConnection
     });//post
     
-    function sendMail(maildata) {
-        const day = maildata.starthappyday;
-        var start_day = day.substring(0,4)+"/"+day.substring(4,6)+"/"+day.substring(6,8)
-        
-        var mailOptions = {};
-        mailOptions.to = "ljw82@sk.com";
-        mailOptions.subject = "[NEW HAPPYDAY] " + maildata.happyday_name;
-        mailOptions.template = "reghappyday";
-        mailOptions.context = {
-            user_name: maildata.user_name,
-            happyday_dt: start_day,
-            contents: maildata.happyday_contents,
-            req_point: maildata.req_point+"P",
-            place_name: maildata.place_name        
-        };
-        
-        /* 4. 해피데이 등록 메일 발송 */
-        const common = new (require("../common/common.js"))();
-        common.sendMail(mailOptions);
-    }
 }

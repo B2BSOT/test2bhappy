@@ -420,10 +420,13 @@ module.exports = function(app, connectionPool) {
                         });
                         
                         //5. 참가자에게 취소 메일 발송
+                        const common = new (require("../common/common.js"))();
                         var maildata = {}
+                        maildata.type = 'HDCANCEL';
                         maildata.happyday_name = req.body.happyday_name;
                         maildata.userList = userList;
-                        sendMail(maildata);
+                        common.sendMail(maildata);
+                        
                     }else {
                         res.redirect('/');
                         connection.release();
@@ -432,26 +435,6 @@ module.exports = function(app, connectionPool) {
             });
         });    
     });
-    
-    function sendMail(maildata) {
-        var mailOptions = {};
-        var userList = maildata.userList;
-        var emails = "";
-        for(var i=0; i<userList.length; i++) {
-            emails += userList[i].email;
-            emails += ";";
-        }
-        mailOptions.to = emails;
-        mailOptions.subject = "[CANCEL HAPPYDAY] " + maildata.happyday_name;
-        mailOptions.template = "delhappyday";
-        mailOptions.context = {
-            happyday_name: maildata.happyday_name,
-        };
-        
-        /* 4. 해피데이 등록 메일 발송 */
-        const common = new (require("../common/common.js"))();
-        common.sendMail(mailOptions);
-    }
     
     app.post('/happyday/complete', function(req, res, next){
         connectionPool.getConnection(function(err, connection) {
