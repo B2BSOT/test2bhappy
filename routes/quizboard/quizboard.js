@@ -16,7 +16,7 @@ module.exports = function(app) {
     });
     
     app.post('/create', function(req, res, nex) {
-        console.log("PUT quizboard/create");
+        console.log("PUT quizboard/create : "+ req.body.subject + " / " + req.body.content);
         
         /* session 없을 땐 로그인 화면으로 */
         if(!req.session.user_name) {
@@ -28,10 +28,12 @@ module.exports = function(app) {
         
         models.sequelize.transaction(function (t) {
             models.quiz_board.create({
-            subject: req.subject,
-            content: req.content,
-            reg_dtm: formattedDate,
-            days: 2
+                //board_id : 0, //autoincreted로 설정되어있어서 빼도 됨
+                subject: req.body.subject,
+                content: req.body.content,
+                reg_dtm: formattedDate,
+                days: 2,
+                file_id: '' // nullable이지만 null 을 입력하면 에러나기 때문에 공백입력
             })
         }).then(function (result) {
           // Transaction has been committed
