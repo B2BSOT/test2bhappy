@@ -89,7 +89,8 @@ var postlist = require('./routes/happyday/postlist')(app, connectionPool);
 var mappopup = require('./routes/happyday/mappopup')(app, connectionPool);
 var hdregpopup = require('./routes/happyday/hdregpopup')(app, connectionPool);
 var hduppopup = require('./routes/happyday/hduppopup')(app, connectionPool);
-var quizboard = require('./routes/quizboard/quizboard')(app);
+var imageupload = require('./routes/testing/imageupload')(app, connectionPool);
+//var quizboard = require('./routes/quizboard/quizboard')(app);
 
 var server = http.createServer(app)
 
