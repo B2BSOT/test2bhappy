@@ -66,8 +66,9 @@ module.exports = function common() {
         mailer.sendMail(setMailOptions(maildata), function(err, res) {
             if (err) { 
                 console.log(err) 
+            }else {
+                console.log('Message sent');
             }
-            console.log('Message sent');
         });
     }
     
