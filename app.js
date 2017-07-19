@@ -89,7 +89,10 @@ var postlist = require('./routes/happyday/postlist')(app, connectionPool);
 var mappopup = require('./routes/happyday/mappopup')(app, connectionPool);
 var hdregpopup = require('./routes/happyday/hdregpopup')(app, connectionPool);
 var hduppopup = require('./routes/happyday/hduppopup')(app, connectionPool);
-var quizboard = require('./routes/quizboard/quizboard')(app);
+var imageupload = require('./routes/testing/imageupload')(app, connectionPool);
+/* 20170718_VoteDetail_KJB */
+var votedetail = require('./routes/vote/votedetail')(app, connectionPool);
+//var quizboard = require('./routes/quizboard/quizboard')(app);
 
 var server = http.createServer(app)
 
