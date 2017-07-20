@@ -32,6 +32,7 @@ app.use(methodOverride('X-HTTP-Method-Override'));
 //app.use(app.router);
 app.use(serveStatic(__dirname + '/public'));
 app.use(serveStatic(__dirname + '/semantic'));
+app.use(serveStatic(__dirname + '/models'));
 
 // development only 
 if ('development' == app.get('env')) {
@@ -54,7 +55,7 @@ var mysql = require('mysql');
 var connectionPool;
 
 /* TEST DB */
-connectionPool = mysql.createPool({
+/*connectionPool = mysql.createPool({
   user : 'tester',
   password : 'tobehappy',
   database : 'testdb',
@@ -62,9 +63,9 @@ connectionPool = mysql.createPool({
   port : '3306',
   connectionLimit : 20,
   waitForConnections : false
-});
+});*/
 
-/* 운영 DB
+/* 운영 DB */
 connectionPool = mysql.createPool({
     user : 'admin',
     password : 'tobehappy',
@@ -73,7 +74,8 @@ connectionPool = mysql.createPool({
     port : '3306',
     connectionLimit : 20,
     waitForConnections : false
-}); */
+
+});
 
 //app.get('/', routes.index);
 var index = require('./routes/index')(app, connectionPool);
@@ -87,7 +89,12 @@ var postlist = require('./routes/happyday/postlist')(app, connectionPool);
 var mappopup = require('./routes/happyday/mappopup')(app, connectionPool);
 var hdregpopup = require('./routes/happyday/hdregpopup')(app, connectionPool);
 var hduppopup = require('./routes/happyday/hduppopup')(app, connectionPool);
+<<<<<<< HEAD
 var error = require('./routes/happyday/error')(app, connectionPool);
+=======
+var imageupload = require('./routes/testing/imageupload')(app, connectionPool);
+//var quizboard = require('./routes/quizboard/quizboard')(app);
+>>>>>>> 02eda9c3aa270cf2470e8efbe24b792bad39c3a7
 
 var server = http.createServer(app)
 

@@ -222,7 +222,7 @@ $(document).ready(function() {
     
     //모두 정상 입력 했을 시, 포인트 수정 불가 공지 진행
     if(flag == 10){
-      var check = confirm("등록 후 포인트는 수정할 수 없습니다");
+      var check = confirm("등록 후 포인트는 수정할 수 없으며, 안내 메일이 발송됩니다.\n등록하시겠습니까?");
       //OK 버튼 Click
       if(check){
         return true;
@@ -444,13 +444,13 @@ $(document).ready(function() {
 		<br>
 		<div class="field">
 			<div class="ui sub header">
-				 URL
+				 Title Image
 			</div>
 			<div class="ui labeled input">
 				<div class="ui label" style="background:#A5673F; color:white">
-					 http://
+					 <i class="image icon"> URL </i>
 				</div>
-				<input type="text" placeholder="이미지url" id="img_url" name="img_url" maxlength="150">
+				<input type="text" placeholder="http://test.com/example.jpg" id="img_url" name="img_url" maxlength="150">
 			</div>
 		</div>
 		<div class="field">
