@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>B2B사업팀 투표</title>
+<script src="../../javascripts/jquery.js"></script>
+<script src="../../javascripts/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/dist/semantic.min.css">
+<script src="/dist/semantic.min.js"></script>
+<script type="text/javascript" src="//apis.daum.net/maps/maps3.js?apikey=770adf51a5a246189a8db45706f471ce&libraries=services"></script>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="description" content="">
+<meta name="author" content="">
+<script type="text/javascript">
+    $(document)
+    .ready(function() {
+        $('.ui.teal.progress').progress();
+    });
+    </script>
+<style type="text/css">
+    .ui.progress>.label {
+            top: 0px;
+        }
+</style>
+</head>
+<body>
+<!-- Navigation -->
+<% include ../partials/navigation.ejs %>
+<!-- Page Content -->
+<div class="ui container">
+	<div class="content">
+		<div class="ui segments">
+			<div class="ui segment" style="background-color:#ffB914;">
+				<div class="header" href="#">
+					<span style="font-family: 'Jeju Gothic'; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block; line-height: 1.2; font-size:1.5em; letter-spacing:-1.4px; width:100%; color:#FFFFFF"><%=data.happyday_name %></span>
+				</div>
+			</div>
+			<div class="ui segment">
+				<a class="avatar">
+				<img src='aa'>
+				</a>
+				<a class="author">김준범 (MVNO/텔링크)</a>
+				<span class="date">2017년123월566일 | </span>
+				<span class="date">익명 투표</span>
+			</div>
+			<div class="ui segment">
+				<h1>회식 음식</h1>
+				<table class="unstackable ui definition table">
+				<tbody>
+				<tr style='max-height:50px'>
+					<td class="two wide column" style="margin-top: -15px;">
+						 버튼
+					</td>
+					<td>
+						<div class="ui teal progress" data-percent="74" id="example1">
+							<div class="bar">
+							</div>
+							<div class="label">
+								내가 일등
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr style='max-height:50px'>
+					<td style="margin-top: -15px;">
+						 버튼
+					</td>
+					<td>
+						<div class="ui teal progress" data-percent="10" id="example2">
+							<div class="bar">
+							</div>
+							<div class="label">
+								 ㅁㅁ
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr style='max-height:50px'>
+					<td style="margin-top: -15px;">
+						 버튼
+					</td>
+					<td>
+						<div class="ui teal progress" data-percent="25" id="example3">
+							<div class="bar">
+							</div>
+							<div class="label">
+								 ㅁㅁ
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr style='max-height:50px'>
+					<td style="margin-top: -15px;">
+						 버튼
+					</td>
+					<td>
+						<div class="ui teal progress" data-percent="30" id="example4">
+							<div class="bar">
+							</div>
+							<div class="label">
+								 ㅁㅁ
+							</div>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td style="margin-top: -15px;">
+						 버튼
+					</td>
+					<td>
+						<div class="ui teal progress" data-percent="10" id="example1">
+							<div class="bar">
+							</div>
+							<div class="label" style="top : 0px;">
+								 ㅁㅁ
+							</div>
+						</div>
+					</td>
+				</tr>
+				</tbody>
+				</table>
+				<div class="ui buttons">
+					<button class="yellow ui button" id="detailBtn">투표하기 버튼은 없어도 되지 않나?</button>
+				</div>
+			</div>
+		</div>
+		<!-- 상세보기 segment -->
+	</div>
+	<!-- content -->
+</div>
+<!-- container -->
+</body>
+</html>

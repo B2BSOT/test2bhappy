@@ -1,4 +1,3 @@
-
 /**
  * Module dependencies.
  */
@@ -89,12 +88,10 @@ var postlist = require('./routes/happyday/postlist')(app, connectionPool);
 var mappopup = require('./routes/happyday/mappopup')(app, connectionPool);
 var hdregpopup = require('./routes/happyday/hdregpopup')(app, connectionPool);
 var hduppopup = require('./routes/happyday/hduppopup')(app, connectionPool);
-<<<<<<< HEAD
-var error = require('./routes/happyday/error')(app, connectionPool);
-=======
 var imageupload = require('./routes/testing/imageupload')(app, connectionPool);
-//var quizboard = require('./routes/quizboard/quizboard')(app);
->>>>>>> 02eda9c3aa270cf2470e8efbe24b792bad39c3a7
+/* 20170718_VoteDetail_KJB */
+var votedetail = require('./routes/vote/votedetail')(app, connectionPool);
+var quizboard = require('./routes/quizboard/quizboard')(app);
 
 var server = http.createServer(app)
 
