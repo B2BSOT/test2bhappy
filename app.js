@@ -92,7 +92,7 @@ var hduppopup = require('./routes/happyday/hduppopup')(app, connectionPool);
 var imageupload = require('./routes/testing/imageupload')(app, connectionPool);
 /* 20170718_VoteDetail_KJB */
 var votedetail = require('./routes/vote/votedetail')(app, connectionPool);
-//var quizboard = require('./routes/quizboard/quizboard')(app);
+var quizboard = require('./routes/quizboard/quizboard')(app);
 
 var server = http.createServer(app)
 
