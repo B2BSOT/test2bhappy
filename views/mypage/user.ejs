@@ -23,8 +23,7 @@
     <!--link href="../stylesheets/common.css" rel="stylesheet"-->
     
     <script style="text/javascript">
-      $(document)
-        .ready(function() {
+      $(document).ready(function() {
           /* 본인이면 수정 가능하도록 input elements enable 및 수정버튼 표시
              타인이면 input elements disable 및 수정버튼 미표시 */
           var page_user_id = <%=data.id %>
@@ -41,7 +40,7 @@
               userData.birthday = $("#birthday").val();
               //userData.blood_type = $("#blood_type").val();
               //userData.address = $("#address").val();
-              userData.user_img = $("#user_img").val();
+              userData.user_img = image.src;
               userData.home_town = $("#home_town").val();
               
               console.log(JSON.stringify(userData));
@@ -63,9 +62,37 @@
                   }
                 }
               });
-            });
-          
-        });
+        }
+        )
+                
+    //이미지 업로드 관련(차후 공통으로 활용)
+    var file = document.getElementById('file');
+    var image = document.getElementById('image');
+    file.onchange = function (event) {
+  	alert('변경');
+    var target = event.currentTarget;
+    var xmlHttpRequest = new XMLHttpRequest();
+    xmlHttpRequest.open('POST', 'https://api.imgur.com/3/image/', true);
+    xmlHttpRequest.setRequestHeader("Authorization", "Client-ID 285a540d6ec9798");
+    xmlHttpRequest.onreadystatechange = function () {
+      if (xmlHttpRequest.readyState == 4) {
+        if (xmlHttpRequest.status == 200) {
+          var result = JSON.parse(xmlHttpRequest.responseText);
+          image.src = result.data.link;
+          console.log(result);
+          alert('업로드성공 경로'+ result.data.link)
+        }
+        else {
+        	alert("업로드 실패");
+          image.src = "http://dy.gnch.or.kr/img/no-image.jpg";
+        }
+      }
+    };
+    xmlHttpRequest.send(target.files[0]);
+    image.src = "https://nrm.dfg.ca.gov/images/image-loader.gif";
+  };
+        
+      });
         
       function modify_mode() {
         /* 본인이 정보 조회 시 수정가능하도록 UI 설정 */
@@ -180,25 +207,29 @@
                       </div>
                     </div>
                   </div-->
-                  <div class="event">
+                  <!--<div class="event">
                     <div class="content">
                       <div class="summary">
-                        <div class="ui labeled input"><!--#A5673F-->
+                        
+                        <div class="ui labeled input">
                   				<div class="ui label" style="background:ORANGE; color:white">
                   					 <i class="image icon"> URL</i>
                   				</div>
                   				<input type="text" placeholder="IMAGE URL" id="user_img" maxlength="150" value=<%=data.user_img%>>
+                  				
                   			</div>
+                  		
                   		</div>
                   	</div>
-                  </div>
+                  </div>	-->
                   <div class="event">
                     <div class="content">
                       <div class="extra images">
-        			  	      <img class="ui medium bordered image" src="<%=data.user_img%>" height="6em">
+        			  	      <img id='image' class="ui medium bordered image" src="<%=data.user_img%>" height="6em" weight="6em">
                       </div>
                 		</div>
             			</div>
+            			<input id=file type=file>
                 </div> <!-- end of add info --> 
               </div>
               
