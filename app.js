@@ -1,4 +1,3 @@
-
 /**
  * Module dependencies.
  */
@@ -91,12 +90,10 @@ var hdregpopup = require('./routes/happyday/hdregpopup')(app, connectionPool);
 var hduppopup = require('./routes/happyday/hduppopup')(app, connectionPool);
 var imageupload = require('./routes/testing/imageupload')(app, connectionPool);
 /* 20170718_VoteDetail_KJB */
-<<<<<<< HEAD
 var votedetail = require('./routes/vote/votedetail')(app, connectionPool);
 var votemain = require('./routes/vote/votemain')(app, connectionPool);
-=======
 var votedetail = require('./routes/vote/votedetail')(app);
->>>>>>> 26f72eac9cab2f5777a51ca3e747a7d6c887c827
+var votereg = require('./routes/vote/votereg')(app, connectionPool);
 var quizboard = require('./routes/quizboard/quizboard')(app);
 
 var server = http.createServer(app)
@@ -109,3 +106,8 @@ server.listen(app.get('port'), function(){
 });
 
 module.exports = app;
+
+
+
+
+
