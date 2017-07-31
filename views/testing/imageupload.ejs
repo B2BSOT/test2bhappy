@@ -37,7 +37,7 @@
           var result = JSON.parse(xmlHttpRequest.responseText);
           image.src = result.data.link;
           console.log(result);
-          alert('업로드성공 경로'+ result.data.link)
+          alert('업로드성공 경로'+ result.data.link+'deleteHash도 리턴됨 '+result.data.deletehash);
         }
         else {
         	alert("업로드 실패");
