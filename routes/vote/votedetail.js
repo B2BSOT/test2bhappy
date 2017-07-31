@@ -104,11 +104,10 @@ module.exports = function(app) {
             }
         }).then(vote_master => {
             console.log("step2 result: " + JSON.stringify(vote_master));
-<<<<<<< HEAD
             
             data = { vote_master : vote_master};
         });
-        
+
         console.log("VoteDetail step3");
         
         /******************************************************************************************************
@@ -157,60 +156,6 @@ module.exports = function(app) {
         }).then(vote_info => {
             console.log("step3 result: " + JSON.stringify(vote_info));
             
-=======
-            
-            data = { vote_master : vote_master};
-        });
-        
-        console.log("VoteDetail step3");
-        
-        /******************************************************************************************************
-         * DB에서 Table간 foreignKey 설정이 되어있지 않는 상태에서의 INNER JOIN 및 GROUP BY 사용 예
-            SELECT `vote_items`.`vote_id` 
-                , `vote_items`.`item_id`
-                , `vote_items`.`item_name`
-                , count(`vote_detail`.`user_id`) AS `cnt` 
-            FROM `vote_items` AS `vote_items` 
-            INNER JOIN `vote_detail` AS `vote_detail` 
-               ON `vote_items`.`vote_id` = `vote_detail`.`vote_id` AND `vote_detail`.`item_id` = `vote_items`.`item_id` 
-            WHERE `vote_items`.`vote_id` = 1 
-            GROUP BY `item_id`, `item_name` 
-            ORDER BY `vote_items`.`item_id` ASC
-            
-            * result: [{"item_id":1,"item_name":"아아","cnt":3}
-            *          ,{"item_id":2,"item_name":"뜨아","cnt":2}
-            *          ,{"item_id":3,"item_name":"라떼","cnt":1}]
-            * 실행 쿼리에서는 PK값인 vote_id가 있지만 실제 결과는 attributes내 컬럼만 나온다
-        *******************************************************************************************************/
-        
-        /* vote_items : vote_detail - 1 : M 관계 설정 셋팅 */
-        vote_items.hasMany(vote_detail, {as: 'vote_detail', foreignKey: 'vote_id', sourceKey: 'vote_id'});
-        vote_detail.belongsTo(vote_items, {foreignKey: 'vote_id', targetKey: 'vote_id'});
-        
-        vote_items.findAll({
-            attributes : [
-                'item_id',
-                'item_name',
-                [ models.Sequelize.fn('count', models.Sequelize.col('vote_detail.user_id')), 'cnt' ]
-            ], // 실제 결과 컬럼
-            include : [ {
-                model: vote_detail,
-                as : 'vote_detail',
-                where : {
-                    item_id : {$col : 'vote_items.item_id' }
-                },
-                attributes : []
-            }], // INNER JOIN 테이블 설정
-            where : {
-                vote_id : TEST_VOTE_ID//req.body.vote_id
-            }, // 조건절
-            group : [ 'item_id', 'item_name' ], // GROUP BY 설정
-            order : [ ['item_id', 'ASC'] ] // ORDER BY 설정
-            
-        }).then(vote_info => {
-            console.log("step3 result: " + JSON.stringify(vote_info));
-            
->>>>>>> 0035bdd1a3ef57312b941c0cfb32b3c300e94c05
             data = { vote_info : vote_info};
         }).catch(function(err) {
             console.log(err);
