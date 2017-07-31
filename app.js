@@ -92,7 +92,7 @@ var imageupload = require('./routes/testing/imageupload')(app, connectionPool);
 /* 20170718_VoteDetail_KJB */
 var votedetail = require('./routes/vote/votedetail')(app, connectionPool);
 var votemain = require('./routes/vote/votemain')(app, connectionPool);
-var votedetail = require('./routes/vote/votedetail')(app);
+var votere = require('./routes/vote/votedetail')(app);
 var votereg = require('./routes/vote/votereg')(app, connectionPool);
 var quizboard = require('./routes/quizboard/quizboard')(app);
 
