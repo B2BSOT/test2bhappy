@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>B2B사업팀 투표</title>
+<script src="../../javascripts/jquery.js"></script>
+<script src="../../javascripts/jquery.min.js"></script>
+<link rel="stylesheet" type="text/css" href="/dist/semantic.min.css">
+<script src="/dist/semantic.min.js"></script>
+<script type="text/javascript" src="//apis.daum.net/maps/maps3.js?apikey=770adf51a5a246189a8db45706f471ce&libraries=services"></script>
+<meta charset="utf-8">
+<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<meta name="description" content="">
+<meta name="author" content="">
+<script type="text/javascript">
+    $(document)
+    .ready(function() {
+        $('.ui.teal.progress').progress();
+    });
+    </script>
+<style type="text/css">
+    .ui.progress>.label {
+            top: 0px;
+        }
+</style>
+</head>
+<body>
+<!-- Navigation -->
+<% include ../partials/navigation.ejs %>
+<!-- Page Content -->
+<div class="ui container">
+	<div class="ui link three stackable cards">
+		<div class="card">
+		    <div class="content">
+		      <div class="header">Elliot Fu</div>
+		      <div class="description">
+		        Elliot Fu is a film-maker from New York.
+		      </div>
+		    </div>
+		    <div class="ui bottom attached button" style="background-color:#ee5252;">
+		      <span style="color:#fff;">
+		      <i class="add icon"></i>
+		      투표 등록하기
+		      </span>
+		    </div>
+		</div>
+		<div class="card">
+			<div class="content"  style="background-color:#ee5252; max-height:56px">	
+				<span style="color:#fff; font-size:1.1em; ">회식장소 정하기</span>
+				<div class="right floated meta" style=" font-size:0.8em">
+						<div class="ui gray label">진행중 D-3</div>
+				</div>
+			</div>
+			<div class="content">
+			<div class="ui segment">
+					<div class="right floated meta"><i class="share alternate icon"></i></div>
+					<img class="ui avatar image" src=""> 
+					<span style="color:#000; font-size:0.9em">조계연 (유선통신)</span>
+					<br>
+					<span style="color:#000; font-size:0.9em">등록일: 7월 4일 오후 3:09</span>
+				<div class="ui segment">
+					마감일 : 7월 6일 오후 3:09
+					<p></p>
+					<div class="description">
+					투표에 대한 설명을 작성해주면 됩니다.
+					</div>
+				  	<br>
+				  	<button class="fluid brown ui button" style="background-color:#673434;"> <i class="hand pointer icon"></i>투표하러 가기</button>
+				</div>
+			</div><!--ui segment-->
+			</div>
+		</div><!--card1-->
+		<div class="card">
+			<div class="content"  style="background-color:#ee5252; max-height:56px">	
+				<span style="color:#fff; font-size:1.1em; ">회식장소 정하기</span>
+				<div class="right floated meta" style=" font-size:0.8em">
+						<div class="ui gray label">진행중 D-3</div>
+				</div>
+			</div>
+			<div class="content">
+			<div class="ui segment">
+				<div class="right floated meta"><i class="share alternate icon"></i></div>
+				<img class="ui avatar image" src=""> 
+				<span style="color:#000; font-size:0.9em">조계연 (유선통신)</span>
+				<br>
+				<span style="color:#000; font-size:0.9em">등록일: 7월 4일 오후 3:09</span>
+				<div class="ui segment">
+					마감일 : 7월 6일 오후 3:09
+					<p></p>
+					<div class="description">
+					투표에 대한 설명을 작성해주면 됩니다.
+					</div>
+				  	<br>
+				  	<button class="fluid gray ui button" style="background-color:#673434;"><span style="color:#fff;"><i class="checkmark icon"></i>투표 현황보기</span></button>
+				</div>
+			</div><!--ui segment-->
+			</div>
+		</div><!--card2-->
+		<div class="card">
+			<div class="content"  style="background-color:#B0B0B0; max-height:56px">	
+				<span style="color:#fff; font-size:1.1em; ">회식장소 정하기</span>
+				<div class="right floated meta" style=" font-size:0.8em">
+						<div class="ui black label">마감</div>
+				</div>
+			</div>
+			<div class="content">
+			<div class="ui segment">
+				<div class="right floated meta"><i class="share alternate icon"></i></div>
+				<img class="ui avatar image" src=""> 
+				<span style="color:#000; font-size:0.9em">조계연 (유선통신)</span>
+				<br>
+					<span style="color:#000; font-size:0.9em">등록일: 7월 4일 오후 3:09</span>
+					</span>
+				</span>	
+				<div class="ui segment">
+					마감일 : 7월 6일 오후 3:09
+					<p></p>
+					<div class="description">
+					투표에 대한 설명을 작성해주면 됩니다.
+					</div>
+				  	<br>
+				  	<button class="fluid gray ui button" style="background-color:#4D586A;"><span style="color:#fff;">결과 확인하기</span></button>
+				</div>
+			</div><!--ui segment-->
+			</div>
+		</div><!--card3-->
+
+
+	</div><!-- cards -->
+</div><!-- container -->
+</body>
+</html>
