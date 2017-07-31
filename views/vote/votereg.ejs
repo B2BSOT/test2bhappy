@@ -62,31 +62,31 @@
 
       //기타 옵션 체크박스 체크여부에 따라 value값 지정
       if(multi_yn){
-        document.getElementById("multi_yn").value = 'Y';
+        document.voteregForm.multi_yn.value = 'Y';
       }
       else{
-        document.getElementById("multi_yn").value = "N";
+        document.voteregForm.multi_yn.value = "N";
       }
       
       if(secret_yn){
-        document.getElementById("secret_yn").value = 'Y';
+        document.voteregForm.secret_yn.value = 'Y';
       }
       else{
-        document.getElementById("secret_yn").value = 'N';
+        document.voteregForm.secret_yn.value = 'N';
       }
       
       if(add_item_yn){
-        document.getElementById("add_item_yn").value = 'Y';
+        document.voteregForm.add_item_yn.value = 'Y';
       }
       else{
-        document.getElementById("add_item_yn").value = 'N';
+        document.voteregForm.add_item_yn.value = 'N';
       }
       
       if(noti_yn){
-        document.getElementById("noti_yn").value = 'Y';
+        document.voteregForm.noti_yn.value = 'Y';
       }
-      else if(noti_yn == false){
-        document.getElementById("noti_yn").value = 'N';
+      else{
+        document.voteregForm.noti_yn.value = 'N';
       }
       
 
@@ -170,8 +170,7 @@
       //       flag = flag+1;
       //   } 
       // }
-      alert("parti_org_id = " + parti_org_id);
-      alert("flag = " + flag);
+      
       //모두 정상 입력 했을 시, 포인트 수정 불가 공지 진행
       if(flag == 5){
         var check = confirm("투표를 등록하시겠습니까?");

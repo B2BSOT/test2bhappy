@@ -1,5 +1,5 @@
 var models = require('../../models');
-// var datetime = require('node-datetime');
+var datetime = require('node-datetime');
 
 // module.exports = function(app) {
 //     app.get('/quizboard/quizboard', function(req, res, next) {
@@ -209,7 +209,6 @@ Project.findAll({
     }
   }
 })
-
 // count
 Project.count({ where: {'id': {$gt: 25}} }).then(c =>
   console.log("There are " + c + " projects with an id greater than 25.")
