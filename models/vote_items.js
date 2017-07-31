@@ -8,7 +8,13 @@ module.exports = function(sequelize, DataTypes) {
                         reg_user_id: {type: DataTypes.INTEGER, allowNull: false},
                         reg_dtm: {type: DataTypes.STRING, allowNull: false},
                     },{
-                        classMethods: {},
+                        classMethods: {
+                            // associate: function(models) {
+                            //     vote_items.hasMany(models.vote_detail, {
+                            //         foreignkey: ['vote_id', 'item_id']
+                            //     });
+                            // }
+                        },
                         tableName: 'vote_items',
                         freezeTableName: true,
                         underscored: true,

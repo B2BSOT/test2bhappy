@@ -7,7 +7,13 @@ module.exports = function(sequelize, DataTypes) {
                         user_id: {type: DataTypes.INTEGER, primaryKey: true},
                         reg_dtm: {type: DataTypes.STRING, allowNull: false},
                     },{
-                        classMethods: {},
+                        classMethods: {
+                            // associate: function(models) {
+                            //     vote_detail.belongsTo(models.vote_items, {
+                            //         foreignkey: ['vote_id', 'item_id']
+                            //     });
+                            // }
+                        },
                         tableName: 'vote_detail',
                         freezeTableName: true,
                         underscored: true,
