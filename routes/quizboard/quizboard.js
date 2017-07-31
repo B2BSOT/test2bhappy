@@ -1,5 +1,5 @@
 var models = require('../../models');
-//var datetime = require('node-datetime');
+var datetime = require('node-datetime');
 
 module.exports = function(app) {
     app.get('/quizboard/quizboard', function(req, res, next) {

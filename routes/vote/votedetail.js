@@ -1,5 +1,5 @@
 var models = require('../../models');
-// var datetime = require('node-datetime');
+var datetime = require('node-datetime');
 
 // module.exports = function(app) {
 //     app.get('/quizboard/quizboard', function(req, res, next) {
@@ -52,7 +52,10 @@ var models = require('../../models');
 
 module.exports = function(app) {
 
-    app.post('/vote/votedetail', function(req, res, next) {
+    app.get('/vote/votedetail', function(req, res, next) {
+        
+        var TEST_VOTE_ID = 1;
+        var TEST_PARTI_ORG_ID = 10001;
         
         /* session 없을 땐 로그인 화면으로 */
         if(!req.session.user_name) {
@@ -69,70 +72,98 @@ module.exports = function(app) {
         // session의 user_id 
         var user_id = req.session.user_id;
         
+        console.log("VoteDetail step1");
+        
         models.user.count({ 
             where: {
                 'id': user_id,
                 $or:[
-                    {'team_id': req.body.parti_org_id},
-                    {'sm_id': req.body.parti_org_id}
+                    {'team_id': TEST_PARTI_ORG_ID},//req.body.parti_org_id
+                    {'sm_id': TEST_PARTI_ORG_ID},//req.body.parti_org_id
                 ]
             }
         }).then(c => {
-            console.log("VoteDetail step1 : " + c.length);
+            console.log("step1 result: " + c);
             
-            if(c.length == 0) {
+            if(c == 0) {
                 res.render('/vote/votemain');
             }
         });
-        
-        /*
-        models.user.findOne({
-            where: {
-                id: user_id,
-                $or:[
-                    {team_id: req.body.parti_org_id},
-                    {sm_id: req.body.parti_org_id},
-                ]
-            }
-            //    --oracle query
-            //    SELECT *
-            //    FROM user
-            //    WHERE (
-            //       id = #user_id#
-            //        AND (team_id = #parti_org_id# OR sm_id = #parti_org_id#)
-            //    ) LIMIT 1;
-            
-        }).then(userInfo => {
-            
-            console.log("VoteDetail step1 : " + userInfo);
-            
-            if(userInfo.length = 0) {
-                res.render('/vote/votemain');
-            }
-        });
-        */
         
         console.log("VoteDetail step2");
         
-          connectionPool.getConnection(function(err, connection) {
-            connection.query('select * from mysqldb.user where 1=1 and user_name = ? and emp_num = ?;', [req.session.user_name, req.session.emp_num], function(error, rows) {
-                
-                console.log("rows : " + rows.length);
-                
-                if(error) {
-                    connection.release();
-                    throw error;
-                }else {
-                    if(rows.length > 0) {
-                        res.render('vote/votedetail', {data : rows[0], session : req.session});
-                        connection.release();
-                    }else {
-                        res.redirect('/');
-                        connection.release();
-                    }    
-                }
-            });
+        var vote_master = models.vote_master;
+        var vote_detail = models.vote_detail;
+        var vote_items = models.vote_items;
+        
+        var data = {};
+        
+        vote_master.findOne({
+            where : {
+                vote_id : TEST_VOTE_ID//req.body.vote_id
+            }
+        }).then(vote_master => {
+            console.log("step2 result: " + JSON.stringify(vote_master));
+            
+            data = { vote_master : vote_master};
         });
+        
+        console.log("VoteDetail step3");
+        
+        /******************************************************************************************************
+         * DB에서 Table간 foreignKey 설정이 되어있지 않는 상태에서의 INNER JOIN 및 GROUP BY 사용 예
+            SELECT `vote_items`.`vote_id` 
+                , `vote_items`.`item_id`
+                , `vote_items`.`item_name`
+                , count(`vote_detail`.`user_id`) AS `cnt` 
+            FROM `vote_items` AS `vote_items` 
+            INNER JOIN `vote_detail` AS `vote_detail` 
+               ON `vote_items`.`vote_id` = `vote_detail`.`vote_id` AND `vote_detail`.`item_id` = `vote_items`.`item_id` 
+            WHERE `vote_items`.`vote_id` = 1 
+            GROUP BY `item_id`, `item_name` 
+            ORDER BY `vote_items`.`item_id` ASC
+            
+            * result: [{"item_id":1,"item_name":"아아","cnt":3}
+            *          ,{"item_id":2,"item_name":"뜨아","cnt":2}
+            *          ,{"item_id":3,"item_name":"라떼","cnt":1}]
+            * 실행 쿼리에서는 PK값인 vote_id가 있지만 실제 결과는 attributes내 컬럼만 나온다
+        *******************************************************************************************************/
+        
+        /* vote_items : vote_detail - 1 : M 관계 설정 셋팅 */
+        vote_items.hasMany(vote_detail, {as: 'vote_detail', foreignKey: 'vote_id', sourceKey: 'vote_id'});
+        vote_detail.belongsTo(vote_items, {foreignKey: 'vote_id', targetKey: 'vote_id'});
+        
+        vote_items.findAll({
+            attributes : [
+                'item_id',
+                'item_name',
+                [ models.Sequelize.fn('count', models.Sequelize.col('vote_detail.user_id')), 'cnt' ]
+            ], // 실제 결과 컬럼
+            include : [ {
+                model: vote_detail,
+                as : 'vote_detail',
+                where : {
+                    item_id : {$col : 'vote_items.item_id' }
+                },
+                attributes : []
+            }], // INNER JOIN 테이블 설정
+            where : {
+                vote_id : TEST_VOTE_ID//req.body.vote_id
+            }, // 조건절
+            group : [ 'item_id', 'item_name' ], // GROUP BY 설정
+            order : [ ['item_id', 'ASC'] ] // ORDER BY 설정
+            
+        }).then(vote_info => {
+            console.log("step3 result: " + JSON.stringify(vote_info));
+            
+            data = { vote_info : vote_info};
+        }).catch(function(err) {
+            console.log(err);
+        });
+        
+        console.log(JSON.stringify(data));
+        
+        res.render('vote/votedetail', {data : data, session : req.session});
         
     });
 }
@@ -165,12 +196,10 @@ Project.findAll({
     }
   }
 })
-
 // count
 Project.count({ where: {'id': {$gt: 25}} }).then(c =>
   console.log("There are " + c + " projects with an id greater than 25.")
 })
-
 something.findOne({
   order: [
     'name',
@@ -189,5 +218,4 @@ something.findOne({
     // will return otherfunction(awesomefunction(`col`)) DESC, This nesting is potentially infinite!
   ]
 })
-
 */
