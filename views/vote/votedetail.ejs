@@ -33,32 +33,32 @@
 		<div class="ui segments">
 			<div class="ui segment" style="background-color:#ffB914;">
 				<div class="header" href="#">
-					<span style="font-family: 'Jeju Gothic'; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block; line-height: 1.2; font-size:1.5em; letter-spacing:-1.4px; width:100%; color:#FFFFFF"><%= data[0].vote_master.subject %></span>
+					<span style="font-family: 'Jeju Gothic'; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block; line-height: 1.2; font-size:1.5em; letter-spacing:-1.4px; width:100%; color:#FFFFFF"><%= data.master_info.subject %></span>
 				</div>
 			</div>
 			<div class="ui segment">
 				<a class="avatar">
 				<img src='aa'>
 				</a>
-				<a class="author"><%= data.vote_master.reg_user_id %></a>
-				<span class="date"><%= data.vote_master.deadline %></span>
-				<span class="date"><%= data.vote_master.comment %></span>
+				<a class="author"><%= data.master_info.user_name %></a>
+				<span class="date"><%= data.master_info.deadline %></span>
+				<span class="date"><%= data.master_info.comment %></span>
 			</div>
 			<div class="ui segment">
 				<h1>회식 음식</h1>
 				<table class="unstackable ui definition table">
 				<tbody>
-					<% for(var i=0; i<data.vote_info.length; i++) { %>
+					<% for(var i=0; i<data.detail_info.length; i++) { %>
 					<tr style='max-height:50px'>
-						<td class="two wide column" style="margin-top: -15px;" id="<%= data.vote_info[i].item_id %>">
+						<td class="two wide column" style="margin-top: -15px;" id="<%= data.detail_info[i].item_id %>">
 							 버튼
 						</td>
 						<td>
-							<div class="ui teal progress" data-percent=<%=data.vote_info[i].cnt*10%> id="example1">
+							<div class="ui teal progress" data-percent=<%=data.detail_info[i].cnt*10%> id="example1">
 								<div class="bar">
 								</div>
 								<div class="label">
-									<%= data.vote_info[i].item_name %> ( <%= data.vote_info[i].cnt %> )
+									<%= data.detail_info[i].item_name %> ( <%= data.detail_info[i].cnt %> )
 								</div>
 							</div>
 						</td>

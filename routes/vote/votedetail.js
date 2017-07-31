@@ -72,8 +72,6 @@ module.exports = function(app) {
         // session의 user_id 
         var user_id = req.session.user_id;
         
-        console.log("VoteDetail step1");
-        
         models.user.count({ 
             where: {
                 'id': user_id,
@@ -83,14 +81,12 @@ module.exports = function(app) {
                 ]
             }
         }).then(c => {
-            console.log("step1 result: " + c);
+            //console.log("** step1 result: " + c);
             
             if(c == 0) {
                 res.render('/vote/votemain');
             }
         });
-        
-        console.log("VoteDetail step2");
         
         var vote_master = models.vote_master;
         var vote_detail = models.vote_detail;
@@ -98,18 +94,31 @@ module.exports = function(app) {
         
         var data = {};
         
+        var user = models.user;
+        vote_master.belongsTo(user, {foreignKey: 'reg_user_id', sourceKey: 'id'});
+        // user.belongsTo(vote_master, {foreignKey: 'id', sourceKey: 'reg_user_id'});
+        
         vote_master.findOne({
+            raw: true, // 쿼리 결과를 sequalize instance에 담지 않고 일반 데이터(key, value) 형태로 넘겨준다
+            include: [{
+                model: user,
+                // where : {
+                //     id : {$col : 'vote_master.user_id' }
+                // }
+                attributes: [
+                    'id', 'user_name'
+                ]
+            }],
             where : {
                 vote_id : TEST_VOTE_ID//req.body.vote_id
             }
-        }).then(vote_master => {
-            console.log("step2 result: " + JSON.stringify(vote_master));
+        }).then(master_info => {
+            console.log("** step2 result: " + JSON.stringify(master_info));
             
-            data = { vote_master : vote_master};
+            data.master_info = master_info;
         });
         
-        console.log("VoteDetail step3");
-        
+
         /******************************************************************************************************
          * DB에서 Table간 foreignKey 설정이 되어있지 않는 상태에서의 INNER JOIN 및 GROUP BY 사용 예
             SELECT `vote_items`.`vote_id` 
@@ -134,6 +143,7 @@ module.exports = function(app) {
         vote_detail.belongsTo(vote_items, {foreignKey: 'vote_id', targetKey: 'vote_id'});
         
         vote_items.findAll({
+            raw : true,
             attributes : [
                 'item_id',
                 'item_name',
@@ -153,21 +163,24 @@ module.exports = function(app) {
             group : [ 'item_id', 'item_name' ], // GROUP BY 설정
             order : [ ['item_id', 'ASC'] ] // ORDER BY 설정
             
-        }).then(vote_info => {
-            console.log("step3 result: " + JSON.stringify(vote_info));
+        }).then(detail_info => {
+            data.detail_info = detail_info;
             
-            data = { vote_info : vote_info};
+            console.log("**RESULT DATA : " + JSON.stringify(data));
+        
+            res.render('vote/votedetail', {data : data, session : req.session});    
+            
         }).catch(function(err) {
             console.log(err);
         });
         
-        console.log(JSON.stringify(data));
         
-        res.render('vote/votedetail', {data : data, session : req.session});
         
     });
 }
-/*
+
+/*******
+ * Where에 사용되는 조건 표현식
 Project.findAll({
   where: {
     id: {
@@ -202,6 +215,7 @@ Project.count({ where: {'id': {$gt: 25}} }).then(c =>
   console.log("There are " + c + " projects with an id greater than 25.")
 })
 
+// order by 표현식
 something.findOne({
   order: [
     'name',
@@ -221,4 +235,4 @@ something.findOne({
   ]
 })
 
-*/
+************/
