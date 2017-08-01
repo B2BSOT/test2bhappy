@@ -61,6 +61,13 @@ module.exports = function(app) {
         if(!req.session.user_name) {
             res.redirect('/');
         }
+        
+        var vote_master = models.vote_master;
+        var vote_detail = models.vote_detail;
+        var vote_items = models.vote_items;
+        var user = models.user;
+        
+        var data = {};
     
         /*  
          *  0. 이전 vote main화면에서 vote_id, parti_org_id 를 넘겨준다고 가정
@@ -72,7 +79,7 @@ module.exports = function(app) {
         // session의 user_id 
         var user_id = req.session.user_id;
         
-        models.user.count({ 
+        user.count({ 
             where: {
                 'id': user_id,
                 $or:[
@@ -88,25 +95,33 @@ module.exports = function(app) {
             }
         });
         
-        var vote_master = models.vote_master;
-        var vote_detail = models.vote_detail;
-        var vote_items = models.vote_items;
+        /* vote_master : user - 1 : 1 관계 설정 셋팅 */
+        vote_master.hasOne(user, {foreignKey: 'id', targetKey: 'reg_user_id'});
+        // vote_master.belongsTo(user, {foreignKey: 'reg_user_id', sourceKey: 'id'});
         
-        var data = {};
-        
-        var user = models.user;
-        vote_master.belongsTo(user, {foreignKey: 'reg_user_id', sourceKey: 'id'});
-        // user.belongsTo(vote_master, {foreignKey: 'id', sourceKey: 'reg_user_id'});
-        
+        /*****************************************************************************************************
+         * # find 함수에서 raw: true 옵션
+         * - 해당 옵션을 주면 쿼리 결과를 sequalize instance에 담지 않고 일반 데이터(key, value) 형태로 넘겨준다
+         * 
+         * # raw 옵션의 문제점
+         * - include를 했을 경우 key값이 inclue한 model 이름이 함께 반환된다. 
+         *   따라서 attributes 옵션을 이용하여 as구문으로 key값을 변환하는 작업을 거쳐야 한다.
+         * ***************************************************************************************************/
         vote_master.findOne({
-            raw: true, // 쿼리 결과를 sequalize instance에 담지 않고 일반 데이터(key, value) 형태로 넘겨준다
+            raw: true, // (key, value) 로 result 반환
+            attributes : [
+                'vote_id', 'subject', 'comment', 'reg_user_id', 'reg_dtm', 'deadline',
+                'state', 'multi_yn', 'secret_yn', 'add_item_yn', 'noti_yn',
+                [models.Sequelize.col('user.id'), 'id'], // raw옵션으로 user.id가 반환되므로 'id'로 이름 변환
+                [models.Sequelize.col('user.user_name'), 'user_name']
+            ],
             include: [{
                 model: user,
                 // where : {
                 //     id : {$col : 'vote_master.user_id' }
                 // }
                 attributes: [
-                    'id', 'user_name'
+                //    'id', 'user_name'
                 ]
             }],
             where : {
