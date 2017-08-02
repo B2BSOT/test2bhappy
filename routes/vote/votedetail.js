@@ -4,7 +4,7 @@ var datetime = require('node-datetime');
 module.exports = function(app) {
 
     app.post('/checkItem', function(req, res, next) {
-        /***
+        /*****************************************************************************************
          * 투표 체크를 이미 한 아이템에 했는지 여부와 
          * 해당 투표가 다중투표가 가능한지 여부에 따라 로직을 달리한다.
          * 
@@ -15,21 +15,20 @@ module.exports = function(app) {
          * 
          * 2. 투표 체크를 하지 않은 아이템인 경우
          *   2-1. 투표 종류가 1인 1선택인 경우
-         *      1. user가 다른 곳에 투표했는지 조회
-         *        1) 투표를 안했다면 
-         *           - PASS
-         *        2) 투표를 했다면
-         *           - 이미 투표한 아이템은 delete
+         *      1. 해당 user_id로 투표한 정보는 delete
          *      2. 새로 투표한 아이템은 create
          * 
          *   2-2. 투표가 1인 다중 선택인 경우
          *      1. 새로 투표한 아이템 create
-         * */
+         * *************************************************************************************/
          
         /* session 없을 땐 로그인 화면으로 */
         if(!req.session.user_name) {
             res.redirect('/');
         }
+        
+        var dt = datetime.create();
+        var formattedDate = dt.format('YmdHMS') // YYYYMMDDHH24MISS
         
         var vote_detail = models.vote_detail;
         
@@ -41,14 +40,16 @@ module.exports = function(app) {
         var item_id = req.body.item_id; // 투표한 item id
         var user_id = req.body.user_id; // 투표한 user id 
         
+        /* 1. 투표체크를 이미 한 아이템인 경우 
+                - 이미 투표한 정보는 delete 
+        */
         
-        /* 1. 투표체크를 이미 한 아이템인 경우 */
         if(alreadyChecked) {
             vote_detail.destroy({
                 where: {
-                    vote_id: vote_id,
-                    item_id: item_id,
-                    user_id: user_id
+                    'vote_id': vote_id,
+                    'item_id': item_id,
+                    'user_id': user_id
                 }
             }).then(result => {
                 if(result == 1) {
@@ -63,9 +64,41 @@ module.exports = function(app) {
         }
         /* 2. 투표 체크를 하지 않은 아이템인 경우 */
         else {
+            /* 2-1. 투표 종류가 1인 1선택인 경우 */
+            if(!multi_yn) {
+                /* 1. 해당 user_id로 투표한 정보는 delete */
+                vote_detail.destroy({
+                    where: {
+                        'vote_id': vote_id,
+                        'id': user_id
+                    }
+                }).then(result => {
+                    //console.log("delete success" : result);
+                    
+                }).catch(err => {
+                    console.log(err);
+                    res.json({success: 'delete fail', status: 500});
+                });
+            }
+            /* 2-2. 투표가 1인 다중 선택인 경우 */
+            else {
+                /* TODO: 다중 투표의 갯수 제한이 있을 경우 로직 필요 */
+            }
             
+            /* 2-1,2-2 통합. 새로 투표한 아이템은 create */
+            vote_detail.create({
+                'vote_id': vote_id,
+                'item_id': item_id,
+                'user_id': user_id,
+                'reg_dtm': formattedDate
+            }).then(result => {
+                res.json({success: "create success", status: 200, createdItemId: item_id});
+                
+            }).catch(err => {
+                console.log(err);
+                res.json({success: 'create fail', status: 500});
+            });
         }
-        
     });
     
     function deleteOrCreate(model, whereCon, item, onCreate, onUpdate, onError) {
