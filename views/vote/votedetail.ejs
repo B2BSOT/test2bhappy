@@ -33,96 +33,43 @@
 		<div class="ui segments">
 			<div class="ui segment" style="background-color:#ffB914;">
 				<div class="header" href="#">
-					<span style="font-family: 'Jeju Gothic'; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block; line-height: 1.2; font-size:1.5em; letter-spacing:-1.4px; width:100%; color:#FFFFFF"><%=data.happyday_name %></span>
+					<span style="font-family: 'Jeju Gothic'; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block; line-height: 1.2; font-size:1.5em; letter-spacing:-1.4px; width:100%; color:#FFFFFF"><%= data.master_info.subject %></span>
 				</div>
 			</div>
 			<div class="ui segment">
 				<a class="avatar">
 				<img src='aa'>
 				</a>
-				<a class="author">김준범 (MVNO/텔링크)</a>
-				<span class="date">2017년123월566일 | </span>
-				<span class="date">익명 투표</span>
+				<a class="author"><%= data.master_info.user.user_name %></a>
+				<span class="date"><%= data.master_info.deadline %></span>
+				<span class="date"><%= data.master_info.comment %></span>
 			</div>
 			<div class="ui segment">
 				<h1>회식 음식</h1>
 				<table class="unstackable ui definition table">
 				<tbody>
-				<tr style='max-height:50px'>
-					<td class="two wide column" style="margin-top: -15px;">
-						 버튼
-					</td>
-					<td>
-						<div class="ui teal progress" data-percent="74" id="example1">
-							<div class="bar">
+					<% for(var i=0; i<data.detail_info.length; i++) { %>
+					<tr style='max-height:50px'>
+						<td class="two wide column" style="margin-top: -15px;" id="<%= data.detail_info[i].item_id %>">
+							 버튼
+						</td>
+						<td>
+							<!--<div class="ui teal progress" data-percent= <%=data.detail_info[i].cnt*10%> id="example1">-->
+							<div class="ui teal progress" data-percent= <%=data.detail_info[i].cnt*10%> id="example1">
+								<div class="bar">
+								</div>
+								<div class="label">
+									<%= data.detail_info[i].item_name %> ( <%= data.detail_info[i].cnt %> )
+								</div>
 							</div>
-							<div class="label">
-								내가 일등
-							</div>
-						</div>
-					</td>
-				</tr>
-				<tr style='max-height:50px'>
-					<td style="margin-top: -15px;">
-						 버튼
-					</td>
-					<td>
-						<div class="ui teal progress" data-percent="10" id="example2">
-							<div class="bar">
-							</div>
-							<div class="label">
-								 ㅁㅁ
-							</div>
-						</div>
-					</td>
-				</tr>
-				<tr style='max-height:50px'>
-					<td style="margin-top: -15px;">
-						 버튼
-					</td>
-					<td>
-						<div class="ui teal progress" data-percent="25" id="example3">
-							<div class="bar">
-							</div>
-							<div class="label">
-								 ㅁㅁ
-							</div>
-						</div>
-					</td>
-				</tr>
-				<tr style='max-height:50px'>
-					<td style="margin-top: -15px;">
-						 버튼
-					</td>
-					<td>
-						<div class="ui teal progress" data-percent="30" id="example4">
-							<div class="bar">
-							</div>
-							<div class="label">
-								 ㅁㅁ
-							</div>
-						</div>
-					</td>
-				</tr>
-				<tr>
-					<td style="margin-top: -15px;">
-						 버튼
-					</td>
-					<td>
-						<div class="ui teal progress" data-percent="10" id="example1">
-							<div class="bar">
-							</div>
-							<div class="label" style="top : 0px;">
-								 ㅁㅁ
-							</div>
-						</div>
-					</td>
-				</tr>
+						</td>
+					</tr>
+					<% } %>
 				</tbody>
 				</table>
-				<div class="ui buttons">
-					<button class="yellow ui button" id="detailBtn">투표하기 버튼은 없어도 되지 않나?</button>
-				</div>
+				<!--<div class="ui buttons">-->
+				<!--	<button class="yellow ui button" id="detailBtn">투표하기</button>-->
+				<!--</div>-->
 			</div>
 		</div>
 		<!-- 상세보기 segment -->

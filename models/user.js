@@ -1,7 +1,7 @@
 '"use strict';
 
 module.exports = function(sequelize, DataTypes) {
-    var vote_master = sequelize.define('user', {
+    var user = sequelize.define('user', {
                         id: {type: DataTypes.INTEGER, primaryKey: true, autoIncrement: true},
                         user_name: {type: DataTypes.STRING, allowNull: false},
                         email: {type: DataTypes.STRING, allowNull: false},
@@ -28,5 +28,5 @@ module.exports = function(sequelize, DataTypes) {
                         timestamps: false // true이면 자동으로 등록시간, 수정시간 만들어줌
                     });
                     
-    return vote_master;
+    return user;
 }

@@ -69,21 +69,21 @@
     var file = document.getElementById('file');
     var image = document.getElementById('image');
     file.onchange = function (event) {
-  	alert('변경');
+  	alert('파일변경 - 임시');
     var target = event.currentTarget;
     var xmlHttpRequest = new XMLHttpRequest();
-    xmlHttpRequest.open('POST', 'https://api.imgur.com/3/image/', true);
-    xmlHttpRequest.setRequestHeader("Authorization", "Client-ID 285a540d6ec9798");
+    xmlHttpRequest.open('POST', 'https://api.imgur.com/3/image/', true); //연결
+    xmlHttpRequest.setRequestHeader("Authorization", "Client-ID 285a540d6ec9798"); //client_id 설정
     xmlHttpRequest.onreadystatechange = function () {
       if (xmlHttpRequest.readyState == 4) {
-        if (xmlHttpRequest.status == 200) {
-          var result = JSON.parse(xmlHttpRequest.responseText);
+        if (xmlHttpRequest.status == 200) { //성공값
+          var result = JSON.parse(xmlHttpRequest.responseText);//결과값 수신
           image.src = result.data.link;
-          console.log(result);
-          alert('업로드성공 경로'+ result.data.link)
+          console.log(result); 
+          alert('업로드성공 경로'+ result.data.link+'는 DB에 update DeleteHash 또한 저장필요 -> '+result.data.deletehash);
         }
         else {
-        	alert("업로드 실패");
+        	alert("이미지 업로드에 실패했습니다.");
           image.src = "http://dy.gnch.or.kr/img/no-image.jpg";
         }
       }

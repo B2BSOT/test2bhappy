@@ -123,6 +123,28 @@ module.exports = function common() {
         return mailOptions;
     }
     
+    /*
+    이미지 삽입 시 사용할 공통function
+    (단순 값 set후에 insert역할)
+    onPage : 이미지 삽입하는 화면
+    imageUrl : 업로드 성공후 실제로 올라간 url
+    deleteHash : 삭제 api 호출을 위한 값
+    */
+    function insertImage(onPage, imageUrl, deleteHash){
+        
+        
+    }
+    /*
+    이미지 삭제 시 사용할 공통function
+    (url을 키값으로 delete api호출 후에 이미지 삭제 후 isDeleted 값 Y로 변경)
+    DB에서 delete할 수 있지만 혹시 삭제가 잘 안될 경우를 대비해 url남기기 위해..
+    
+    imageUrl : 업로드 성공후 실제로 올라간 url(키값으로 활용)
+    */
+    function deleteImage(imageUrl){
+        
+    }
+    
 }
 // var common = {};
 // common.setMileage = setMileage;
