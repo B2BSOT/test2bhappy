@@ -81,13 +81,6 @@ module.exports = function(app) {
         /* vote_master : vote_detail - M : N 관계 설정 셋팅(내가 투표했는지 여부 가져오기) */
         vote_master.hasMany(vote_detail, {as: 'vote_detail', foreignKey: 'vote_id', sourceKey: 'vote_id'});
         vote_detail.belongsToMany(vote_master, {as: 'vote_master', foreignKey: 'vote_id', targetKey: 'vote_id'});
-<<<<<<< HEAD
-        
-
-});
-}
-=======
     });
     
 }
->>>>>>> 4ad9367e100f58487cee737688f94e05ce8c311f

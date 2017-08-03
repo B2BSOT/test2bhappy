@@ -161,10 +161,13 @@
 				<table class="unstackable ui definition table">
 				<tbody>
 					<% for(var i=0; i<data.detail_info.length; i++) { %>
-					<tr style='max-height:50px'>
-						<td class="two wide column" style="margin-top: -15px;" id="<%= data.detail_info[i].item_id %>">
-							 버튼
+					<tr style='max-height:40px'>
+						<td style="margin-top: -15px; width:40px; ">
+							<button class="yellow ui middle icon button" style="margin-right: 0px;"><i class="check icon"></i></button>
 						</td>
+						<!--td class="two wide column" style="margin-top: -15px;" id="<%= data.detail_info[i].item_id %>">
+							 버튼
+						</td-->
 						<td>
 							<div class="ui teal progress" data-percent= <%=data.detail_info[i].cnt*100/data.vote_total_cnt%> id="vote<%= data.detail_info[i].item_id %>">
 								<div class="bar">

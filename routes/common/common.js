@@ -61,7 +61,7 @@ module.exports = function common() {
 
         // mail형식의 compiler로 handlebars를 사용하도록 설정        
         mailer.use('compile', hbs(hbs_options));
-        
+          
         // send mail
         mailer.sendMail(setMailOptions(maildata), function(err, res) {
             if (err) { 
