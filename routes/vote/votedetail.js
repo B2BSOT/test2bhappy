@@ -161,9 +161,10 @@ module.exports = function(app) {
             raw: true, // (key, value) 로 result 반환
             attributes : [
                 'vote_id', 'subject', 'comment', 'reg_user_id', 'reg_dtm', 'deadline',
-                'state', 'multi_yn', 'secret_yn', 'add_item_yn', 'noti_yn',
+                'state', 'parti_org_id', 'multi_yn', 'secret_yn', 'add_item_yn', 'noti_yn',
                 [models.Sequelize.col('user.id'), 'id'], // raw옵션으로 user.id가 반환되므로 'id'로 이름 변환
-                [models.Sequelize.col('user.user_name'), 'user_name']
+                [models.Sequelize.col('user.user_name'), 'user_name'],
+                [models.Sequelize.col('user.user_img'), 'user_img']
             ],
             include: [{
                 model: user,
@@ -178,10 +179,25 @@ module.exports = function(app) {
                 vote_id : TEST_VOTE_ID//req.body.vote_id
             }
         }).then(master_info => {
-            console.log("** step2 result: " + JSON.stringify(master_info));
+            // console.log("** step2 result: " + JSON.stringify(master_info));
             
             data.master_info = master_info;
         });
+        
+        
+        /*
+            SELECT count(*) AS `count` FROM `vote_detail` AS `vote_detail` WHERE `vote_detail`.`vote_id` = 1;
+        */
+        vote_detail.count({
+            where : {
+                vote_id : TEST_VOTE_ID//req.body.vote_id
+            }
+        }).then(vote_total_cnt => {
+            data.vote_total_cnt = vote_total_cnt;
+            // console.log("**RESULT DATA : " + JSON.stringify(data));
+        });
+        
+        
         
 
         /******************************************************************************************************
@@ -226,18 +242,32 @@ module.exports = function(app) {
                 vote_id : TEST_VOTE_ID//req.body.vote_id
             }, // 조건절
             group : [ 'item_id', 'item_name' ], // GROUP BY 설정
-            order : [ ['item_id', 'ASC'] ] // ORDER BY 설정
+            // order : [ ['item_id', 'ASC'] ] // ORDER BY 설정
             
         }).then(detail_info => {
             data.detail_info = detail_info;
             
-            console.log("**RESULT DATA : " + JSON.stringify(data));
+            // console.log("**RESULT DATA : " + JSON.stringify(data));
         
             res.render('vote/votedetail', {data : data, session : req.session});    
             
         }).catch(function(err) {
             console.log(err);
         });
+        
+        
+        
+        // vote_detail.count({ 
+        //     where: {
+        //         'vote_id': TEST_VOTE_ID,
+        //     }
+        // }).then(vote_total_cnt => {
+        //     if(vote_total_cnt == 0) {
+        //         res.render('/vote/votemain');
+        //     }
+        // });
+        
+     
         
         
         
