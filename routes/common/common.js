@@ -53,9 +53,9 @@ module.exports = function common() {
         // create reusable transporter object using the default SMTP transport
         var smtp_options = {
             auth: {
-                api_key: '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'
+                api_key: process.env.SENDGRID_API_KEY
             }
-        }
+        };
         
         var mailer = nodemailer.createTransport(sgTransport(smtp_options));
 

@@ -101,28 +101,6 @@ module.exports = function(app) {
         }
     });
     
-    function deleteOrCreate(model, whereCon, item, onCreate, onUpdate, onError) {
-        /***
-         * 1. check한 item이 존재하는지 찾는다
-         * 2. item이 존재하지 않는다면 create(insert)한다
-         * 3. item이 존재하면 delete 한후 create한다
-         **/
-        model.findOne({where: where}).then(function (foundItem) {
-            if (!foundItem) {
-                // Item not found, create a new one
-                model.create(newItem)
-                    .then(onCreate)
-                    .catch(onError);
-            } else {
-                // Found an item, update it
-                model.delete(newItem, {where: where})
-                    .then(onUpdate)
-                    .catch(onError);
-                ;
-            }
-        }).catch(onError);
-    }
-    
 
     app.get('/vote/votedetail', function(req, res, next) {
         
