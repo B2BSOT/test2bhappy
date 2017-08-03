@@ -16,8 +16,6 @@
     $(document)
     .ready(function() {
         
-        $('.ui.teal.progress').progress();
-        
         //변수 설정
         // ├ deadline_dtm = 마감일시
         // ├ parti_org_id = SM or 팀 코드
@@ -25,7 +23,6 @@
         // ├ secret_yn    = 공개/비밀 투표
         // ├ add_item_yn  = 항목 추가 yn
         // └ noti_yn      = 메일전송?
-        
         var deadline_dtm = <%= data.master_info.deadline %>
         var parti_org_id = <%= data.master_info.parti_org_id %>
         var multi_yn     = "<%= data.master_info.multi_yn    %>"
@@ -39,13 +36,22 @@
         //   └ output : 2017년 08월 31일 
         date_resizing(deadline_dtm);
         
+        // :투표 타입
+        //  ├ 다중/단일 투표
+        //  ├ 비밀/공개 투표
+        //  └ 항목 추가 yn
         vote_type_show(multi_yn, secret_yn, add_item_yn);
         
-        if(secret_yn == 'N'){
-        	secre_vote_show(vote_content_cnt);
+        
+        // 비밀투표일 경우 (secret_yn == Y)
+        //  ├ 현재 투표 개수         hide()
+        //  └ 현재 투표 progress-bar hide()
+        if(secret_yn == 'Y'){
+        	secret_vote_show();
         }
-        
-        
+        else{
+        	$('.ui.teal.progress').progress();
+        }
         
       
      });
@@ -95,16 +101,11 @@
         }
         
         
-         function secre_vote_show(vote_content_cnt) {
-        	// data.detail_info[i].cnt
-        	for(var i=0; i<vote_content_cnt; i++){
-        		var id = "#vote"+(i+1);
-        		id = id +"";
-        		alert(<%=data.detail_info[i].cnt%>);
-        		
-        		
-        	}
-        	
+        
+        function secret_vote_show() {
+         
+        	$('.vote_cnt').hide();
+        	$('.ui.teal.progress.active').attr('data-percent',"10");
         }
         
         
@@ -117,7 +118,7 @@
             top: 0px;
         }
     
-    .ui.teal.progress.active {
+    .ui.teal.progress {
     	margin-bottom: 0px;
     }    
         
@@ -169,7 +170,8 @@
 								<div class="bar">
 								</div>
 								<div class="label">
-									<%= data.detail_info[i].item_name %> ( <%= data.detail_info[i].cnt %> )
+									<span ><%= data.detail_info[i].item_name %></span>
+									<span class="vote_cnt"> ( <%= data.detail_info[i].cnt %> ) </span>
 								</div>
 							</div>
 						</td>

@@ -83,4 +83,5 @@ module.exports = function(app) {
         vote_detail.belongsToMany(vote_master, {as: 'vote_master', foreignKey: 'vote_id', targetKey: 'vote_id'});
         
 
+});
 }
