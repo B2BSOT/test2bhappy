@@ -44,7 +44,8 @@ module.exports = function(app) {
         
 
         /******************************************************************************************************
-         * select a.subject 
+         * select a.vote_id
+         *        ,a.subject 
          *        ,to_char(sysdate,'yyyymmdd') - substr(a.deadline,0,8) as dday//state='P'에 대한 D-day 보여줄 때
          *        ,b.user_img
          *        ,a.reg_user_id
@@ -61,26 +62,92 @@ module.exports = function(app) {
         vote_master.hasMany(user, {as: 'user', foreignKey: 'id', sourceKey: 'reg_user_id'});
         user.belongsToMany(vote_master, {as: 'vote_master', foreignKey: 'reg_user_id', targetKey: 'id'});
         
+        /* select */
+        vote_master.findAll({
+            raw : true,
+            attributes : [
+                'vote_id',
+                'subject',
+                'deadline',
+                'user_img',
+                'reg_user_id',
+                'reg_dtm',
+                'comment',
+                'state'
+            ], // 실제 결과 컬럼
+            include : [ {
+                model: user,
+                as : 'user',
+                where : {
+                    reg_user_id : {$col : 'vote_master.reg_user_id' }
+                },
+                attributes : []
+            }] // INNER JOIN 테이블 설정
+            
+        }).then(detail_info => {
+            data.detail_info = detail_info;
+            
+            console.log("**RESULT DATA : " + JSON.stringify(data));
+        
+            res.render('vote/votemain', {data : data, session : req.session});    
+            
+        }).catch(function(err) {
+            console.log(err);
+        });
+
+
+
+        
         /******************************************************************************************************
-         * 코드값이 없으면 nvl(서브쿼리)...아무리봐도 vote_detail.vote_yn 생성해야 함 !!!
+         * count()함수써서 cnt변수에 넣어 화면에서 cnt = 0 -> 투표하러가기, cnt > 0 -> 투표현황보러가기  
          * select  
-         *        case when
-         *        a.state = 'P' and b.user_id is null then b.vote_yn = 'N' //투표하러가기
-         *        when
-         *        a.state = 'P' and b.user_id is not null then b.vote_yn = 'Y' //투표현황보러가기
-         *        else ....
-         *        end as vote_yn
+         *        count(b.vote_id) AS cnt
          * from   vote_master a
          *        , vote_detail b
          * where  1=1
          * and    a.vote_id = b.vote_id
          * and    b.user_id = session.user_id
+         * and    a.state   = 'P' -- 투표했는지 여부에 대한 카운트 하기 이전에 투표가 진행중이어야 함!
          * ;
         *******************************************************************************************************/
          
         /* vote_master : vote_detail - M : N 관계 설정 셋팅(내가 투표했는지 여부 가져오기) */
-        vote_master.hasMany(vote_detail, {as: 'vote_detail', foreignKey: 'vote_id', sourceKey: 'vote_id'});
-        vote_detail.belongsToMany(vote_master, {as: 'vote_master', foreignKey: 'vote_id', targetKey: 'vote_id'});
-        
+        vote_detail.hasMany(vote_master, {as: 'vote_master', foreignKey: 'vote_id', sourceKey: 'vote_id'});
+        vote_master.belongsToMany(vote_detail, {as: 'vote_detail', foreignKey: 'vote_id', targetKey: 'vote_id'});
+       
+        /* select */
+        vote_detail.findAll({
+            raw : true,
+            attributes : [
+                [ models.Sequelize.fn('count', models.Sequelize.col('vote_detail.user_id')), 'cnt' ]
 
+            ], // 실제 결과 컬럼
+            include : [ {
+                model: vote_master,
+                as : 'vote_master',
+                where : {
+                    vote_id : {$col : 'vote_detail.vote_id' }
+                    //조건걸어야 한다 
+                },
+                attributes : []
+            }], // INNER JOIN 테이블 설정
+            where : {
+                user_id : user_id//session.user_id INNER JOIN 테이블 설정
+            
+        }).then(detail_info => {
+            data.detail_info = detail_info;
+            
+            console.log("**RESULT DATA : " + JSON.stringify(data));
+        
+            res.render('vote/votemain', {data : data, session : req.session});    
+            
+        }).catch(function(err) {
+            console.log(err);
+        });
+        
+        
+       
+       
+        
+    });
 }

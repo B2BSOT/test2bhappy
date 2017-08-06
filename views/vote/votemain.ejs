@@ -25,7 +25,7 @@
 	}
 	
 	function goDetail(id) {
-		location.href = './votedetail/' + id;
+		location.href = './votedetail/' + vote_id;
 	}
 
 </script>
@@ -83,11 +83,11 @@
 					<%=data[i].comment%>
 					</div>
 				  	<br>
-				  	<% if(data[i].state == '') {  %>
+				  	<% if(data[i].state == 'P') {  %>
 						<button class="fluid brown ui button" style="background-color:#673434;"> <i class="hand pointer icon"></i>투표하러 가기</button>
 					<% }else if(data[i].state == '') { %> 
 						<button class="fluid gray ui button" style="background-color:#673434;"><span style="color:#fff;"><i class="checkmark icon"></i>투표 현황보기</span></button>
-				    <% }else if(data[i].state == '') { %>
+				    <% }else if(data[i].state == 'C') { %>
 						<button class="fluid gray ui button" style="background-color:#4D586A;"><span style="color:#fff;">결과 확인하기</span></button>
 				    <% } %>
 	  
