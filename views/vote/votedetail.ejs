@@ -15,15 +15,176 @@
 <script type="text/javascript">
     $(document)
     .ready(function() {
-        $('.ui.teal.progress').progress();
-    });
-    </script>
+        
+        
+       
+        
+        //변수 설정
+        // ├ deadline_dtm = 마감일시
+        // ├ parti_org_id = SM or 팀 코드
+        // ├ multi_yn     = 다중/단일 투표
+        // ├ secret_yn    = 공개/비밀 투표
+        // ├ add_item_yn  = 항목 추가 yn
+        // ├ noti_yn      = 메일전송?
+        // └ vote_content_cnt  = 투표 항목 개수
+        var deadline_dtm = <%= data.master_info.deadline %>
+        var parti_org_id = <%= data.master_info.parti_org_id %>
+        var multi_yn     = "<%= data.master_info.multi_yn    %>"
+        var secret_yn    = "<%= data.master_info.secret_yn   %>"
+        var add_item_yn  = "<%= data.master_info.add_item_yn %>"
+        var noti_yn      = "<%= data.master_info.noti_yn     %>"
+        var vote_content_cnt  =  <%= data.detail_info.length %>
+        
+        // date_resizing() 
+        //   ├ input  : 20170831000000
+        //   └ output : 2017년 08월 31일 
+        date_resizing(deadline_dtm);
+        
+        // :투표 타입
+        //  ├ 다중/단일 투표
+        //  ├ 비밀/공개 투표
+        //  └ 항목 추가 yn
+        vote_type_show(multi_yn, secret_yn, add_item_yn);
+        
+        
+        // 비밀투표일 경우 (secret_yn == Y)
+        //  ├ 현재 투표 개수         hide()
+        //  └ 현재 투표 progress-bar hide()
+        if(secret_yn == 'N')
+        {
+        	secret_vote_show();
+        }
+        else
+        {
+        	$('.ui.teal.progress').progress();
+        }
+        
+      
+     });
+     	//┌───────────────────────────────────────────────┐
+        //│ date_resizing() 							  │
+        //│   ├ input  : 20170831000000                   │
+        //│   ├ output : 2017년 08월 31일                 │  
+        //│   ├ deadline_year         : 2017              │
+        //│   ├ deadline_month        : 08                │
+        //│   ├ deadline_date         : 31                │
+        //│   └ resizing_deadline_dtm : 2017년 08월 31일  │
+        //└───────────────────────────────────────────────┘
+        function date_resizing(deadline_dtm) {
+        	
+        	// deadline_dtm type 강제 casting
+        	//  └ type : Object → String
+        	deadline_dtm += "";
+        	
+        	var deadline_year  = deadline_dtm.substring(0,4);
+        	var deadline_month = deadline_dtm.substring(4,6);
+        	var deadline_date  = deadline_dtm.substring(6,8);
+        	var resizing_deadline_dtm = deadline_year + "년 "+deadline_month+"월 "+deadline_date+"일";
+        	
+        	$("#deadline_dtm").text("마감일 : "+resizing_deadline_dtm);
+        }
+        
+        
+        //┌───────────────────────────────────────────────┐
+        //│ vote_type_show() : 투표 타입 Show			  │
+        //│   ├ 단중/단일 투표                            │
+        //│   ├ 비밀/공개 투표                            │  
+        //│   ├ ToDo                                      │
+        //│   └ 항목 추가 가능/ 불가능                    │
+        //│                                               │
+        //└───────────────────────────────────────────────┘
+        function vote_type_show(multi_yn, secret_yn, add_item_yn) {
+        	
+        	vote_type = "";
+        	if(multi_yn=='Y'){
+        		vote_type = vote_type+"다중/"
+        	}
+        	else if(multi_yn=="N"){
+        		vote_type = vote_type+"단일/"
+        	}
+        	if(secret_yn=="Y"){
+        		vote_type = vote_type+"비밀투표"
+        	}
+        	else if(secret_yn=="N"){
+        		vote_type = vote_type+"공개투표"
+        	}
+        	
+     		$("#vote_type").text(vote_type);
+        	
+        }
+        
+        
+        //┌───────────────────────────────────────────────┐
+        //│ secret_vote_show() : 비밀투표 경우			  │
+        //│   ├ 현재 투표 개수 hide                       │
+        //│   ├ progress bar : 10%로 통일                 │  
+        //│                                               │
+        //└───────────────────────────────────────────────┘
+        function secret_vote_show() {
+        	$('.vote_cnt').hide();
+        	$('.ui.teal.progress.active').attr('data-percent',"10");
+        }
+        
+        
+        
+        //┌───────────────────────────────────────────────┐
+        //│ add_item() : 투표 항목 추가 클릭시			  │
+        //│   ├ remove 버튼 show                          │
+        //│   ├ 항목 input tag show                       │  
+        //│                                               │
+        //└───────────────────────────────────────────────┘
+        function add_item()
+        {
+           	// var lastItemNo = $(".unstackable.ui.definition.table tr:last").attr("class").replace("item", "");
+        	var  last_num = <%= data.detail_info.length %>;
+        	
+        	var row = "<tr style='max-height:40px'>";
+        	row = row +"<td style='margin-top: -15px; width:40px; '>";
+        	row = row +"<button class='red ui middle icon button' onClick='javascript:remove_item(this)' text='kkk' style='margin-right: 0px;'><i class='remove icon'></i></button>";
+			row = row +"</td>";			
+        	row = row +"<td>";
+        	row = row +"<div>";
+        	row = row +"<input type='text' placeholder='항목을 입력해주세요' style='width: 100%' >";
+        	row = row +"</div>";
+			row = row +"</td>";				    
+			row = row + "</tr>";
+        
+        	$('#item_add_table').append(row);
+        }
+        
+        function remove_item(obj)
+        {
+            $(obj).parent().parent().remove();
+        }
+        
+        function show_modal()
+        {    
+            $('.ui.longer.modal').modal('show');
+        }
+        
+        function test()
+        {
+            var rowcount = $("#item_add_table tr").length;
+            alert(rowcount);
+            
+        }
+        
+</script>
+    
 <style type="text/css">
     .ui.progress>.label {
             top: 0px;
         }
+    
+    .ui.teal.progress {
+    	margin-bottom: 0px;
+    }    
+        
+        
 </style>
 </head>
+
+
 <body>
 <!-- Navigation -->
 <% include ../partials/navigation.ejs %>
@@ -37,44 +198,91 @@
 				</div>
 			</div>
 			<div class="ui segment">
-				<a class="avatar">
-				<img src='aa'>
-				</a>
-				<a class="author"><%= data.master_info.user_name %></a>
-				<span class="date"><%= data.master_info.deadline %></span>
-				<span class="date"><%= data.master_info.comment %></span>
+				<div class="ui avatar image">
+					<img src="<%= data.master_info.user_img %>" >
+				</div>
+				
+					<a class="author"><%= data.master_info.user_name %></a>
+					<p>
+						<span class="date"><%= data.master_info.comment %></span>
+					</p>
+					
+					<br>
+					<div class="ui two column grid">
+						<span class="date" id = "vote_type" style="width: 50%"></span>
+						<span class="date" id = "deadline_dtm" style="width: 40%; text-align: right;"></span>
+					</div>
 			</div>
 			<div class="ui segment">
-				<h3>투표결과</h3>
+				<!--<h3>투표 현황</h3>-->
 				<table class="unstackable ui definition table">
-				<tbody>
 					<% for(var i=0; i<data.detail_info.length; i++) { %>
-					<tr style='max-height:50px'>
-						<td class="two wide column" style="margin-top: -15px;" id="<%= data.detail_info[i].item_id %>">
-							 버튼
+					<tr style='max-height:40px; '>
+						<td style="margin-top: -15px; width:40px; ">
+							<button class="yellow ui middle icon button" style="margin-right: 0px;"><i class="check icon"></i></button>
 						</td>
 						<td>
-							<div class="ui teal progress" data-percent=<%=data.detail_info[i].cnt*10%> id="example1">
+							<div class="ui teal progress" data-percent= <%=data.detail_info[i].cnt*100/data.vote_total_cnt%> id="vote<%= data.detail_info[i].item_id %>">
 								<div class="bar">
 								</div>
 								<div class="label">
-									<%= data.detail_info[i].item_name %> ( <%= data.detail_info[i].cnt %> )
+									<span ><%= data.detail_info[i].item_name %></span>
+									<span class="vote_cnt"> ( <%= data.detail_info[i].cnt %> ) </span>
 								</div>
 							</div>
 						</td>
 					</tr>
 					<% } %>
-				</tbody>
 				</table>
 				<div class="ui buttons">
-					<button class="yellow ui button" id="detailBtn">투표하기</button>
+					<button class="yellow ui button" onClick="javascript:show_modal()">항목 추가하기</button>
 				</div>
+				
+				<!--항목추가 modal Start-->
+				<div class="ui longer modal ">
+                	<div class="header" onclick="javascript:test()">
+                		항목추가
+                	</div>
+                	<div class="scrolling content">
+                	    <table class="unstackable ui definition table" id="item_add_table">
+                            <tr style='max-height:40px; '>
+                            	<td style="margin-top: -15px; width:40px; ">
+                            		<button class="yellow ui middle icon button" onclick="javascript:add_item()" style="margin-right: 0px;"><i class="add icon"></i></button>
+                            	</td>
+                            	<td>
+                            		<div>
+                            			<input type='text' placeholder='항목을 입력해주세요' style='width: 100%'>
+                            		</div>
+                            	</td>
+                            </tr>
+                            
+                         </table>
+                	</div>
+                    <div class="actions">
+                        <div class="ui primary approve button" >항목추가 완료</div>
+                        <div class="ui primary approve button">Cancel</div>
+                    </div>
+                </div>
+				<!--항목추가 modal End-->
+				
+				
 			</div>
 		</div>
 		<!-- 상세보기 segment -->
+		
+		
+
 	</div>
 	<!-- content -->
 </div>
 <!-- container -->
+
+
+
 </body>
 </html>
+
+
+
+<!--TODO List-->
+<!--1. master comment 800자 화면 처리-->
