@@ -90,8 +90,8 @@ module.exports = function(app) {
         //user.belongsToMany(vote_master, {through: 'uesr_vm', as: 'vote_master', foreignKey: 'reg_user_id', targetKey: 'id'});
         
         /* user : vote_master - 1 : M 관계 설정 셋팅(등록자 정보 및 등록 투표 정보 조회) */
-        user.belongsTo(vote_master, { foreignKey: 'id', sourceKey: 'reg_user_id'});
-        vote_master.hasMany(user, {as: 'user', foreignKey: 'reg_user_id', targetKey: 'id'});
+        user.belongsTo(vote_master, { foreignKey: 'reg_user_id', sourceKey: 'reg_user_id'});
+        vote_master.hasMany(user, {as: 'user', foreignKey: 'id', targetKey: 'id'});
 
         /* select */
         vote_master.findAll({
@@ -129,7 +129,7 @@ module.exports = function(app) {
                     //'id',
                     //'user_name'
                     ]
-            }],
+            }], 
             order : [ ['deadline', 'DESC'] ]//state='P' 걸지 고민
             
         }).then(master_info => {

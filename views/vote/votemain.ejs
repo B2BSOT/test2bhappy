@@ -68,9 +68,9 @@
 						<div class="ui gray label">진행중 D-
 							<%=data.master_info[i].dday_cnt%>
 						</div>
-					<% }else if(data.master_info[i].dday_yn < 0 || data.master_info[i].state=='C'){ 
+					<% }else if(data.master_info[i].dday_yn < 0 || data.master_info[i].state=='C'){  %> 
 						<div class="ui black label">마감</div>
-				    	} %>
+				    <%	} %>
 				</div>
 			</div>
 			<div class="content" onclick="javascript:goDetail('<%=data.master_info[i].vote_id%>')">
