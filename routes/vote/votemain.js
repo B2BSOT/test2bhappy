@@ -83,15 +83,10 @@ module.exports = function(app) {
          *  and    vd.vote_id = vm.vote_id //밖에 있는 vote_master.vote_id
          * ) 	
          *
-         *******************************************************************************************************/
-        /* vote_master : user - M : N 관계 설정 셋팅(등록자 정보 및 등록 투표 정보 조회) */
-        //vote_master.hasMany(user, {as: 'user', foreignKey: 'id', sourceKey: 'reg_user_id'});
-        //vote_master.belongsToMany(user, {through: 'user_vm', as: 'user', foreignKey: 'id', targetKey: 'reg_user_id'});
-        //user.belongsToMany(vote_master, {through: 'uesr_vm', as: 'vote_master', foreignKey: 'reg_user_id', targetKey: 'id'});
-        
+         *******************************************************************************************************/        
         /* user : vote_master - 1 : M 관계 설정 셋팅(등록자 정보 및 등록 투표 정보 조회) */
-        user.belongsTo(vote_master, { foreignKey: 'id', sourceKey: 'reg_user_id'});
-        vote_master.hasMany(user, {as: 'user', foreignKey: 'reg_user_id', targetKey: 'id'});
+        vote_master.belongsTo(user, {foreignKey: 'reg_user_id', targetKey: 'id'});
+        user.hasMany(vote_master, {as: 'vote_master', foreignKey: 'id'});
 
         /* select */
         vote_master.findAll({
@@ -107,11 +102,12 @@ module.exports = function(app) {
                 //'DATE_FORMAT(left(reg_dtm,8), "%m월 %d일") as reg_date',
                 [models.Sequelize.fn('date_format',models.Sequelize.fn('left', models.Sequelize.col('reg_dtm'), 8), '%m월 %d일'), 'reg_date'],
                 //'SUBSTR( _UTF8"일월화수목금토", DAYOFWEEK(left(reg_dtm,8)), 1) as reg_week',
-                [models.Sequelize.fn('substr','_UTF8'+'"일월화수목금토"',models.Sequelize.fn('dayofweek',models.Sequelize.fn('left', models.Sequelize.col('reg_dtm'), 8)) , 1), 'reg_week'],
+                [models.Sequelize.fn('substr',"일월화수목금토",models.Sequelize.fn('dayofweek',models.Sequelize.fn('left', models.Sequelize.col('reg_dtm'), 8)) , 1), 'reg_week'],
                 [models.Sequelize.fn('date_format', models.Sequelize.col('reg_dtm'), '%H:%i'), 'reg_time'],
                 //'DATE_FORMAT(left(deadline,8), "%m월 %d일") as dday_date',
                 [models.Sequelize.fn('date_format',models.Sequelize.fn('left', models.Sequelize.col('deadline'), 8), '%m월 %d일'), 'dday_date'],
                 //'SUBSTR( _UTF8"일월화수목금토", DAYOFWEEK(left(deadline,8)), 1) as dday_week',
+                [models.Sequelize.fn('substr',"일월화수목금토",models.Sequelize.fn('dayofweek',models.Sequelize.fn('left', models.Sequelize.col('deadline'), 8)) , 1), 'dday_week'],
                 [models.Sequelize.fn('date_format', models.Sequelize.col('deadline'), '%H:%i'), 'dday_time'],
                 [models.Sequelize.fn('substr', models.Sequelize.col('comment'), 20), 'comment'],
                 'state',
@@ -130,12 +126,15 @@ module.exports = function(app) {
                     //'user_name'
                     ]
             }],
+            where : {
+                vote_id : TEST_VOTE_ID//req.body.vote_id
+            }, 
             order : [ ['deadline', 'DESC'] ]//state='P' 걸지 고민
             
         }).then(master_info => {
             data.master_info = master_info;
             
-            //console.log("**RESULT DATA : " + JSON.stringify(data));
+            console.log("**RESULT DATA : " + JSON.stringify(data));
         
             res.render('vote/votemain', {data : data, session : req.session});    
             
