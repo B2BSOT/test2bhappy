@@ -71,6 +71,7 @@
       
      });
     	
+    	
     	function setVoteDetail(detail_info_list, vote_total_cnt) {
     		var vote_table = $(".ui.definition.table");
     		
@@ -78,58 +79,34 @@
     			var detail_info = detail_info_list[i];
     			
     			// tr 생성
-    			var tr = $("<tr></tr>").css({"max-height": "40px"});
+    			var tr = $("<tr>", {"class": "votedetail"});
     			
     			// check button 생성
-    			var td_button = $("<td></td>").css({"margin-top": "-15px", "width": "40px"});
-    			var button = $("<button></button>").css({"max-rigth": "0px"});
-    			button.addClass(function() {
-    				var classStr = "ui middle icon button";
-    				return ((detail_info.voted=="Y")?classStr+" blue":classStr);
-    			});
-    			button.attr("id",detail_info.item_id);
-    			var icon = $("<i></i>").addClass("check icon");
-    			
+    			var td_button = $("<td>", {"class": "votedetail"});
+    			var button = $("<button>", {"id": detail_info.item_id}).addClass(function() {
+    								var classStr = "ui middle icon button";
+    								return ((detail_info.voted=="Y")?classStr+" blue":classStr);
+    							});
+    			var icon = $("<i>").addClass("check icon");
     			button.append(icon);
     			td_button.append(button);
     			
     			// progress bar 생성
-    			var td_progress = $("<td></td>");
-    			var div_prog = $("<div></div>").addClass("ui teal progress")
+    			var td_progress = $("<td>");
+    			var div_prog = $("<div>").addClass("ui teal progress")
     							.attr({"data-percent": detail_info.cnt*100/vote_total_cnt, "id": detail_info.item_id});
-    			var div_bar = $("<div></div>").addClass("bar");
-    			var div_label = $("<div></div>").addClass("label");
-    			var span_item_name = $("<span></span>").text(detail_info.item_name);
-    			var span_item_cnt = $("<span></span>").addClass("vote_cnt").text("( "+detail_info.cnt+" )");
+    			var div_bar = $("<div>").addClass("bar");
+    			var div_label = $("<div>").addClass("label");
+    			var span_item_name = $("<span>").text(detail_info.item_name);
+    			var span_item_cnt = $("<span>").addClass("vote_cnt").text("( "+detail_info.cnt+" )");
     			
     			div_label.append(span_item_name, span_item_cnt);
     			div_prog.append(div_bar, div_label);
     			td_progress.append(div_prog);
     			
-    			// table에 vote detail tr 추가
+    			// table에 child로 td 2개가 추가된 tr을 추가
     			vote_table.append(tr, [td_button, td_progress]);
     		}
-    		
-    // 		<table class="unstackable ui definition table">
-		  //   <% for(var i=0; i<data.detail_info.length; i++) { %>
-				// <tr style='max-height:40px; '>
-				// 	<td style="margin-top: -15px; width:40px; ">
-				// 		<button class="ui middle icon button" style="margin-right: 0px;" id="<%= data.detail_info[i].item_id %>"><i class="check icon"></i></button>
-				// 	</td>
-				// 	<td>
-				// 		<div class="ui teal progress" data-percent= <%=data.detail_info[i].cnt*100/data.vote_total_cnt%> id="vote<%= data.detail_info[i].item_id %>">
-				// 			<div class="bar">
-				// 			</div>
-				// 			<div class="label">
-				// 				<span ><%= data.detail_info[i].item_name %></span>
-				// 				<span class="vote_cnt"> ( <%= data.detail_info[i].cnt %> ) </span>
-				// 			</div>
-				// 		</div>
-				// 	</td>
-				// 	<input type="hidden" id="checked_<%= data.detail_info[i].item_id %>" value="<%= data.detail_info[i].voted %>"/>
-				// </tr>
-				// <% } %>
-		  //   </table>
     	}
     	
      	//┌───────────────────────────────────────────────┐
@@ -250,8 +227,20 @@
     
     .ui.teal.progress {
     	margin-bottom: 0px;
+    }
+    
+    tr.votedetail {
+    	max-height: 40px;
+    }
+    
+    td.votedetail {
+    	margin-top: -15px;
+    	width: 40px;
+    }
+    
+    .ui.middle.icon.button {
+    	margin-right: 0px;
     }    
-        
         
 </style>
 </head>
