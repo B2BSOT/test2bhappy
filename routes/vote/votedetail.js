@@ -43,7 +43,6 @@ module.exports = function(app) {
         /* 1. 투표체크를 이미 한 아이템인 경우 
                 - 이미 투표한 정보는 delete 
         */
-        
         if(alreadyChecked) {
             vote_detail.destroy({
                 where: {
@@ -116,6 +115,7 @@ module.exports = function(app) {
         var vote_detail = models.vote_detail;
         var vote_items = models.vote_items;
         var user = models.user;
+        var com_org = models.com_org;
         
         var data = {};
     
@@ -147,6 +147,8 @@ module.exports = function(app) {
         
         /* vote_master : user - 1 : 1 관계 설정 셋팅 */
         vote_master.hasOne(user, {foreignKey: 'id', targetKey: 'reg_user_id'});
+        /* user : com_org - 1 : 1 관계 설정 셋팅 */
+        // user.hasOne(com_org, {foreignKey: 'org_id', targetKey: 'sm_id'});
         // vote_master.belongsTo(user, {foreignKey: 'reg_user_id', sourceKey: 'id'});
         
         /*****************************************************************************************************

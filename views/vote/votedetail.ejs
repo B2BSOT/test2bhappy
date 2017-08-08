@@ -17,7 +17,6 @@
     .ready(function() {
         
         
-       
         
         //변수 설정
         // ├ deadline_dtm = 마감일시
@@ -50,7 +49,7 @@
         // 비밀투표일 경우 (secret_yn == Y)
         //  ├ 현재 투표 개수         hide()
         //  └ 현재 투표 progress-bar hide()
-        if(secret_yn == 'N')
+        if(secret_yn == 'Y')
         {
         	secret_vote_show();
         }
@@ -90,7 +89,7 @@
         //│   ├ 단중/단일 투표                            │
         //│   ├ 비밀/공개 투표                            │  
         //│   ├ ToDo                                      │
-        //│   └ 항목 추가 가능/ 불가능                    │
+        //│   └ 항목 추가 가능/ 불가능 표시               │
         //│                                               │
         //└───────────────────────────────────────────────┘
         function vote_type_show(multi_yn, secret_yn, add_item_yn) {
@@ -152,11 +151,21 @@
         	$('#item_add_table').append(row);
         }
         
+        
+        //┌───────────────────────────────────────────────┐
+        //│ remove_item() : 투표 항목 제거 클릭시		  │
+        //│   ├ 항목 제거                                 │  
+        //│                                               │
+        //└───────────────────────────────────────────────┘
         function remove_item(obj)
         {
             $(obj).parent().parent().remove();
         }
         
+        
+        //┌───────────────────────────────────────────────┐
+        //│ show_modal() : 항목 추가하기 모달			  │
+        //└───────────────────────────────────────────────┘
         function show_modal()
         {    
             $('.ui.longer.modal').modal('show');
@@ -264,21 +273,13 @@
                     </div>
                 </div>
 				<!--항목추가 modal End-->
-				
-				
 			</div>
 		</div>
 		<!-- 상세보기 segment -->
-		
-		
-
 	</div>
 	<!-- content -->
 </div>
 <!-- container -->
-
-
-
 </body>
 </html>
 
