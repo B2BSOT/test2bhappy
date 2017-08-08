@@ -121,8 +121,9 @@ module.exports = function(app) {
     
         /*  
          *  0. 이전 vote main화면에서 vote_id, parti_org_id 를 넘겨준다고 가정
-         *  1.session의 user_id가 해당투표 가능조직인지 다시 체크(url주소를 쳐서 들어오는 것을 방지)
-         *  2.해당 vote_id로 vote_main, vote_items, vote_detail 조회
+         *  1. session의 user_id가 해당투표 가능조직인지 다시 체크(url주소를 쳐서 들어오는 것을 방지)
+         *  2. user_id로 해당 vote_id에 투표한 정보가 있는지 조회
+         *  3. 해당 vote_id로 vote_main, vote_items, vote_detail 조회
          */
         
         /* 1.session user_id 체크 */
@@ -197,9 +198,20 @@ module.exports = function(app) {
             // console.log("**RESULT DATA : " + JSON.stringify(data));
         });
         
+        /* 해당 투표에서 USER가 투표한 ITEM 조회 */
+        vote_detail.findAll({
+            raw: true,
+            attributes: [
+                'item_id',
+            ],
+            where: {
+                'vote_id': TEST_VOTE_ID,//req.body.vote_id
+                'user_id': user_id
+            }
+        }).then(myList => {
+            data.myList = myList;
+        });
         
-        
-
         /******************************************************************************************************
          * DB에서 Table간 foreignKey 설정이 되어있지 않는 상태에서의 INNER JOIN 및 GROUP BY 사용 예
             SELECT `vote_items`.`vote_id` 
@@ -245,30 +257,35 @@ module.exports = function(app) {
             // order : [ ['item_id', 'ASC'] ] // ORDER BY 설정
             
         }).then(detail_info => {
+            var myList = data.myList;
+            
+            for(var i=0; i<detail_info.length; i++) {
+                var isVoted = false;
+                
+                for(var j=0; j<myList.length; j++) {
+                    if(detail_info[i].item_id == myList[j].item_id) {
+                        isVoted = true;
+                        break;
+                    }
+                }
+                
+                if(isVoted) {
+                    detail_info[i].voted = "Y";
+                }else {
+                    detail_info[i].voted = "N";
+                }
+                // console.log("**RESULT DATA [ "+i+" ] : " + JSON.stringify(detail_info[i]));
+            }
+            
             data.detail_info = detail_info;
             
-            // console.log("**RESULT DATA : " + JSON.stringify(data));
-        
+            console.log("**RESULT DATA : " + JSON.stringify(data));
+            
             res.render('vote/votedetail', {data : data, session : req.session});    
             
         }).catch(function(err) {
             console.log(err);
         });
-        
-        
-        
-        // vote_detail.count({ 
-        //     where: {
-        //         'vote_id': TEST_VOTE_ID,
-        //     }
-        // }).then(vote_total_cnt => {
-        //     if(vote_total_cnt == 0) {
-        //         res.render('/vote/votemain');
-        //     }
-        // });
-        
-     
-        
         
         
     });
