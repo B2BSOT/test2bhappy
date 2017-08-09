@@ -90,5 +90,41 @@ module.exports = function(app, connectionPool) {
             });    
         }
     });
+
+    app.post('/imageinsert', function(req, res, next) {
+            
+         connectionPool.getConnection(function(err, connection) {
+             
+            /* 이미지 변경, 삽입시 DB INSERT */
+            var common = new (require('../common/common'))();
+            var result = common.insertImage(req, connection);
+            
+            if(result) {
+                connection.release();
+                throw result;
+            }else {
+                res.json({success : "Successfully", status : 200});
+                connection.release();    
+            }
+        });
+    });
     
-}
+        app.post('/findbeforeimage', function(req, res, next) {
+            
+         connectionPool.getConnection(function(err, connection) {
+
+            /* 유저img값 DB에 있는지 확인 */
+            var common = new (require('../common/common'))();
+            var result = common.findBeforeImage(req, connection);
+            alert('디리트해시값'+result);
+            if(result) {
+                connection.release();
+                throw result;
+            }else {
+                res.json({success : "Successfully", status : 200});
+                connection.release();    
+            }
+        });
+    });
+    
+};
