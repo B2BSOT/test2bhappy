@@ -29,9 +29,12 @@
   
   //항목추가
   function addItemList(){
-    itemNum = itemNum+1;
-    var $inputTag = $("<input type='text' placeholder='항목을 입력하세요.' id='vote_item"+itemNum+"' name='vote_item"+itemNum+"' maxlength='20'>");
+    var vote_item_obj = document.getElementsByName("vote_item");
+    //alert("itemNum = " + (itemNum-1) + " / " + "value = " + vote_item_obj[itemNum-1].value);
+    //alert("name.length = " + vote_item_obj.length);
+    var $inputTag = $("<input type='text' placeholder='항목을 입력하세요.' id='vote_item"+itemNum+"' name='vote_item' maxlength='20'>");
     $("#item_list").append($inputTag);
+    itemNum++;
   }
   
   //http://blog.daum.net/janustop/65
@@ -128,8 +131,8 @@
       
       var vote_name = $("#vote_name").val();            //투표 제목
       var vote_contents = $("#vote_contents").val();    //투표 설명 textarea
-      var vote_item1 = $("#vote_item1").val();          //투표 항목 1
-      var vote_item2 = $("#vote_item2").val();          //투표 항목 2
+      var vote_item0 = $("#vote_item0").val();          //투표 항목 1
+      var vote_item1 = $("#vote_item1").val();          //투표 항목 2
       
       var parti_org_id = $("#parti_org_id").val();      //투표 참석 범위
       var multi_yn = document.voteregForm.multi_chk.checked;                //복수 선택 여부
@@ -230,7 +233,7 @@
       }
       
       // 투표 항목 check
-      if(vote_item1 == '' || vote_item2 == '' ){
+      if(vote_item0 == '' || vote_item1 == '' ){
         $('#vote_item_alert').css("visibility","visible");
       }
       else{
@@ -319,7 +322,7 @@
 
 <div class="ui container">
   <form id="voteregForm" name="voteregForm" class="ui segment form" action="/vote_regist" method="post">
-    	<h3 class="ui left floated header" style="color:blue"><%=data.user_name %>님 투표를 등록 해 주세요</h3>    
+    	<h3 class="ui left floated header" style="color:black"><%=data.user_name %>님 투표를 등록 해 주세요</h3>    
     	<div class="ui clearing divider">
 	    </div>
 	   	<div class="content">
@@ -370,8 +373,13 @@
     			<div class="ui sub header">
     				 *항목입력
     			</div>
-    			<input type="text" placeholder="항목을 입력하세요." id="vote_item1" name="vote_item1" maxlength="20">
-    			<input type="text" placeholder="항목을 입력하세요." id="vote_item2" name="vote_item2" maxlength="20">
+    			<!--<input type="text" placeholder="항목을 입력하세요." id="vote_item1" name="vote_item1" maxlength="20">-->
+    			<!--<input type="text" placeholder="항목을 입력하세요." id="vote_item2" name="vote_item2" maxlength="20">-->
+    			
+    			<input type="text" placeholder="항목을 입력하세요." id="vote_item0" name="vote_item" maxlength="20">
+    			<input type="text" placeholder="항목을 입력하세요." id="vote_item1" name="vote_item" maxlength="20">
+    			
+    			
     			<div id="item_list"> </div>
     			<p class="p validation" id="vote_item_alert" style="color:red; visibility:hidden;">
     				 *최소 2개 이상의 투표 항목을 입력해 주세요!
@@ -379,7 +387,7 @@
     			
     			<!--http://mainia.tistory.com/604-->
 
-    		  <button type="button" class="small circular ui icon button" id="add_item" name="add_item" style="background:#0064FF; color:white" onclick=javascript:addItemList() >
+    		  <button type="button" class="small circular ui icon button" id="add_item" name="add_item" style="background:red; color:white" onclick=javascript:addItemList() >
     		    <i class="icon plus"></i>
     		  </button>항목추가
         </div>
