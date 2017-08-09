@@ -16,8 +16,7 @@
     $(document)
     .ready(function() {
         
-        
-        
+
         //변수 설정
         // ├ deadline_dtm = 마감일시
         // ├ parti_org_id = SM or 팀 코드
@@ -33,6 +32,7 @@
         var add_item_yn  = "<%= data.master_info.add_item_yn %>"
         var noti_yn      = "<%= data.master_info.noti_yn     %>"
         var vote_content_cnt  =  <%= data.detail_info.length %>
+        var vote_total_cnt = <%= data.vote_total_cnt %>
         
         // date_resizing() 
         //   ├ input  : 20170831000000
@@ -45,6 +45,15 @@
         //  └ 항목 추가 yn
         vote_type_show(multi_yn, secret_yn, add_item_yn);
         
+        // 투표 테이블 셋팅
+        var detail_info_list = <%- JSON.stringify(data.detail_info) %>;
+        //console.log(detail_info_list);
+        var vote_table = $(".ui.definition.table");
+        
+        for(var i=0; i<detail_info_list.length; i++) {
+        	var detail_info = detail_info_list[i];
+        	setVoteItemDetail(vote_table, detail_info, vote_total_cnt);
+        }
         
         // 비밀투표일 경우 (secret_yn == Y)
         //  ├ 현재 투표 개수         hide()
@@ -58,8 +67,62 @@
         	$('.ui.teal.progress').progress();
         }
         
+        $('.ui.middle.icon.button').click(function() {
+        	var item_id = this.id;
+        	var alreadyChecked = $("#checked_"+item_id).val(); // Y or N
+        	alert(alreadyChecked);
+        });
       
      });
+    	
+    	/*****************************************************************
+    	 * setVoteItemDetail 
+    	 * - 각각의 vote item의 상세 정보를 셋팅 한다
+    	 * - 셋팅 순서
+    	 *   1.vote item TR태그 생성
+    	 *   2.버튼 TD태그 생성 및 item 투표 체크 버튼 생성
+    	 *   3.Progress Bar TD태그 생성 및 ProgBar 정보 생성
+    	 *   4.hidden INPUT태그 생성
+    	 *   4.Button, ProgBar TD를 붙인 TR을 TABLE에 append 
+    	 ****************************************************************/
+    	
+    	function setVoteItemDetail(vote_table, detail_info, vote_total_cnt) {
+				
+			// tr 생성
+			var tr = $("<tr>", {"class": "votedetail"});
+			
+			// check button 생성
+			var td_button = $("<td>", {"class": "votedetail"});
+			var button = $("<button>", {"id": detail_info.item_id}).addClass(function() {
+								var classStr = "ui middle icon button";
+								return ((detail_info.voted=="Y")?classStr+" blue":classStr);
+							});
+			var icon = $("<i>").addClass("check icon");
+			button.append(icon);
+			td_button.append(button);
+			
+			// progress bar 생성
+			var td_progress = $("<td>");
+			var div_prog = $("<div>").addClass("ui teal progress")
+							.attr({"data-percent": detail_info.cnt*100/vote_total_cnt, "id": detail_info.item_id});
+			var div_bar = $("<div>").addClass("bar");
+			var div_label = $("<div>").addClass("label");
+			var span_item_name = $("<span>").text(detail_info.item_name);
+			var span_item_cnt = $("<span>", {"class": "vote_cnt"}).text("( "+detail_info.cnt+" )");
+			
+			div_label.append(span_item_name, span_item_cnt);
+			div_prog.append(div_bar, div_label);
+			td_progress.append(div_prog);
+			
+			// voted hidden 생성
+			var voted_hidden = $("<input>", {"type": "hidden", "id": "checked_"+detail_info.item_id})
+								.val(detail_info.voted);
+			
+			// table에 child로 td 2개가 추가된 tr을 추가
+			tr.append(td_button).append(td_progress).append(voted_hidden);
+			vote_table.append(tr);
+    	}
+    	
      	//┌───────────────────────────────────────────────┐
         //│ date_resizing() 							  │
         //│   ├ input  : 20170831000000                   │
@@ -178,6 +241,7 @@
             
         }
         
+        
 </script>
     
 <style type="text/css">
@@ -187,8 +251,20 @@
     
     .ui.teal.progress {
     	margin-bottom: 0px;
+    }
+    
+    tr.votedetail {
+    	max-height: 40px;
+    }
+    
+    td.votedetail {
+    	margin-top: -15px;
+    	width: 40px;
+    }
+    
+    .ui.middle.icon.button {
+    	margin-right: 0px;
     }    
-        
         
 </style>
 </head>
@@ -225,23 +301,7 @@
 			<div class="ui segment">
 				<!--<h3>투표 현황</h3>-->
 				<table class="unstackable ui definition table">
-					<% for(var i=0; i<data.detail_info.length; i++) { %>
-					<tr style='max-height:40px; '>
-						<td style="margin-top: -15px; width:40px; ">
-							<button class="yellow ui middle icon button" style="margin-right: 0px;"><i class="check icon"></i></button>
-						</td>
-						<td>
-							<div class="ui teal progress" data-percent= <%=data.detail_info[i].cnt*100/data.vote_total_cnt%> id="vote<%= data.detail_info[i].item_id %>">
-								<div class="bar">
-								</div>
-								<div class="label">
-									<span ><%= data.detail_info[i].item_name %></span>
-									<span class="vote_cnt"> ( <%= data.detail_info[i].cnt %> ) </span>
-								</div>
-							</div>
-						</td>
-					</tr>
-					<% } %>
+					<!-- setVoteItemDetail -->
 				</table>
 				<div class="ui buttons">
 					<button class="yellow ui button" onClick="javascript:show_modal()">항목 추가하기</button>
