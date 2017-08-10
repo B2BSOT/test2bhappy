@@ -53,10 +53,6 @@
         //  ├ 현재 투표 개수         hide()
         //  └ 현재 투표 progress-bar hide()
         init_vote_show(secret_yn);
-        
-        // $('.ui.middle.icon.button').click(function() {
-        	
-        // });
       
     });
     
@@ -95,8 +91,9 @@
                     init_vote_show(secret_yn);
                     
                 } else {
-                  alert("투표 중 오류가 발생했습니다.");
-                  //location.href = '/';
+                	alert("투표 중 오류가 발생했습니다.");
+                	location.href = '/vote/votemain';
+                	  
               	}
             }
         });
