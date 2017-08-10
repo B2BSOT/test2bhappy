@@ -123,6 +123,39 @@ module.exports = function common() {
         return mailOptions;
     }
     
+       this.insertImage = function(req, connection) {
+        var path = req.path;
+        console.log('req path : ' + path);
+        connection.query( 'insert into com_img values(?,?,?,?,sysdate(),?);',[req.body.imageUrl, req.body.deleteHash, req.body.source, req.session.user_id, 'N'],function(error, result){
+            if(error){
+                console.log('error msg = '+ error);
+            }else{
+                console.log('success' + result);
+                return result;
+            }
+        }
+
+        )
+
+    }
+    
+    this.findBeforeImage = function(req, connection) {
+
+            connection.query('select deletehash from com_img' +
+                         ' where imageurl = ?;', req.body.beforeImageUrl, function(error, rows) {
+            
+            if(error) {
+                return new Error("Error in findBeforeImage : " + error);
+            }else {
+                if(rows.length > 0) {
+                    return rows[0].deletehash;
+                }else {
+                    return;
+                }
+            }
+        });
+    }
+    
     /*
     이미지 삽입 시 사용할 공통function
     (단순 값 set후에 insert역할)

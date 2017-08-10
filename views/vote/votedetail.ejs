@@ -13,6 +13,7 @@
 <meta name="description" content="">
 <meta name="author" content="">
 <script type="text/javascript">
+    
     $(document)
     .ready(function() {
         
@@ -25,14 +26,14 @@
         // ├ add_item_yn  = 항목 추가 yn
         // ├ noti_yn      = 메일전송?
         // └ vote_content_cnt  = 투표 항목 개수
-        var deadline_dtm = <%= data.master_info.deadline %>
-        var parti_org_id = <%= data.master_info.parti_org_id %>
-        var multi_yn     = "<%= data.master_info.multi_yn    %>"
-        var secret_yn    = "<%= data.master_info.secret_yn   %>"
-        var add_item_yn  = "<%= data.master_info.add_item_yn %>"
-        var noti_yn      = "<%= data.master_info.noti_yn     %>"
-        var vote_content_cnt  =  <%= data.detail_info.length %>
-        var vote_total_cnt = <%= data.vote_total_cnt %>
+        var deadline_dtm = <%= data.master_info.deadline %>;
+        var parti_org_id = <%= data.master_info.parti_org_id %>;
+        var multi_yn     = "<%= data.master_info.multi_yn    %>";
+        var secret_yn    = "<%= data.master_info.secret_yn   %>";
+        var add_item_yn  = "<%= data.master_info.add_item_yn %>";
+        var noti_yn      = "<%= data.master_info.noti_yn     %>";
+        var vote_content_cnt  =  <%= data.detail_info.length %>;
+        var vote_total_cnt = <%= data.vote_total_cnt %>;
         
         // date_resizing() 
         //   ├ input  : 20170831000000
@@ -45,35 +46,73 @@
         //  └ 항목 추가 yn
         vote_type_show(multi_yn, secret_yn, add_item_yn);
         
-        // 투표 테이블 셋팅
+        // 투표 현황 테이블 셋팅
         var detail_info_list = <%- JSON.stringify(data.detail_info) %>;
-        //console.log(detail_info_list);
-        var vote_table = $(".ui.definition.table");
-        
-        for(var i=0; i<detail_info_list.length; i++) {
-        	var detail_info = detail_info_list[i];
-        	setVoteItemDetail(vote_table, detail_info, vote_total_cnt);
-        }
+        init_vote_table(detail_info_list, vote_total_cnt);
         
         // 비밀투표일 경우 (secret_yn == Y)
         //  ├ 현재 투표 개수         hide()
         //  └ 현재 투표 progress-bar hide()
-        if(secret_yn == 'Y')
-        {
-        	secret_vote_show();
-        }
-        else
-        {
-        	$('.ui.teal.progress').progress();
-        }
+        init_vote_show(secret_yn);
         
-        $('.ui.middle.icon.button').click(function() {
-        	var item_id = this.id;
-        	var alreadyChecked = $("#checked_"+item_id).val(); // Y or N
-        	alert(alreadyChecked);
-        });
+        // $('.ui.middle.icon.button').click(function() {
+        	
+        // });
       
-     });
+    });
+    
+    function click_checkbutton() {
+    	console.log("check button CLICK : " + this.id);
+        	
+    	var voteData = {};
+    	var item_id = this.id;
+
+    	const master_info = <%- JSON.stringify(data.master_info) %>;
+    	voteData.vote_id = master_info.vote_id;
+    	voteData.multi_yn = master_info.multi_yn;
+    	voteData.item_id = item_id;
+    	voteData.isChecked = $("#checked_"+item_id).val(); // Y or N
+    	
+    	$.ajax({
+            type: 'POST',
+            data: JSON.stringify(voteData),
+            contentType: 'application/json',
+            datatype: "json", // expecting JSON to be returned
+            url: '/checkItem',
+            success: function(result) {
+            	console.log(result);
+            	if(result.status == 200){
+					if(result.type == "delete") {
+                    	alert("투표를 취소했습니다.");
+                	}else {
+                    	alert("투표하였습니다.");
+                	}
+                    
+                    var detail_info_list = result.data.detail_info;
+                    var vote_total_cnt = result.data.vote_total_cnt;
+                    var secret_yn = result.data.master_info.secret_yn;
+                    
+                    init_vote_table(detail_info_list, vote_total_cnt);
+                    init_vote_show(secret_yn);
+                    
+                } else {
+                  alert("투표 중 오류가 발생했습니다.");
+                  //location.href = '/';
+              	}
+            }
+        });
+    }
+     
+     	function init_vote_table(detail_info_list, vote_total_cnt) {
+     		//console.log(detail_info_list);
+	        var vote_table = $("#vote_detail_table");
+	        vote_table.empty();
+	        
+	        for(var i in detail_info_list) {
+	        	var detail_info = detail_info_list[i];
+	        	setVoteItemDetail(vote_table, detail_info, vote_total_cnt);
+	        }
+     	}
     	
     	/*****************************************************************
     	 * setVoteItemDetail 
@@ -96,15 +135,16 @@
 			var button = $("<button>", {"id": detail_info.item_id}).addClass(function() {
 								var classStr = "ui middle icon button";
 								return ((detail_info.voted=="Y")?classStr+" blue":classStr);
-							});
+							})
 			var icon = $("<i>").addClass("check icon");
+			button.click(click_checkbutton);
 			button.append(icon);
 			td_button.append(button);
 			
 			// progress bar 생성
 			var td_progress = $("<td>");
-			var div_prog = $("<div>").addClass("ui teal progress")
-							.attr({"data-percent": detail_info.cnt*100/vote_total_cnt, "id": detail_info.item_id});
+			var div_prog = $("<div>", {"id": "prog_"+detail_info.item_id}).addClass("ui teal progress")
+							.attr({"data-percent": detail_info.cnt*100/vote_total_cnt, "cnt": detail_info.cnt});
 			var div_bar = $("<div>").addClass("bar");
 			var div_label = $("<div>").addClass("label");
 			var span_item_name = $("<span>").text(detail_info.item_name);
@@ -177,14 +217,20 @@
         
         
         //┌───────────────────────────────────────────────┐
-        //│ secret_vote_show() : 비밀투표 경우			  │
+        //│ init_vote_show() : 비밀투표 경우			  │
         //│   ├ 현재 투표 개수 hide                       │
         //│   ├ progress bar : 10%로 통일                 │  
         //│                                               │
         //└───────────────────────────────────────────────┘
-        function secret_vote_show() {
-        	$('.vote_cnt').hide();
-        	$('.ui.teal.progress.active').attr('data-percent',"10");
+        function init_vote_show(secret_yn) {
+        	if(secret_yn == "Y") {
+        		$('.vote_cnt').hide();
+        		$('.ui.teal.progress.active').attr('data-percent',"10");	
+        	}else {
+        		$('.ui.teal.progress').progress();
+        	}
+        	
+        	
         }
         
         
@@ -300,7 +346,7 @@
 			</div>
 			<div class="ui segment">
 				<!--<h3>투표 현황</h3>-->
-				<table class="unstackable ui definition table">
+				<table class="unstackable ui definition table" id="vote_detail_table">
 					<!-- setVoteItemDetail -->
 				</table>
 				<div class="ui buttons">
