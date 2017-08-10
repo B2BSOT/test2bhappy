@@ -91,11 +91,7 @@ module.exports = function(app) {
         /* 1. 투표체크를 이미 한 아이템인 경우 
                 - 이미 투표한 정보는 delete 
         */
-<<<<<<< HEAD
-        if(alreadyChecked) {
-=======
         if(isChecked == "Y") {
->>>>>>> ee7c8310ac0e380a4ccc9ce38abb92b470322aa3
             vote_detail.destroy({
                 where: {
                     'vote_id': vote_id,
@@ -163,7 +159,6 @@ module.exports = function(app) {
             res.redirect('/');
         }
         
-<<<<<<< HEAD
         var vote_master = models.vote_master;
         var vote_detail = models.vote_detail;
         var vote_items = models.vote_items;
@@ -177,11 +172,6 @@ module.exports = function(app) {
          *  1. session의 user_id가 해당투표 가능조직인지 다시 체크(url주소를 쳐서 들어오는 것을 방지)
          *  2. user_id로 해당 vote_id에 투표한 정보가 있는지 조회
          *  3. 해당 vote_id로 vote_main, vote_items, vote_detail 조회
-=======
-        /* 
-         * 1. session의 user_id가 해당투표 가능조직인지 다시 체크(url주소를 쳐서 들어오는 것을 방지)
-         * 2. 투표 상세 액션 시 투표 정보가 존재하는지 다시 체크
->>>>>>> ee7c8310ac0e380a4ccc9ce38abb92b470322aa3
          */
          
         // session의 user_id 
@@ -297,7 +287,7 @@ module.exports = function(app) {
                vote_items : vote_detail - 1 : M 관계 설정 셋팅 
         */
         vote_items.hasMany(vote_detail, {as: 'vote_detail', foreignKey: 'vote_id', sourceKey: 'vote_id'});
-        vote_detail.belongsTo(vote_items, {foreignKey: 'vote_id', targetKey: 'vote_id'});
+        // vote_detail.belongsTo(vote_items, {foreignKey: 'vote_id', targetKey: 'vote_id'});
         
         /******************************************************************************************************
          * DB에서 Table간 foreignKey 설정이 되어있지 않는 상태에서의 INNER JOIN 및 GROUP BY 사용 예
@@ -371,6 +361,39 @@ module.exports = function(app) {
         
         return detail_info;
     }
+    
+    
+    
+    app.post('/add_vote_item',  function(req, res, next) {
+        
+        var user_id = req.session.user_id;
+        // console.log(user_id);
+        // console.log(req.body.vote_id);
+        // console.log(req.body.new_item_id);
+        // console.log(req.body.item_name);
+        
+        var vote_items = models.vote_items;
+        var dt = datetime.create();
+        var formattedDate = dt.format('YmdHMS') // YYYYMMDDHH24MISS
+        
+        // /* 새로운 투표 아이템 create */
+            vote_items.create({
+                'vote_id': req.body.vote_id,
+                'item_id': req.body.new_item_id,
+                'item_name': req.body.item_name,
+                'reg_user_id': req.session.user_id,
+                'reg_dtm': formattedDate
+            }).then(result => {
+                req.new_item_list = new_item_list;
+                
+            }).catch(err => {
+                console.log(err);
+                res.json({type: 'error', status: 400, err: err});
+            });
+    });
+    
+    
+    
 
 }
 
