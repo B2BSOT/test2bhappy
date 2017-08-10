@@ -127,16 +127,24 @@ module.exports = function(app) {
         /* 2. 투표 체크를 하지 않은 아이템인 경우 */
         else {
             /* 2-1. 투표 종류가 1인 1선택인 경우 */
-            if(!multi_yn) {
+            if(multi_yn == "N") {
                 /* 1. 해당 user_id로 투표한 정보는 delete */
                 vote_detail.destroy({
                     where: {
                         'vote_id': vote_id,
-                        'id': user_id
+                        'user_id': user_id
                     }
                 }).then(result => {
-                    //console.log("delete success" : result);
-                    
+                    /* 2-1-2 통합. 새로 투표한 아이템은 create */
+                    vote_detail.create({
+                        'vote_id': vote_id,
+                        'item_id': item_id,
+                        'user_id': user_id,
+                        'reg_dtm': formattedDate
+                    }).then(result => {
+                        req.checkType = CHECK_CREATE;
+                        next();
+                    });
                 }).catch(err => {
                     console.log(err);
                     res.json({type: 'error', status: 400, err: err});
@@ -145,22 +153,24 @@ module.exports = function(app) {
             /* 2-2. 투표가 1인 다중 선택인 경우 */
             else {
                 /* TODO: 다중 투표의 갯수 제한이 있을 경우 로직 필요 */
+                
+                /* 2-1-1. 새로 투표한 아이템은 create */
+                vote_detail.create({
+                    'vote_id': vote_id,
+                    'item_id': item_id,
+                    'user_id': user_id,
+                    'reg_dtm': formattedDate
+                }).then(result => {
+                    req.checkType = CHECK_CREATE;
+                    next();
+                    
+                }).catch(err => {
+                    console.log(err);
+                    res.json({type: 'error', status: 400, err: err});
+                });
             }
             
-            /* 2-1,2-2 통합. 새로 투표한 아이템은 create */
-            vote_detail.create({
-                'vote_id': vote_id,
-                'item_id': item_id,
-                'user_id': user_id,
-                'reg_dtm': formattedDate
-            }).then(result => {
-                req.checkType = CHECK_CREATE;
-                next();
-                
-            }).catch(err => {
-                console.log(err);
-                res.json({type: 'error', status: 400, err: err});
-            });
+            
         }
     }
     
