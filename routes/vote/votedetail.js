@@ -11,6 +11,7 @@ const user = models.user;
 module.exports = function(app) {
     
     app.get('/vote/votedetail', verifyVote, findDetailInfo, (req, res, next) => {
+        console.log("bbb");
         /**********************************************************************************************************  
          *  0. 이전 vote main화면에서 vote_id, parti_org_id 를 넘겨준다고 가정
          *  1. 투표검증 
@@ -245,46 +246,6 @@ module.exports = function(app) {
         /* 2.1 vote_master의 정보 조회
           vote_master : user - 1 : 1 관계 설정 셋팅 
         */
-<<<<<<< HEAD
-        vote_master.hasOne(user, {foreignKey: 'id', targetKey: 'reg_user_id'});
-        /* user : com_org - 1 : 1 관계 설정 셋팅 */
-        // user.hasOne(com_org, {foreignKey: 'org_id', targetKey: 'sm_id'});
-        // vote_master.belongsTo(user, {foreignKey: 'reg_user_id', sourceKey: 'id'});
-        
-        /*****************************************************************************************************
-         * # find 함수에서 raw: true 옵션
-         * - 해당 옵션을 주면 쿼리 결과를 sequalize instance에 담지 않고 일반 데이터(key, value) 형태로 넘겨준다
-         * 
-         * # raw 옵션의 문제점
-         * - include를 했을 경우 key값이 inclue한 model 이름이 함께 반환된다. 
-         *   따라서 attributes 옵션을 이용하여 as구문으로 key값을 변환하는 작업을 거쳐야 한다.
-         * ***************************************************************************************************/
-        vote_master.findOne({
-            raw: true, // (key, value) 로 result 반환
-            attributes : [
-                'vote_id', 'subject', 'comment', 'reg_user_id', 'reg_dtm', 'deadline',
-                'state', 'parti_org_id', 'multi_yn', 'secret_yn', 'add_item_yn', 'noti_yn',
-                [models.Sequelize.col('user.id'), 'id'], // raw옵션으로 user.id가 반환되므로 'id'로 이름 변환
-                [models.Sequelize.col('user.user_name'), 'user_name'],
-                [models.Sequelize.col('user.user_img'), 'user_img']
-            ],
-            include: [{
-                model: user,
-                // where : { id : {$col : 'vote_master.user_id' } }
-                attributes: [ //    'id', 'user_name'
-                ]
-            }],
-            where : {
-                vote_id : TEST_VOTE_ID//req.body.vote_id
-            }
-        }).then(master_info => {
-            // console.log("** step2 result: " + JSON.stringify(master_info));
-            req.master_info = master_info;
-        });
-        
-        /* 2.2 현재 USER가 투표한 아이템 리스트 조회 */
-        vote_detail.findAll({
-=======
         findVoteMaster(req).then(master_info => {
             console.log("\n*** then of findVoteMaster : " + JSON.stringify(master_info));
             req.master_info = master_info; 
@@ -294,7 +255,6 @@ module.exports = function(app) {
             req.master_info = result;
             
             return vote_detail.findAll({
->>>>>>> 25a4b40a81b36aa8bf11f426d1d55b611c864c43
             raw: true,
             attributes: [
                 'item_id',
@@ -386,14 +346,11 @@ module.exports = function(app) {
         //     // console.log("**RESULT DATA : " + JSON.stringify(data));
         // });
         
-<<<<<<< HEAD
         /* 2.4 투표 아이템 정보 및 각 아이템의 투표 수 조회, 각 아이템에 USER가 투표했는지 체크
                vote_items : vote_detail - 1 : M 관계 설정 셋팅 
         */
         vote_items.hasMany(vote_detail, {as: 'vote_detail', foreignKey: 'vote_id', sourceKey: 'vote_id'});
         // vote_detail.belongsTo(vote_items, {foreignKey: 'vote_id', targetKey: 'vote_id'});
-=======
->>>>>>> 25a4b40a81b36aa8bf11f426d1d55b611c864c43
         
         // /* 2.4 투표 아이템 정보 및 각 아이템의 투표 수 조회, 각 아이템에 USER가 투표했는지 체크
         //       vote_items : vote_detail - 1 : M 관계 설정 셋팅 
@@ -470,15 +427,34 @@ module.exports = function(app) {
             }
             // console.log("**RESULT DATA [ "+i+" ] : " + JSON.stringify(detail_info[i]));
         }
-        
+        console.log("aaa"+detail_info);
         return detail_info;
     }
     
     
-    
-    app.post('/add_vote_item',  function(req, res, next) {
+ 
+    app.post('/add_vote_item',add_item_query, findDetailInfo, function(req, res, next) {
         
-        var user_id = req.session.user_id;
+        var data = {};
+        
+            console.log(req.detail_info.length);
+            data.detail_info = setMyVoted(req.detail_info, req.myList);
+            data.master_info = req.master_info;
+            data.vote_total_cnt = req.vote_total_cnt;
+            
+            console.log(req.master_info);
+            // console.log(req.vote_total_cnt);
+            console.log(req.detail_info.length);
+            
+            // res.json({type: req.checkType, status: 200, data: data});
+            res.json({status: 200, data: data});
+        
+    });
+    
+    
+    function add_item_query(req, res, next) {
+       
+       var user_id = req.session.user_id;
         // console.log(user_id);
         // console.log(req.body.vote_id);
         // console.log(req.body.new_item_id);
@@ -496,13 +472,16 @@ module.exports = function(app) {
                 'reg_user_id': req.session.user_id,
                 'reg_dtm': formattedDate
             }).then(result => {
-                req.new_item_list = new_item_list;
+                // req.new_item_list = new_item_list;
+                next();
                 
             }).catch(err => {
                 console.log(err);
                 res.json({type: 'error', status: 400, err: err});
             });
-    });
+            
+    }
+    
     
     
     

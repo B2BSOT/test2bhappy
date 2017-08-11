@@ -291,6 +291,8 @@
             var vote_item_name = $("#add_vote_item_name").val();
             var detail_info_list = <%- JSON.stringify(data.detail_info) %>;
             
+            alert(detail_info_list.length);
+            
             // 추가했을 경우 중복된 항목이 있는지 확인하는 flag
             // flag = 0; -> 투표 항목이 없는상태
             // flag = 1; -> 이미 투표 항목이 있는 상태
@@ -322,10 +324,12 @@
         // 	var item_id = this.id;
             var vote_id = <%= data.master_info.vote_id %>;
             var max_item_id = <%= data.detail_info.length %>;
-            // var vote_item_name = vote_item_name;
+            alert(max_item_id);    
+        
             
     	    add_vote_item_Data.vote_id = <%= data.master_info.vote_id %>;
     	    add_vote_item_Data.new_item_id = <%= data.detail_info.length %> +1;
+    	
     	    add_vote_item_Data.item_name = vote_item_name;
            
             $.ajax({
@@ -336,7 +340,7 @@
             url: '/add_vote_item',
             success: function(result) {
                 
-                var detail_info_list = result.data.detail_info;
+                    var detail_info_list = result.data.detail_info;
                     var vote_total_cnt = result.data.vote_total_cnt;
                     var secret_yn = result.data.master_info.secret_yn;
                     
