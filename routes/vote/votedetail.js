@@ -52,23 +52,7 @@ module.exports = function(app) {
     
     });
     
-    /*****************************************************************************************
-     * 투표 체크를 이미 한 아이템에 했는지 여부와 
-     * 해당 투표가 다중투표가 가능한지 여부에 따라 로직을 달리한다.
-     * 
-     * ## 화면에서 체크된 아이템이 투표를 했는지 여부를 알려주는 값을 넘겨준다고 가정
-     * 
-     * 1. 투표 체크를 이미 한 아이템인 경우
-     *    1. 이미 투표한 정보는 delete 
-     * 
-     * 2. 투표 체크를 하지 않은 아이템인 경우
-     *   2-1. 투표 종류가 1인 1선택인 경우
-     *      1. 해당 user_id로 투표한 정보는 delete
-     *      2. 새로 투표한 아이템은 create
-     * 
-     *   2-2. 투표가 1인 다중 선택인 경우
-     *      1. 새로 투표한 아이템 create
-     * *************************************************************************************/
+    /** CheckItem Middleware */
     function modifyCheckItem(req, res, next) {
         const CHECK_DELETE = "delete";
         const CHECK_CREATE = "create";
@@ -76,7 +60,23 @@ module.exports = function(app) {
         var dt = datetime.create();
         var formattedDate = dt.format('YmdHMS') // YYYYMMDDHH24MISS
         
-        //var vote_detail = models.vote_detail;
+        /*****************************************************************************************
+         * 투표 체크를 이미 한 아이템에 했는지 여부와 
+         * 해당 투표가 다중투표가 가능한지 여부에 따라 로직을 달리한다.
+         * 
+         * ## 화면에서 체크된 아이템이 투표를 했는지 여부를 알려주는 값을 넘겨준다고 가정
+         * 
+         * 1. 투표 체크를 이미 한 아이템인 경우
+         *    1. 이미 투표한 정보는 delete 
+         * 
+         * 2. 투표 체크를 하지 않은 아이템인 경우
+         *   2-1. 투표 종류가 1인 1선택인 경우
+         *      1. 해당 user_id로 투표한 정보는 delete
+         *      2. 새로 투표한 아이템은 create
+         * 
+         *   2-2. 투표가 1인 다중 선택인 경우
+         *      1. 새로 투표한 아이템 create
+         * *************************************************************************************/
         
         var isChecked = req.body.isChecked; // 화면에서 이미 체크된 아이템에 투표했는지 여부
         var item_id = req.body.item_id; // 투표한 item id
@@ -100,7 +100,7 @@ module.exports = function(app) {
             
             }).catch(err => {
                 console.log(err);
-                
+                res.json({type: 'error', status: 400, err: err});
             });
         }
         /* 2. 투표 체크를 하지 않은 아이템인 경우 */
@@ -122,7 +122,7 @@ module.exports = function(app) {
                         'reg_dtm': formattedDate
                     }).then(result => {
                         req.checkType = CHECK_CREATE;
-                        next();
+                        next(); // NEXT middleware
                     });
                 }).catch(err => {
                     console.log(err);
@@ -141,7 +141,7 @@ module.exports = function(app) {
                     'reg_dtm': formattedDate
                 }).then(result => {
                     req.checkType = CHECK_CREATE;
-                    next();
+                    next(); // NEXT middleware
                     
                 }).catch(err => {
                     console.log(err);
@@ -153,7 +153,7 @@ module.exports = function(app) {
         }
     }
     
-    
+    /** Vote Verification Middleware */
     function verifyVote(req, res, next) {
         /* session 없을 땐 로그인 화면으로 */
         if(!req.session.user_name) {
@@ -196,31 +196,33 @@ module.exports = function(app) {
                     res.render('/vote/votemain', {data: data});
                 }
                 req.verifyVote = "OK";
-                next();
+                next(); // NEXT middleware
             });
         });
     }
 
+    /** Vote Detail Middleware */
     function findDetailInfo(req, res, next) {
         
-        /* 2.1 vote_master의 정보 조회
-          vote_master : user - 1 : 1 관계 설정 셋팅 
-        */
+        /* 2.1 vote_master의 정보 조회 */
         findVoteMaster(req).then(result => {
             req.master_info = result; 
+            /* 2.2 현재 USER가 투표한 아이템 리스트 조회 */
             return findMyVoteList(req);
             
         }).then(result => {
             req.myList = result;
+            /* 2.3 현재 투표한 총 투표수 조회 */
             return findVoteTotalCount(req);
 
         }).then(result => {
             req.vote_total_cnt = result;
+            /* 2.4 투표 아이템 정보 및 각 아이템의 투표 수 조회 */
             return findVoteDetailToItems(req);
 
         }).then(result => {
             req.detail_info = result;
-            next();
+            next(); // NEXT middleware
             
         }).catch(function(err) {
             console.log(err);
@@ -252,7 +254,10 @@ module.exports = function(app) {
         return detail_info;
     }
 
-
+    /*************************************************************************
+     * BELOW FUNCTIONS ARE QUERY MODULES
+     *************************************************************************/
+     
     function findVoteMaster(req) {
         var TEST_VOTE_ID = 1;
         var TEST_PARTI_ORG_ID = 10001;
@@ -290,7 +295,6 @@ module.exports = function(app) {
                 vote_id : TEST_VOTE_ID//req.body.vote_id
             }
         }).then(master_info => {
-            console.log("\n** step2 result: " + JSON.stringify(master_info));
             return master_info;
         });
     }
