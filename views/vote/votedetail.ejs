@@ -16,6 +16,16 @@
     
     $(document)
     .ready(function() {
+    	// 투표 검증 처리
+    	var verifyVote = "<%= data.verifyVote %>";
+    	if(verifyVote == "NotUser") {
+    		alert("투표할 수 있는 조직이 아닙니다.");
+    		location.href = "/vote/votemain";
+    	}else if(verifyVote == "NotExist"){
+    		alert("해당 투표 정보가 존재하지 않습니다.");
+    		location.href = "/vote/votemain";
+    	}else { //"OK" 
+    	}
         
 
         //변수 설정
