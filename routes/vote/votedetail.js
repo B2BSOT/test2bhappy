@@ -7,6 +7,8 @@ const vote_detail = models.vote_detail;
 const vote_items = models.vote_items;
 const user = models.user;
 
+var TEST_VOTE_ID = 1;
+var TEST_PARTI_ORG_ID = 10001;
 
 module.exports = function(app) {
     
@@ -27,50 +29,27 @@ module.exports = function(app) {
          *********************************************************************************************************/
         var data = {};
         
-        if(!req.detail_info || !req.myList || !req.master_info) { // detail_info == undefined or == null
-            if(!req.detail_info)
-                console.log("*** detail_info is undefined.");
-            
-            if(!req.myList)
-                console.log("*** myList is undefined.");
-                
-            if(!req.master_info)
-                console.log("*** master_info is undefined.");
-                
-            data.error = "nullData";
-            
-            res.render('index', {data : data, session : req.session, title: 'Happy App'});
-        }else {
-            
-            console.log("\n*** FIND DATA is FINE.");
-            
-            /* 2.5 각 아이템에 session user가 투표했는지 체크 */
-            data.error = "none";
-            data.detail_info = setMyVoted(req.detail_info, req.myList);
-            data.master_info = req.master_info;
-            data.vote_total_cnt = req.vote_total_cnt;
-            
-            res.render('vote/votedetail', {data : data, session : req.session});
-        }
+        /* 2.5 각 아이템에 session user가 투표했는지 체크 */
+        data.verifyVote = req.verifyVote;
+        data.detail_info = setMyVoted(req.detail_info, req.myList);
+        data.master_info = req.master_info;
+        data.vote_total_cnt = req.vote_total_cnt;
+        
+        res.render('vote/votedetail', {data : data, session : req.session});
+    
     });
 
-
     app.post('/checkItem', verifyVote, modifyCheckItem, findDetailInfo, function(req, res, next) {
-        
         var data = {};
         
-        if(!req.detail_info || !req.myList || !req.master_info) { // detail_info == undefined or == null
-            console.log("**** detail_info or myList or master_info is undefined **** ");
-            res.json({type: 'nullData', status: 500});
-            
-        }else {
-            /* 2.5 각 아이템에 session user가 투표했는지 체크 */
-            data.detail_info = setMyVoted(req.detail_info, req.myList);
-            data.master_info = req.master_info;
-            data.vote_total_cnt = req.vote_total_cnt;
-            
-            res.json({type: req.checkType, status: 200, data: data});
-        }
+        /* 2.5 각 아이템에 session user가 투표했는지 체크 */
+        data.verifyVote = req.verifyVote;
+        data.detail_info = setMyVoted(req.detail_info, req.myList);
+        data.master_info = req.master_info;
+        data.vote_total_cnt = req.vote_total_cnt;
+        
+        res.json({type: req.checkType, status: 200, data: data});
+    
     });
     
     /*****************************************************************************************
@@ -176,9 +155,6 @@ module.exports = function(app) {
     
     
     function verifyVote(req, res, next) {
-        var TEST_VOTE_ID = 1;
-        var TEST_PARTI_ORG_ID = 10001;
-        
         /* session 없을 땐 로그인 화면으로 */
         if(!req.session.user_name) {
             res.redirect('/');
@@ -206,189 +182,50 @@ module.exports = function(app) {
             }
         }).then(c => {
             if(c == 0) {
-                res.render('/vote/votemain', {result: "NotUser"});
+                var data = {verifyVote: "NotUser"};
+                res.render('/vote/votemain', {data: data});
             }
-        });
-        
-        vote_master.count({
-            where : {
-                vote_id : TEST_VOTE_ID//req.body.vote_id
-            }
-        }).then(c => {
-            if(c == 0) {
-                res.render('/vote/votemain', {result: "NotExist"});
-            }
-            next();
+            
+            vote_master.count({
+                where : {
+                    vote_id : TEST_VOTE_ID//req.body.vote_id
+                }
+            }).then(c => {
+                if(c == 0) {
+                    var data = {verifyVote: "NotExist"};
+                    res.render('/vote/votemain', {data: data});
+                }
+                req.verifyVote = "OK";
+                next();
+            });
         });
     }
 
     function findDetailInfo(req, res, next) {
         
-        var TEST_VOTE_ID = 1;
-        var TEST_PARTI_ORG_ID = 10001;
-        
-        // var vote_master = models.vote_master;
-        // var vote_detail = models.vote_detail;
-        // var vote_items = models.vote_items;
-        // var user = models.user;
-        
         /* 2.1 vote_master의 정보 조회
           vote_master : user - 1 : 1 관계 설정 셋팅 
         */
-        findVoteMaster(req).then(master_info => {
-            console.log("\n*** then of findVoteMaster : " + JSON.stringify(master_info));
-            req.master_info = master_info; 
-            return master_info;
-        }).then(result => {
-            console.log("\n** then 222 DATA : " + JSON.stringify(result));
-            req.master_info = result;
+        findVoteMaster(req).then(result => {
+            req.master_info = result; 
+            return findMyVoteList(req);
             
-            return vote_detail.findAll({
-            raw: true,
-            attributes: [
-                'item_id',
-            ],
-            where: {
-                'vote_id': TEST_VOTE_ID,//req.body.vote_id
-                'user_id': req.session.user_id
-            }
-            }).then(myList => {
-                return myList;
-            });
         }).then(result => {
-            console.log("\n** then 333 DATA : " + JSON.stringify(result));
             req.myList = result;
-            
-            return vote_detail.count({
-                where : {
-                    vote_id : TEST_VOTE_ID//req.body.vote_id
-                }
-            }).then(vote_total_cnt => {
-                return vote_total_cnt;
-            });
+            return findVoteTotalCount(req);
+
         }).then(result => {
-            console.log("\n** then 444 DATA : " + JSON.stringify(result));
             req.vote_total_cnt = result;
+            return findVoteDetailToItems(req);
+
+        }).then(result => {
+            req.detail_info = result;
+            next();
             
-            vote_items.hasMany(vote_detail, {as: 'vote_detail', foreignKey: 'item_id', sourceKey: 'item_id'});
-            vote_detail.belongsTo(vote_items, {foreignKey: 'item_id', targetKey: 'item_id'});
-            
-            vote_items.findAll({
-                raw : true,
-                attributes : [
-                    'item_id',
-                    'item_name',
-                    [ models.Sequelize.fn('count', models.Sequelize.col('vote_detail.user_id')), 'cnt' ]
-                ], // 실제 결과 컬럼
-                include : [ {
-                    model: vote_detail,
-                    as : 'vote_detail',
-                    where : {
-                        vote_id: TEST_VOTE_ID//item_id : {$col : 'vote_items.item_id' }
-                    },
-                    attributes : [],
-                    required: false // LEFT OUTER JOIN
-                    }
-                ], // INNER JOIN 테이블 설정
-                where : {
-                    vote_id : TEST_VOTE_ID//req.body.vote_id
-                }, // 조건절
-                group : [ 'item_id', 'item_name' ], // GROUP BY 설정
-                // order : [ ['item_id', 'ASC'] ] // ORDER BY 설정
-                
-            }).then(detail_info => {
-                
-                console.log("\n** Last then DATA : " + JSON.stringify(detail_info));
-                
-                req.detail_info = detail_info;
-                next();
-                
-            }).catch(function(err) {
-                console.log(err);
-                next(err);
-            });
-        });
-        
-        // /* 2.2 현재 USER가 투표한 아이템 리스트 조회 */
-        // vote_detail.findAll({
-        //     raw: true,
-        //     attributes: [
-        //         'item_id',
-        //     ],
-        //     where: {
-        //         'vote_id': TEST_VOTE_ID,//req.body.vote_id
-        //         'user_id': req.session.user_id
-        //     }
-        // }).then(myList => {
-        //     req.myList = myList;
-        // });
-        
-        // /*  2.3 현재 투표한 총 투표수 조회
-        //     SELECT count(*) AS `count` FROM `vote_detail` AS `vote_detail` WHERE `vote_detail`.`vote_id` = 1;
-        // */
-        // vote_detail.count({
-        //     where : {
-        //         vote_id : TEST_VOTE_ID//req.body.vote_id
-        //     }
-        // }).then(vote_total_cnt => {
-        //     req.vote_total_cnt = vote_total_cnt;
-        //     // console.log("**RESULT DATA : " + JSON.stringify(data));
-        // });
-        
-        
-        // /* 2.4 투표 아이템 정보 및 각 아이템의 투표 수 조회, 각 아이템에 USER가 투표했는지 체크
-        //       vote_items : vote_detail - 1 : M 관계 설정 셋팅 
-        // */
-        // vote_items.hasMany(vote_detail, {as: 'vote_detail', foreignKey: 'vote_id', sourceKey: 'vote_id'});
-        // vote_detail.belongsTo(vote_items, {foreignKey: 'vote_id', targetKey: 'vote_id'});
-        
-        // /******************************************************************************************************
-        //  * DB에서 Table간 foreignKey 설정이 되어있지 않는 상태에서의 INNER JOIN 및 GROUP BY 사용 예
-        //     SELECT `vote_items`.`vote_id` 
-        //         , `vote_items`.`item_id`
-        //         , `vote_items`.`item_name`
-        //         , count(`vote_detail`.`user_id`) AS `cnt` 
-        //     FROM `vote_items` AS `vote_items` 
-        //     INNER JOIN `vote_detail` AS `vote_detail` 
-        //       ON `vote_items`.`vote_id` = `vote_detail`.`vote_id` AND `vote_detail`.`item_id` = `vote_items`.`item_id` 
-        //     WHERE `vote_items`.`vote_id` = 1 
-        //     GROUP BY `item_id`, `item_name` 
-        //     ORDER BY `vote_items`.`item_id` ASC
-            
-        //     * result: [{"item_id":1,"item_name":"아아","cnt":3}
-        //     *          ,{"item_id":2,"item_name":"뜨아","cnt":2}
-        //     *          ,{"item_id":3,"item_name":"라떼","cnt":1}]
-        //     * 실행 쿼리에서는 PK값인 vote_id가 있지만 실제 결과는 attributes내 컬럼만 나온다
-        // *******************************************************************************************************/
-        // vote_items.findAll({
-        //     raw : true,
-        //     attributes : [
-        //         'item_id',
-        //         'item_name',
-        //         [ models.Sequelize.fn('count', models.Sequelize.col('vote_detail.user_id')), 'cnt' ]
-        //     ], // 실제 결과 컬럼
-        //     include : [ {
-        //         model: vote_detail,
-        //         as : 'vote_detail',
-        //         where : {
-        //             item_id : {$col : 'vote_items.item_id' }
-        //         },
-        //         attributes : []
-        //     }], // INNER JOIN 테이블 설정
-        //     where : {
-        //         vote_id : TEST_VOTE_ID//req.body.vote_id
-        //     }, // 조건절
-        //     group : [ 'item_id', 'item_name' ], // GROUP BY 설정
-        //     // order : [ ['item_id', 'ASC'] ] // ORDER BY 설정
-            
-        // }).then(detail_info => {
-        //     req.detail_info = detail_info;
-        //     next();
-            
-        // }).catch(function(err) {
-        //     console.log(err);
-        //     next(err);
-        // });
+        }).catch(function(err) {
+            console.log(err);
+            next(err);
+        });;
     }
     
     /* 2.5 각 아이템에 session user가 투표했는지 체크 */
@@ -419,11 +256,6 @@ module.exports = function(app) {
     function findVoteMaster(req) {
         var TEST_VOTE_ID = 1;
         var TEST_PARTI_ORG_ID = 10001;
-        
-        // var vote_master = models.vote_master;
-        // var vote_detail = models.vote_detail;
-        // var vote_items = models.vote_items;
-        // var user = models.user;
         
         /* 2.1 vote_master의 정보 조회
           vote_master : user - 1 : 1 관계 설정 셋팅 
@@ -461,6 +293,63 @@ module.exports = function(app) {
             console.log("\n** step2 result: " + JSON.stringify(master_info));
             return master_info;
         });
+    }
+    
+    function findMyVoteList(req) {
+        return vote_detail.findAll({
+            raw: true,
+            attributes: [
+                'item_id',
+            ],
+            where: {
+                'vote_id': TEST_VOTE_ID,//req.body.vote_id
+                'user_id': req.session.user_id
+            }
+        }).then(myList => {
+            return myList;
+        });
+    }
+    
+    function findVoteTotalCount(req) {
+        return vote_detail.count({
+            where : {
+                vote_id : TEST_VOTE_ID//req.body.vote_id
+            }
+        }).then(vote_total_cnt => {
+            return vote_total_cnt;
+        });
+    }
+    
+    function findVoteDetailToItems(req) {
+        vote_items.hasMany(vote_detail, {as: 'vote_detail', foreignKey: 'item_id', sourceKey: 'item_id'});
+        vote_detail.belongsTo(vote_items, {foreignKey: 'item_id', targetKey: 'item_id'});
+            
+        return vote_items.findAll({
+            raw : true,
+            attributes : [
+                'item_id',
+                'item_name',
+                [ models.Sequelize.fn('count', models.Sequelize.col('vote_detail.user_id')), 'cnt' ]
+            ], // 실제 결과 컬럼
+            include : [ {
+                model: vote_detail,
+                as : 'vote_detail',
+                where : {
+                    vote_id: TEST_VOTE_ID//item_id : {$col : 'vote_items.item_id' }
+                },
+                attributes : [],
+                required: false // LEFT OUTER JOIN
+                }
+            ], // INNER JOIN 테이블 설정
+            where : {
+                vote_id : TEST_VOTE_ID//req.body.vote_id
+            }, // 조건절
+            group : [ 'item_id', 'item_name' ], // GROUP BY 설정
+            // order : [ ['item_id', 'ASC'] ] // ORDER BY 설정
+            
+        }).then(detail_info => {
+            return detail_info;    
+        })
     }
     
 }
