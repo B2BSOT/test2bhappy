@@ -143,7 +143,7 @@ module.exports = function(app) {
                 // }
             }], //include
             where : {
-                vote_id : TEST_VOTE_ID//req.body.vote_id
+                //vote_id : TEST_VOTE_ID//req.body.vote_id
             }, 
             order : [ ['deadline', 'DESC'] ]//state='P' 걸지 고민
             
