@@ -88,46 +88,62 @@ module.exports = function(app) {
         vote_master.belongsTo(user, {foreignKey: 'reg_user_id', targetKey: 'id'});
         user.hasMany(vote_master, {as: 'vote_master', foreignKey: 'id'});
 
+        //user.belongsTo(vote_detail, {foreignKey: 'user_id', targetKey: 'id'});
+        //vote_detail.hasMany(user, {as: 'user', foreignKey: 'id'});
+
+
+        /* cnt */ 
         /* select */
         vote_master.findAll({
             raw : true,
             attributes : [
                 'vote_id',
                 'subject',
-                /* squelize에서 datediff 허용하는지 확인 후 안하면 모델에서 변수정의하고... */
-                //'DATEDIFF(day, DATE_FROMAT(SYSDATE(), "%Y%m%d"), DATE_FORMAT(deadline, "%Y%m%d"))as dday_cnt', 
-                //[models.Sequelize.fn('datediff',models.Sequelize.fn('date_format',models.Sequelize.fn('now'), '%Y%m%d'), models.Sequelize.fn('date_format', models.Sequelize.col('deadline'), '%Y%m%d')),'dday_cnt'],
-                //'DATEDIFF(s, DATE_FROMAT(SYSDATE(), "%Y%m%d%H%i%s"), DATE_FORMAT(deadline, "%Y%m%d%H%i%s"))as dday_yn', 
+                [models.Sequelize.fn('date_format',models.Sequelize.fn('now'), '%Y%m%d%H%i%s'),'systime'],
+                [models.Sequelize.fn('date_format',models.Sequelize.fn('now'), '%Y%m%d'),'sysdate'],
+                //[models.Sequelize.fn('datediff',models.Sequelize.fn('date_format',models.Sequelize.fn('now'), '%Y%m%d%H%i%s'), models.Sequelize.fn('date_format', models.Sequelize.col('deadline'), '%Y%m%d%H%i%s')),'dday_yn'],
                 'reg_user_id',
-                //'DATE_FORMAT(left(reg_dtm,8), "%m월 %d일") as reg_date',
+                'reg_dtm',
                 [models.Sequelize.fn('date_format',models.Sequelize.fn('left', models.Sequelize.col('reg_dtm'), 8), '%m월 %d일'), 'reg_date'],
-                //'SUBSTR( _UTF8"일월화수목금토", DAYOFWEEK(left(reg_dtm,8)), 1) as reg_week',
                 [models.Sequelize.fn('substr',"일월화수목금토",models.Sequelize.fn('dayofweek',models.Sequelize.fn('left', models.Sequelize.col('reg_dtm'), 8)) , 1), 'reg_week'],
                 [models.Sequelize.fn('date_format', models.Sequelize.col('reg_dtm'), '%H:%i'), 'reg_time'],
-                //'DATE_FORMAT(left(deadline,8), "%m월 %d일") as dday_date',
+                'deadline',
+                //[models.Sequelize.fn('date_format',models.Sequelize.fn('deadline'), '%Y%m%d'),'ddate'],
+                [models.Sequelize.fn('left', models.Sequelize.col('deadline'),8), 'ddate'],
                 [models.Sequelize.fn('date_format',models.Sequelize.fn('left', models.Sequelize.col('deadline'), 8), '%m월 %d일'), 'dday_date'],
-                //'SUBSTR( _UTF8"일월화수목금토", DAYOFWEEK(left(deadline,8)), 1) as dday_week',
                 [models.Sequelize.fn('substr',"일월화수목금토",models.Sequelize.fn('dayofweek',models.Sequelize.fn('left', models.Sequelize.col('deadline'), 8)) , 1), 'dday_week'],
                 [models.Sequelize.fn('date_format', models.Sequelize.col('deadline'), '%H:%i'), 'dday_time'],
-                [models.Sequelize.fn('substr', models.Sequelize.col('comment'), 20), 'comment'],
+                [models.Sequelize.fn('left', models.Sequelize.col('comment'),15), 'comment'],
                 'state',
                 [models.Sequelize.col('user.id'), 'id'],
                 [models.Sequelize.col('user.user_name'), 'user_name'],
-                [models.Sequelize.col('user.user_img'), 'user_img'] 
+                [models.Sequelize.col('user.user_img'), 'user_img']
+                
             ], // 실제 결과 컬럼
             include : [ {
                 model: user,
                 as : 'user',
                 where : {
-                    id : {$col : 'vote_master.reg_user_id' } //여기에 id써야하는지 master.reg_user_id써야하는지
+                    id : {$col : 'vote_master.reg_user_id' } //여기에 id써야하는지 master.reg_user_id써야
+            
                 },
-                attributes : [
-                    //'id',
-                    //'user_name'
-                    ]
-            }],
+                attributes : [],
+                // include : [ {
+                // model: vote_detail,
+                // as : 'vote_detail',
+                // where : {
+                //     vote_id : {$col : 'vote_master.vote_id'}
+                // },
+                // attributes : [
+                //     [models.Sequelize.fn('count', models.Sequelize.col('vote_id')), 'cnt'],
+                //     ]
+                // }],
+                // where : {
+                // user_id : req.session.user_id 
+                // }
+            }], //include
             where : {
-                vote_id : TEST_VOTE_ID//req.body.vote_id
+                //vote_id : TEST_VOTE_ID//req.body.vote_id
             }, 
             order : [ ['deadline', 'DESC'] ]//state='P' 걸지 고민
             
@@ -148,14 +164,11 @@ module.exports = function(app) {
          * vote_detail에 다수개가 존재하므로 현재 보여지는 vote_master의 vote_id와 매핑 해줘야 한다 ->위에 조인걸어야 하나 
          * 
          * select 
-         *        vd.vote_id,
-         *        vd.user_id,
-         *        count(vd.vote_id) AS cnt
+         *        count(*) AS cnt
          * from   vote_master a
          *        , vote_detail b
          * where  1=1
-         * and    a.vote_id = b.vote_id
-         * and    a.vote_id = :현재 클릭하는 vote_id
+         * and    a.vote_id = b.vote_id --- a.vote_id는 현재 클릭하는 vote
          * and    b.user_id = user_id //req.session.user_id
          * and    a.state   = 'P' 
          * ;
