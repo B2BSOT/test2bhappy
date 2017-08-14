@@ -322,7 +322,7 @@
 
 <div class="ui container">
   <form id="voteregForm" name="voteregForm" class="ui segment form" action="/vote_regist" method="post">
-    	<h3 class="ui left floated header" style="color:black"><%=data.user_name %>님 투표를 등록 해 주세요</h3>    
+    	<h3 class="ui left floated header" style="color:black"><%=data.user_name %>님 투표를 등록 해 주세요!</h3>    
     	<div class="ui clearing divider">
 	    </div>
 	   	<div class="content">
@@ -381,17 +381,14 @@
     			
     			
     			<div id="item_list"> </div>
+    		  <button type="button" class="small circular ui icon button" id="add_item" name="add_item" style="background-color:#ee5252; color:white" onclick=javascript:addItemList() >
+    		    <i class="icon plus"></i>항목추가
+    		  </button>
     			<p class="p validation" id="vote_item_alert" style="color:red; visibility:hidden;">
     				 *최소 2개 이상의 투표 항목을 입력해 주세요!
     			</p>
-    			
-    			<!--http://mainia.tistory.com/604-->
-
-    		  <button type="button" class="small circular ui icon button" id="add_item" name="add_item" style="background-color:#ee5252; color:white" onclick=javascript:addItemList() >
-    		    <i class="icon plus"></i>
-    		  </button>항목추가
         </div>
-				
+
   			<div class="column">
   				<div class="ui sub header">
   					 마감날짜(*)
@@ -461,14 +458,14 @@
           		<div class="ui toggle checkbox">
                 <input type="checkbox" id="multi_chk" name="multi_chk">
                 <input type="hidden" id="multi_yn" name="multi_yn">
-                <label>복수 선택</label>
+                <label>복수선택</label>
               </div>
             </div>
             <div class="column">
               <div class="ui toggle checkbox">
                 <input type="checkbox" id="secret_chk" name="secret_chk">
                 <input type="hidden" id="secret_yn" name="secret_yn">
-                <label>익명 투표</label>
+                <label>익명투표</label>
               </div>
             </div>
           </div>
@@ -477,25 +474,26 @@
               <div class="ui toggle checkbox">
                 <input type="checkbox" id="add_item_chk" name="add_item_chk">
                 <input type="hidden" id="add_item_yn" name="add_item_yn">
-                <label>항목 추가</label>
+                <label>항목추가</label>
               </div>
             </div>
             <div class="column">
               <div class="ui toggle checkbox">
                 <input type="checkbox" id="noti_chk" name="noti_chk">
                 <input type="hidden" id="noti_yn" name="noti_yn">
-                <label>E-Mail발송</label>
+                <label>공지(e-mail)</label>
               </div>
             </div>
           </div>
   	  	</div>
+  	  	<p class="p validation" style="visibility:hidden;">.</p>
 		
     		<div class="actions">
     		  <div class="ui two bottom attached buttons">
-      		  <button class="ui submit button" id="submit" name="submit" style="background-color:#ee5252; color:white">등록</button>
       		  <div class="ui button" style="color:white; background:grey" onclick=javascript:goMain()>
       			 취소
       		  </div>
+      		  <button class="ui submit button" id="submit" name="submit" style="background-color:#ee5252; color:white">등록</button>
     		  </div>
     	  </div>
 
