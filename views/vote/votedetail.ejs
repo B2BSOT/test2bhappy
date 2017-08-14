@@ -14,6 +14,8 @@
 <meta name="author" content="">
 <script type="text/javascript">
     
+    var vote_content_cnt  =  <%= data.detail_info.length %>; 
+    
     $(document)
     .ready(function() {
     	// 투표 검증 처리
@@ -42,7 +44,7 @@
         var secret_yn    = "<%= data.master_info.secret_yn   %>";
         var add_item_yn  = "<%= data.master_info.add_item_yn %>";
         var noti_yn      = "<%= data.master_info.noti_yn     %>";
-        var vote_content_cnt  =  <%= data.detail_info.length %>;
+            vote_content_cnt  =  <%= data.detail_info.length %>;
         var vote_total_cnt = <%= data.vote_total_cnt %>;
         
         
@@ -298,19 +300,13 @@
             $('.ui.longer.modal').modal('show');
         }
         
-        function test()
-        {
-            var rowcount = $("#item_add_table tr").length;
-            alert(rowcount);
-            
-        }
         
         function Check_duplicate_vote_item()
         {
             var vote_item_name = $("#add_vote_item_name").val();
             var detail_info_list = <%- JSON.stringify(data.detail_info) %>;
             
-            alert(detail_info_list.length);
+            // alert(detail_info_list.length);
             
             // 추가했을 경우 중복된 항목이 있는지 확인하는 flag
             // flag = 0; -> 투표 항목이 없는상태
@@ -343,7 +339,7 @@
             var vote_id = <%= data.master_info.vote_id %>;
             
     	    add_vote_item_Data.vote_id = <%= data.master_info.vote_id %>;
-    	    add_vote_item_Data.new_item_id = <%= data.detail_info.length %> +1;
+    	    add_vote_item_Data.new_item_id = vote_content_cnt +1;
     	    add_vote_item_Data.item_name = vote_item_name;
            
             $.ajax({
@@ -360,7 +356,8 @@
                     
                     init_vote_table(detail_info_list, vote_total_cnt);
                     init_vote_show(secret_yn);
-           
+                    vote_content_cnt = add_vote_item_Data.new_item_id;
+                    $("#add_vote_item_name").val("");
             }
         });
             
@@ -448,7 +445,7 @@
 				
 				<!--항목추가 modal Start-->
 				<div class="ui longer modal ">
-                	<div class="header" onclick="javascript:test()">
+                	<div class="header" >
                 		항목추가
                 	</div>
                 	<div class="scrolling content">
