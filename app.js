@@ -93,6 +93,7 @@ var imageupload = require('./routes/testing/imageupload')(app, connectionPool);
 var votemain = require('./routes/vote/votemain')(app, connectionPool);
 var votemain = require('./routes/vote/votemain')(app, connectionPool);
 var votereg = require('./routes/vote/votereg')(app, connectionPool);
+var voteupdate = require('./routes/vote/voteupdate')(app, connectionPool);
 var votedetail = require('./routes/vote/votedetail')(app);
 var quizboard = require('./routes/quizboard/quizboard')(app);
 
