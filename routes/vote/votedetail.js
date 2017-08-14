@@ -13,7 +13,7 @@ var TEST_PARTI_ORG_ID = 10001;
 module.exports = function(app) {
     
     app.get('/vote/votedetail', verifyVote, findDetailInfo, (req, res, next) => {
-        console.log("bbb");
+        
         /**********************************************************************************************************  
          *  0. 이전 vote main화면에서 vote_id, parti_org_id 를 넘겨준다고 가정
          *  1. 투표검증 
@@ -271,18 +271,13 @@ module.exports = function(app) {
         
         var data = {};
         
-            console.log(req.detail_info.length);
+            
             data.detail_info = setMyVoted(req.detail_info, req.myList);
             data.master_info = req.master_info;
             data.vote_total_cnt = req.vote_total_cnt;
-            
-            console.log(req.master_info);
-            // console.log(req.vote_total_cnt);
-            console.log(req.detail_info.length);
-            
             // res.json({type: req.checkType, status: 200, data: data});
             res.json({status: 200, data: data});
-        
+            
     });
     
     

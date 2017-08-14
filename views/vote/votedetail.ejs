@@ -45,6 +45,8 @@
         var vote_content_cnt  =  <%= data.detail_info.length %>;
         var vote_total_cnt = <%= data.vote_total_cnt %>;
         
+        
+        
         // date_resizing() 
         //   ├ input  : 20170831000000
         //   └ output : 2017년 08월 31일 
@@ -65,6 +67,7 @@
         //  ├ 현재 투표 개수         hide()
         //  └ 현재 투표 progress-bar hide()
         init_vote_show(secret_yn);
+        // add_item_button_show(add_item_yn);
       
     });
     
@@ -222,6 +225,12 @@
         	
      		$("#vote_type").text(vote_type);
         	
+        	if(add_item_yn=='N')
+            {
+                $("#add_item_button").hide();
+            }
+        	
+        	
         }
         
         
@@ -331,15 +340,10 @@
         function add_vote_item(vote_item_name){
             
             var add_vote_item_Data = {};
-        // 	var item_id = this.id;
             var vote_id = <%= data.master_info.vote_id %>;
-            var max_item_id = <%= data.detail_info.length %>;
-            alert(max_item_id);    
-        
             
     	    add_vote_item_Data.vote_id = <%= data.master_info.vote_id %>;
     	    add_vote_item_Data.new_item_id = <%= data.detail_info.length %> +1;
-    	
     	    add_vote_item_Data.item_name = vote_item_name;
            
             $.ajax({
@@ -361,6 +365,13 @@
         });
             
         }
+        
+        
+        // function add_item_button_show(add_item_yn)
+        // {    
+          
+            
+        // }
         
         
         
@@ -431,7 +442,7 @@
 				<table class="unstackable ui definition table" id="vote_detail_table">
 					<!-- setVoteItemDetail -->
 				</table>
-				<div class="ui buttons">
+				<div class="ui buttons" id ="add_item_button">
 					<button class="yellow ui button" onClick="javascript:show_modal()">항목 추가하기</button>
 				</div>
 				
