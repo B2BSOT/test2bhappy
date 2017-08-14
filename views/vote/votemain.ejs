@@ -90,17 +90,17 @@
 					</div>
 				  	<br>
 				  
-						<button class="fluid brown ui button" onclick="javascript:goDetail('<%=data.master_info[i].vote_id%>')" style="background-color:#673434;"> <i class="hand pointer icon"></i>투표하러 가기</button>
-				
+						
+					<% if((data.master_info[i].deadline < data.master_info[i].systime) || data.master_info[i].state=='C') { %>
+						<button class="fluid gray ui button" style="background-color:#4D586A;"><span style="color:#fff;">결과 확인하기</span></button>
+				    <% }else {%>
+				    <button class="fluid brown ui button" onclick="javascript:goDetail('<%=data.master_info[i].vote_id%>')" style="background-color:#673434;"> <i class="hand pointer icon"></i>투표하러 가기</button>
+				    <% }%>
 	  
 			</div><!--ui segment-->
 			</div>
-			
-		</div><!--card-->
-		 
-	
-		
-	</div><!-- cards -->
+		</div>
+	</div>
 	<br>
 	<% } %>
 </div><!-- container -->
