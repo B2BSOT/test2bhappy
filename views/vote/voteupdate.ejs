@@ -272,7 +272,7 @@
 
 <div class="ui container">
   <form id="voteupForm" name="voteupForm" class="ui segment form" action="/vote_update" method="post">
-    	<h3 class="ui left floated header" style="color:black"><%=session.user_name%>님의 투표 수정 화면</h3>  
+    	<h3 class="ui left floated header" style="color:black"><%=session.user_name%>님의 투표 수정 화면입니다</h3>  
     	<div class="ui clearing divider">
 	    </div>
 	   	<div class="content">
@@ -306,7 +306,7 @@
     			<div id="item_list"> </div>
 
         <!--수정불가능.-->
-          <button type="button" class="small circular ui icon button" id="add_item" name="add_item" style="background:red; color:white" disabled>
+          <button type="button" class="small circular ui icon button" id="add_item" name="add_item" style="background-color:#ee5252; color:white" disabled>
     		    <i class="icon plus"></i>
     		  </button>항목추가
         </div>
@@ -440,7 +440,7 @@
 		
     		<div class="actions">
     		  <div class="ui two bottom attached buttons">
-      		  <button class="ui submit button" id="submit" name="submit" style="background:red; color:white">수정</button>
+      		  <button class="ui submit button" id="submit" name="submit" style="background-color:#ee5252; color:white">수정</button>
       		  <div class="ui button" style="color:white; background:grey" onclick=javascript:goMain()>
       			 취소
       		  </div>
