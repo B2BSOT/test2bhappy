@@ -20,11 +20,19 @@
   var deadlineTime = '';
   var itemNum = 2;
   
-
+  // 등록 마무리할 일
+  //1. 불러오기 내 글자수 제한 (...표시)
+  //2. 불러오기 레이아웃 맞추기
+  //3. 전체 글자폰트 맞추기
+  //4. 상세내용 엔터, 글자수 지정하기
+  //5. 항목 2개 id로 비교하는부분 name으로 비교하여 최소 2개 항목이상 등록 가능하게 조건 걸기
+  //6. 항목삭제 버튼 존재여부
+  //7. 참여범위 불러오기에 포함
+  //8. 기타옵션 불러오기에 포함
  
   // 뒤로가기 버튼 -> 메인화면 이동
   function goMain(){
-      location.href = '../happyday/hdmain';
+      location.href = '../vote/votemain';
   }
   
   //항목추가
@@ -45,9 +53,7 @@
       alert("더이상 항목삭제를 할 수 없습니다.")
     }
   }
-  
-  //http://blog.daum.net/janustop/65
-  
+
   
   // 화면 reload 될 때마다 실행 되는 함수
   $(document).ready(function() {
@@ -56,19 +62,6 @@
       // 최근 투표등록 목록 드롭다운
     $('#listDropdown').dropdown({
      });  
-    
-    
-    
-    
-    $('#voteloadForm').submit(function() {
-      alert("check!! = ");
-
-    });
-    
-    
-    
-    
-    
     
       // 참여범위 드롭다운
     $('#selectionDropdown').dropdown({
@@ -132,7 +125,7 @@
           minute = minute.length > 1 ? minute : '0' + minute;
           
           var time = hour + minute;                           //DB에 들어갈 마감시간 , Ex)1630   
-          deadlineTime = time;                                   //deadlineTime: global 변수 -> submit할 때 DB로 전송
+          deadlineTime = time;                                //deadlineTime: global 변수 -> submit할 때 DB로 전송
         }
       //,
       //popup options ('popup', 'on', 'hoverable', and show/hide callbacks are overridden)
@@ -143,65 +136,86 @@
       //   hideOnScroll: true
       // }
     });
-    //// https://stackoverflow.com/questions/40000252/how-to-convert-a-date-format-in-semnatic-ui-calendar
-    //// https://github.com/mdehoog/Semantic-UI-Calendar
 
-    ////
-    //submit하기 전 정합성 체크
+
+    //불러오기 submit하기 전 정합성 체크
+    $('#voteloadForm').submit(function() {
+      var vote_load = $("#vote_load").val();            //불러오기 투표 값
+      
+      if(vote_load == ''){
+        alert("최근 등록한 투표목록을 선택해주세요");
+        return false;
+      }else{
+        return true;
+      }
+      
+    });
+
+
+    //등록 submit하기 전 정합성 체크
     $('#voteregForm').submit(function() {
-      $('#vote_deadline').val(deadlineDt+deadlineTime+'00'); //날짜 합치기
-      var vote_deadline = deadlineDt+deadlineTime+'00'; //마감시간
+
+      var vote_name = $("#vote_name").val();                                //투표 제목
+      var vote_contents = $("#vote_contents").val();                        //투표 설명 textarea
+      var vote_item0 = $("#vote_item0").val();                              //투표 항목 1
+      var vote_item1 = $("#vote_item1").val();                              //투표 항목 2
       
-      var vote_name = $("#vote_name").val();            //투표 제목
-      var vote_contents = $("#vote_contents").val();    //투표 설명 textarea
-      var vote_item0 = $("#vote_item0").val();          //투표 항목 1
-      var vote_item1 = $("#vote_item1").val();          //투표 항목 2
+      $('#vote_deadline').val(deadlineDt+deadlineTime+'00');                //날짜 합치기
+      var vote_deadline = deadlineDt+deadlineTime+'00';                     //마감시간
+      var today_date_ojbect = new Date();                                   //현재 날짜 object
+      var year = today_date_ojbect.getFullYear().toString();                //현재 년
+      var month;  //현재 월
+      var date;   //현재 일
+      var hour;   //현재 시간
+      var minute; //현재 분
+      var second; //현재 초
       
-      var parti_org_id = $("#parti_org_id").val();      //투표 참석 범위
+      var parti_org_id = $("#parti_org_id").val();                          //투표 참석 범위
+      
       var multi_yn = document.voteregForm.multi_chk.checked;                //복수 선택 여부
       var secret_yn = document.voteregForm.secret_chk.checked;              //익명 투표 여부
       var add_item_yn = document.voteregForm.add_item_chk.checked;          //항목 추가 여부
       var noti_yn = document.voteregForm.noti_chk.checked;                  //E-mail전송 여부
       
       var flag = 0;  // 정합성 체크 var
-      var today_date_ojbect = new Date();   // 현재 날짜 object
-      var year = today_date_ojbect.getFullYear().toString();  //현재 년
-      var month;  //현재 월
-      var date;   //현재 일
-      var hour;   //현재 시간
-      var minute; //현재 분
-      var second; //현재 초
 
 
-      //기타 옵션 체크박스 체크여부에 따라 value값 지정
-      if(multi_yn){
-        document.voteregForm.multi_yn.value = 'Y';
+      // 투표 이름 check
+      if(vote_name == ''){
+        $('#vote_name_alert').css("visibility","visible");
       }
       else{
-        document.voteregForm.multi_yn.value = "N";
+        $('#vote_name_alert').css("visibility","hidden");
+        flag = flag+1;
       }
       
-      if(secret_yn){
-        document.voteregForm.secret_yn.value = 'Y';
+      // 투표 항목 check
+      if(vote_item0 == '' || vote_item1 == '' ){
+        $('#vote_item_alert').css("visibility","visible");
       }
       else{
-        document.voteregForm.secret_yn.value = 'N';
-      }
-      
-      if(add_item_yn){
-        document.voteregForm.add_item_yn.value = 'Y';
-      }
-      else{
-        document.voteregForm.add_item_yn.value = 'N';
-      }
-      
-      if(noti_yn){
-        document.voteregForm.noti_yn.value = 'Y';
-      }
-      else{
-        document.voteregForm.noti_yn.value = 'N';
-      }
+        $('#vote_item_alert').css("visibility","hidden");
+        flag = flag+1;
+      }    
+     
+      // 투표 항목 중복 check
+      var dup_yn = 0;
+      var length = $("[name=vote_item]").length;
 
+      for(var i = 0 ; i < length ; i++){
+        for(var j = 0; j < i ; j++){
+            if($("[name=vote_item]:eq("+i+")").val() != '' && ($("[name=vote_item]:eq("+i+")").val() == $("[name=vote_item]:eq("+j+")").val()) ){  //빈 항목 중복 비교제외
+              dup_yn = 1;
+              break;
+            }
+        }
+      }
+      if(dup_yn == 1){
+        alert("중복되는 항목이 있습니다.");
+      }else{
+        flag = flag+1;
+      }
+      
 
       //Ex) 9월 -> 09월 변환
       if(today_date_ojbect.getMonth()+1 < 10){
@@ -241,59 +255,11 @@
       }
       else{
         second = today_date_ojbect.getSeconds().toString();
-      }
+      }      
       
       //today_date -> 오늘 날짜 변수 Ex) 20170731174220
-      var today_date = year+month+date+hour+minute+second;   
+      var today_date = year+month+date+hour+minute+second;  
       
-      // 투표 이름 check
-      if(vote_name == ''){
-        $('#vote_name_alert').css("visibility","visible");
-      }
-      else{
-        $('#vote_name_alert').css("visibility","hidden");
-        flag = flag+1;
-      }
-      
-      // 투표 항목 check
-      if(vote_item0 == '' || vote_item1 == '' ){
-        $('#vote_item_alert').css("visibility","visible");
-      }
-      else{
-        $('#vote_item_alert').css("visibility","hidden");
-        flag = flag+1;
-      }    
-     
-      // 투표 항목 중복 check
-      var dup_yn = 0;
-      var length = $("[name=vote_item]").length;
-
-      for(var i = 0 ; i < length ; i++){
-        for(var j = 0; j < i ; j++){
-            if( $("[name=vote_item]:eq("+i+")").val() == $("[name=vote_item]:eq("+j+")").val()){
-              dup_yn = 1;
-              break;
-            }
-        }
-      }
-      
-      if(dup_yn == 1){
-        alert("중복되는 항목이 있습니다.");
-      }else{
-        flag = flag+1;
-      }
-      
-      ///
-      
-    // 참석 범위 check  
-      if(parti_org_id == ''){
-        $('#parti_org_id_alert').css("visibility","visible");
-      }
-      else{
-        $('#parti_org_id_alert').css("visibility","hidden");
-        flag = flag+1;
-      } 
-     
       // 마감 날짜 check
       if(deadlineDt == ''){
         $('#deadlineDt_alert').css("visibility","visible");
@@ -320,6 +286,47 @@
         $('#deadlineTime_alert').css("visibility","hidden");
         flag = flag+1;
       }
+      
+      
+      // 참석 범위 check  
+      if(parti_org_id == ''){
+        $('#parti_org_id_alert').css("visibility","visible");
+      }
+      else{
+        $('#parti_org_id_alert').css("visibility","hidden");
+        flag = flag+1;
+      }       
+      
+
+      //기타 옵션 체크박스 체크여부에 따라 value값 지정
+      if(multi_yn){
+        $('#multi_yn').val('Y');
+      }
+      else{
+        $('#multi_yn').val('N');
+      }
+      
+      if(secret_yn){
+        $('#secret_yn').val('Y');
+      }
+      else{
+        $('#secret_yn').val('N');
+      }
+      
+      if(add_item_yn){
+        $('#add_item_yn').val('Y');
+      }
+      else{
+        $('#add_item_yn').val('N');
+      }
+      
+      if(noti_yn){
+        $('#noti_yn').val('Y');
+      }
+      else{
+        $('#noti_yn').val('N');
+      }      
+      
 
       //모두 정상 입력 했을 시, 포인트 수정 불가 공지 진행
       if(flag == 7){
@@ -342,20 +349,10 @@
       }
       
     });
-    
-    
-
-
-  
-
-
 });
-
 
 </script>
 <style type="text/css">
- 
- 
 	
 </style>
 </head>
@@ -389,11 +386,11 @@
       			<div class="menu">
       			 
       			 <% var count = 0;                      
-      			    if(data2.length > count) {count = 3}   //최근 목록 3개까지 조회 가능
+      			    if(data2.length > count) {count = 5}   //최근 목록 5개까지 조회 가능
       			    else {count = data2.length} %>
       			  
       			  <% for(var i = 0; i < count; i++) { %>
-        				<div class="item" data-value="<%=data2[i].vote_id%>"> <%=data2[i].reg_dtm%> - <%=data2[i].subject%> </div>
+        				<div class="item" data-value="<%=data2[i].vote_id%>"> <%=data2[i].regDtShow%> - <%=data2[i].subject%> </div>
               <% } %>
               
       			</div>

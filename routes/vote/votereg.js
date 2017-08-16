@@ -11,7 +11,8 @@ module.exports = function(app, connectionPool) {
                     throw error;
                 }else {
                     
-                    connection.query('select * from vote_master where reg_user_id = ? order by reg_dtm desc;', [req.session.user_id], function(error, rows2){
+                    connection.query('select vm.*, concat("\'",substring(vm.reg_dtm,3,2),"/",substring(vm.reg_dtm,5,2),"/",substring(vm.reg_dtm,7,2))as regDtShow ' 
+                                   + 'from vote_master vm where vm.reg_user_id = ? order by vm.reg_dtm desc;', [req.session.user_id], function(error, rows2){
                         if(error){
                             connection.release();
                             throw error;
@@ -116,7 +117,7 @@ module.exports = function(app, connectionPool) {
     app.post('/vote_loading', function(req, res, next) {
         connectionPool.getConnection(function(err, connection) {
             //console.log(req.body);
-            connection.query('select vm.*, vm.reg_user_id as user_name, "Y" as load_yn from vote_master vm where vm.vote_id = ?;', [req.body.vote_load], function(error, rows1){
+            connection.query('select vm.*, (select u.user_name from user u where u.id = vm.reg_user_id) as user_name, "Y" as load_yn from vote_master vm where vm.vote_id = ?;', [req.body.vote_load], function(error, rows1){
             
                 connection.beginTransaction(function(err) {
                     if(err) {
