@@ -17,6 +17,7 @@ module.exports = function(app) {
             
         var vote_master = models.vote_master;
         var vote_detail = models.vote_detail;
+        var com_org = models.com_org;
         var user = models.user;
         
         var data = {}; 
@@ -88,6 +89,13 @@ module.exports = function(app) {
         vote_master.belongsTo(user, {foreignKey: 'reg_user_id', targetKey: 'id'});
         user.hasMany(vote_master, {as: 'vote_master', foreignKey: 'id'});
 
+        /* com_org : user - 1: M */
+        //com_org.belongsTo(user, {foreignKey: 'sm_id', targetKey: 'org_id'});
+        //user.hasMany(com_org, {as: 'com_org', foreignKey: 'org_id'});
+        user.belongsTo(com_org, {foreignKey: 'sm_id', targetKey: 'org_id'});
+        com_org.hasMany(user, {as: 'user', foreignKey: 'org_id'});        
+        
+        
         //user.belongsTo(vote_detail, {foreignKey: 'user_id', targetKey: 'id'});
         //vote_detail.hasMany(user, {as: 'user', foreignKey: 'id'});
 
@@ -117,8 +125,9 @@ module.exports = function(app) {
                 'state',
                 [models.Sequelize.col('user.id'), 'id'],
                 [models.Sequelize.col('user.user_name'), 'user_name'],
-                [models.Sequelize.col('user.user_img'), 'user_img']
-                
+                [models.Sequelize.col('user.user_img'), 'user_img'],
+                //Object.keys(user.attributes).concat([[selquelize.literal('(select "org_nm" from "com_org" where "com_org"."org_id" = "user"."sm_id")'), 'org_nm']])
+                [models.Sequelize.col('user.com_org.org_nm'), 'org_nm']//'org_nm'
             ], // 실제 결과 컬럼
             include : [ {
                 model: user,
@@ -128,6 +137,7 @@ module.exports = function(app) {
             
                 },
                 attributes : [],
+                include : [{ model:com_org, as : 'com_org',where: {org_id : {$col : 'user.sm_id'}}}]
                 // include : [ {
                 // model: vote_detail,
                 // as : 'vote_detail',
@@ -142,6 +152,16 @@ module.exports = function(app) {
                 // user_id : req.session.user_id 
                 // }
             }], //include
+            // include : [ {
+            //     model: com_org,
+            //     as : 'com_org',
+            //     where : {
+            //         org_id : {$col : 'user.sm_id' }
+            
+            //     }
+            //     //,attributes : ['org_nm']
+                
+            // }], 
             where : {
                 //vote_id : TEST_VOTE_ID//req.body.vote_id
             }, 
