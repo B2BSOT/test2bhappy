@@ -27,6 +27,7 @@
 
   // 화면 reload 될 때마다 실행 되는 함수
   $(document).ready(function() {
+    
 
       // 참여범위 드롭다운
     $('#selectionDropdown').dropdown({
@@ -436,7 +437,7 @@
             <div class="column">
               <div class="ui toggle checkbox">
                 <!--수정불가능-->
-                <input type="checkbox" id="noti_chk" name="noti_chk" disabled <%=data1.notiYnShow%>>
+                <input type="checkbox" id="noti_chk" name="noti_chk" disabled="false" readonly="true" <%=data1.notiYnShow%>>
                 <label>공지(e-mail)</label>
               </div>
             </div>
