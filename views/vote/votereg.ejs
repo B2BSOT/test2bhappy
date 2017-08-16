@@ -31,9 +31,6 @@
   function addItemList(){
     // var vote_item_obj = document.getElementsByName("vote_item");
     // alert("name.length = " + vote_item_obj.length);
-    
-    alert("check1 = ");
-    
     var inputTag = $("<input type='text' placeholder='항목을 입력하세요.' id='vote_item"+itemNum+"' name='vote_item' maxlength='20'>");
     $("#item_list").append(inputTag);
     itemNum++;
@@ -41,15 +38,8 @@
   
   
   function delItemList(obj){
-    alert("check2 = " + obj);
-    
-    var index = $("input[name=vote_item]:eq(2)");
-    
-    alert("check3 = " + index);
-    
     $("[name=vote_item]:eq("+obj+")").remove();
     item_Num--;
-    
   }
   
   //http://blog.daum.net/janustop/65
@@ -446,7 +436,7 @@
   		  <button type="button" class="small circular ui icon button" id="add_item" name="add_item" style="background-color:#ee5252; color:white" onclick=javascript:addItemList() >
   		    <i class="icon plus"></i>항목추가
   		  </button>
-  		  <button type="button" class="small circular ui icon button" id="add_item" name="add_item" style="background-color:#ee5253; color:white" onclick=javascript:delItemList(vote_item.length-1) >
+  		  <button type="button" class="small circular ui icon button" id="add_item" name="add_item" style="background-color:#grey; color:white" onclick=javascript:delItemList(vote_item.length-1) >
   		    <i class="icon plus"></i>항목삭제
   		  </button>
   			<p class="p validation" id="vote_item_alert" style="color:red; visibility:hidden;">
