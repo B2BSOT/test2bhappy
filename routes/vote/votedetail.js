@@ -261,13 +261,13 @@ module.exports = function(app) {
             }
             // console.log("**RESULT DATA [ "+i+" ] : " + JSON.stringify(detail_info[i]));
         }
-        console.log("aaa"+detail_info);
+    
         return detail_info;
     }
     
     
  
-    app.post('/add_vote_item',add_item_query, findDetailInfo, function(req, res, next) {
+    app.post('/add_vote_item',findDetailInfo, add_item_query, findDetailInfo, function(req, res, next) {
         
         var data = {};
         
@@ -293,7 +293,20 @@ module.exports = function(app) {
         var dt = datetime.create();
         var formattedDate = dt.format('YmdHMS') // YYYYMMDDHH24MISS
         
+        var isAlreadyAddItem = false;
+        
+        for(var i in req.detail_info) {
+    
+            if(req.detail_info[i].item_name == req.body.item_name) {
+                isAlreadyAddItem = true;
+                res.json({type: 'error', status: 500});
+                break;
+            }
+        }
+        
+        
         // /* 새로운 투표 아이템 create */
+        if(isAlreadyAddItem == false){
             vote_items.create({
                 'vote_id': req.body.vote_id,
                 'item_id': req.body.new_item_id,
@@ -308,6 +321,11 @@ module.exports = function(app) {
                 console.log(err);
                 res.json({type: 'error', status: 400, err: err});
             });
+        }
+        
+        else{
+            next();
+        }
             
     }
     

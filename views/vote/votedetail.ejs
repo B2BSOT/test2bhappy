@@ -239,13 +239,13 @@
         //┌───────────────────────────────────────────────┐
         //│ init_vote_show() : 비밀투표 경우			  │
         //│   ├ 현재 투표 개수 hide                       │
-        //│   ├ progress bar : 10%로 통일                 │  
+        //│   ├ progress bar : 0%로 통일                 │  
         //│                                               │
         //└───────────────────────────────────────────────┘
         function init_vote_show(secret_yn) {
         	if(secret_yn == "Y") {
         		$('.vote_cnt').hide();
-        		$('.ui.teal.progress.active').attr('data-percent',"10");	
+        		$('.ui.teal.progress.active').attr('data-percent',"0");	
         	}else {
         		$('.ui.teal.progress').progress();
         	}
@@ -253,9 +253,7 @@
         	
         }
         
-        
-        
-        //┌───────────────────────────────────────────────┐
+         //┌───────────────────────────────────────────────┐
         //│ add_item() : 투표 항목 추가 클릭시			  │
         //│   ├ remove 버튼 show                          │
         //│   ├ 항목 input tag show                       │  
@@ -305,15 +303,19 @@
         {
             var vote_item_name = $("#add_vote_item_name").val();
             var detail_info_list = <%- JSON.stringify(data.detail_info) %>;
-            
+           
             // alert(detail_info_list.length);
             
             // 추가했을 경우 중복된 항목이 있는지 확인하는 flag
             // flag = 0; -> 투표 항목이 없는상태
             // flag = 1; -> 이미 투표 항목이 있는 상태
             var flag = 0; 
+            var i = 0;
             
-	        for(var i in detail_info_list) {
+            
+            
+	        for(i in detail_info_list) {
+	        
 	        	if(vote_item_name == detail_info_list[i].item_name)
 	        	{
 	        	    flag = 1;
@@ -349,6 +351,12 @@
             datatype: "json", // expecting JSON to be returned
             url: '/add_vote_item',
             success: function(result) {
+                
+                if(result.status == 500){
+                
+                    alert("이미 있는 항목입니다");
+                    
+                }
                 
                     var detail_info_list = result.data.detail_info;
                     var vote_total_cnt = result.data.vote_total_cnt;
