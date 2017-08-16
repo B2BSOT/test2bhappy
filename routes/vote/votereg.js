@@ -11,7 +11,8 @@ module.exports = function(app, connectionPool) {
                     throw error;
                 }else {
                     
-                    connection.query('select * from vote_master where reg_user_id = ? order by reg_dtm desc;', [req.session.user_id], function(error, rows2){
+                    connection.query('select vm.*, concat("\'",substring(vm.reg_dtm,3,2),"/",substring(vm.reg_dtm,5,2),"/",substring(vm.reg_dtm,7,2))as regDtShow ' 
+                                   + 'from vote_master vm where vm.reg_user_id = ? order by vm.reg_dtm desc;', [req.session.user_id], function(error, rows2){
                         if(error){
                             connection.release();
                             throw error;
@@ -66,15 +67,20 @@ module.exports = function(app, connectionPool) {
                             }else {
                                 console.log("Success Insert1");
                              //   console.log("test = " +req.body.vote_item.length);
-                                 for(var i=0; i<req.body.vote_item.length; i++) {
+                                
+                                var count = 0;
+                                for(var i=0; i<req.body.vote_item.length; i++) {
                                 // 2. vote_items 테이블에 아이템 항목 insert
-                                connection.query('insert into vote_items (vote_id, item_id, item_name, reg_user_id, reg_dtm) select vote_id, ?, ?, reg_user_id, date_format(sysdate(), "%Y%m%d%H%i%s") as reg_dtm from vote_master  where vote_id = (select max(vote_id) from vote_master)'
-                                , [i+1, req.body.vote_item[i]], function(error, rows){
-                                    if(error){
-                                        connection.release();
-                                        throw error;
+                                    if(req.body.vote_item[i] != ""){
+                                        count++;
+                                        connection.query('insert into vote_items (vote_id, item_id, item_name, reg_user_id, reg_dtm) select vote_id, ?, ?, reg_user_id, date_format(sysdate(), "%Y%m%d%H%i%s") as reg_dtm from vote_master  where vote_id = (select max(vote_id) from vote_master)'
+                                        , [count, req.body.vote_item[i]], function(error, rows){
+                                            if(error){
+                                                connection.release();
+                                                throw error;
+                                            }
+                                        });
                                     }
-                                });
                                  }
 
                                 connection.release();
@@ -111,7 +117,7 @@ module.exports = function(app, connectionPool) {
     app.post('/vote_loading', function(req, res, next) {
         connectionPool.getConnection(function(err, connection) {
             //console.log(req.body);
-            connection.query('select vm.*, vm.reg_user_id as user_name, "Y" as load_yn from vote_master vm where vm.vote_id = ?;', [req.body.vote_load], function(error, rows1){
+            connection.query('select vm.*, (select u.user_name from user u where u.id = vm.reg_user_id) as user_name, "Y" as load_yn from vote_master vm where vm.vote_id = ?;', [req.body.vote_load], function(error, rows1){
             
                 connection.beginTransaction(function(err) {
                     if(err) {
