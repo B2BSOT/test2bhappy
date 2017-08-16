@@ -66,15 +66,20 @@ module.exports = function(app, connectionPool) {
                             }else {
                                 console.log("Success Insert1");
                              //   console.log("test = " +req.body.vote_item.length);
-                                 for(var i=0; i<req.body.vote_item.length; i++) {
+                                
+                                var count = 0;
+                                for(var i=0; i<req.body.vote_item.length; i++) {
                                 // 2. vote_items 테이블에 아이템 항목 insert
-                                connection.query('insert into vote_items (vote_id, item_id, item_name, reg_user_id, reg_dtm) select vote_id, ?, ?, reg_user_id, date_format(sysdate(), "%Y%m%d%H%i%s") as reg_dtm from vote_master  where vote_id = (select max(vote_id) from vote_master)'
-                                , [i+1, req.body.vote_item[i]], function(error, rows){
-                                    if(error){
-                                        connection.release();
-                                        throw error;
+                                    if(req.body.vote_item[i] != ""){
+                                        count++;
+                                        connection.query('insert into vote_items (vote_id, item_id, item_name, reg_user_id, reg_dtm) select vote_id, ?, ?, reg_user_id, date_format(sysdate(), "%Y%m%d%H%i%s") as reg_dtm from vote_master  where vote_id = (select max(vote_id) from vote_master)'
+                                        , [count, req.body.vote_item[i]], function(error, rows){
+                                            if(error){
+                                                connection.release();
+                                                throw error;
+                                            }
+                                        });
                                     }
-                                });
                                  }
 
                                 connection.release();

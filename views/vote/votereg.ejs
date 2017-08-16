@@ -38,8 +38,12 @@
   
   
   function delItemList(obj){
-    $("[name=vote_item]:eq("+obj+")").remove();
-    item_Num--;
+    if(obj > 1){
+      $("[name=vote_item]:eq("+obj+")").remove();
+      item_Num--;
+    }else{
+      alert("더이상 항목삭제를 할 수 없습니다.")
+    }
   }
   
   //http://blog.daum.net/janustop/65
@@ -260,6 +264,27 @@
         flag = flag+1;
       }    
      
+      // 투표 항목 중복 check
+      var dup_yn = 0;
+      var length = $("[name=vote_item]").length;
+
+      for(var i = 0 ; i < length ; i++){
+        for(var j = 0; j < i ; j++){
+            if( $("[name=vote_item]:eq("+i+")").val() == $("[name=vote_item]:eq("+j+")").val()){
+              dup_yn = 1;
+              break;
+            }
+        }
+      }
+      
+      if(dup_yn == 1){
+        alert("중복되는 항목이 있습니다.");
+      }else{
+        flag = flag+1;
+      }
+      
+      ///
+      
     // 참석 범위 check  
       if(parti_org_id == ''){
         $('#parti_org_id_alert').css("visibility","visible");
@@ -297,7 +322,7 @@
       }
 
       //모두 정상 입력 했을 시, 포인트 수정 불가 공지 진행
-      if(flag == 6){
+      if(flag == 7){
         var check = confirm("투표를 등록하시겠습니까?");
         //OK 버튼 Click
         if(check){
