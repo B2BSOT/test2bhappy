@@ -29,12 +29,27 @@
   
   //항목추가
   function addItemList(){
-    var vote_item_obj = document.getElementsByName("vote_item");
-    //alert("itemNum = " + (itemNum-1) + " / " + "value = " + vote_item_obj[itemNum-1].value);
-    //alert("name.length = " + vote_item_obj.length);
-    var $inputTag = $("<input type='text' placeholder='항목을 입력하세요.' id='vote_item"+itemNum+"' name='vote_item' maxlength='20'>");
-    $("#item_list").append($inputTag);
+    // var vote_item_obj = document.getElementsByName("vote_item");
+    // alert("name.length = " + vote_item_obj.length);
+    
+    alert("check1 = ");
+    
+    var inputTag = $("<input type='text' placeholder='항목을 입력하세요.' id='vote_item"+itemNum+"' name='vote_item' maxlength='20'>");
+    $("#item_list").append(inputTag);
     itemNum++;
+  }
+  
+  
+  function delItemList(obj){
+    alert("check2 = " + obj);
+    
+    var index = $("input[name=vote_item]:eq(2)");
+    
+    alert("check3 = " + index);
+    
+    $("[name=vote_item]:eq("+obj+")").remove();
+    item_Num--;
+    
   }
   
   //http://blog.daum.net/janustop/65
@@ -42,10 +57,24 @@
   
   // 화면 reload 될 때마다 실행 되는 함수
   $(document).ready(function() {
+  
     
       // 최근 투표등록 목록 드롭다운
     $('#listDropdown').dropdown({
      });  
+    
+    
+    
+    
+    $('#voteloadForm').submit(function() {
+      alert("check!! = ");
+
+    });
+    
+    
+    
+    
+    
     
       // 참여범위 드롭다운
     $('#selectionDropdown').dropdown({
@@ -320,185 +349,221 @@
 <!-- Navigation -->
 <% include ../partials/navigation.ejs %>
 
-<div class="ui container">
-  <form id="voteregForm" name="voteregForm" class="ui segment form" action="/vote_regist" method="post">
-    	<h3 class="ui left floated header" style="color:black"><%=data.user_name %>님 투표를 등록 해 주세요!</h3>    
-    	<div class="ui clearing divider">
-	    </div>
-	   	<div class="content">
-	   	  
-				<div class="field">
-  				<div class="ui sub header">
-  					 불러오기
-  				</div>
-  				<div id="listDropdown" class="ui selection dropdown"  style=" width: 100%;">
-  					
-  					<i class="dropdown icon"></i>
-  					<div class="default text">
-  						 최근투표목록
-  					</div>
-  					<div class="menu">
-  						<div class="item" data-value="Coffee">
-  							 1. 커피주문
-  						</div>
-  						<div class="item" data-value="Lunch">
-  							 2. 밥 주문
-  						</div>
-  					</div>
-  				</div>
-			  </div>
-	   	  
-	   	  
-		    <div class="field">
-    			<div class="ui sub header">
-    				 투표제목(*)
-    			</div>
-    			<input type="text" placeholder="투표 제목을 입력해주세요." id="vote_name" name="vote_name" maxlength="20">
-    			<p class="p validation" id="vote_name_alert" style="color:red; visibility:hidden;">
-    				 *투표 제목을 입력해 주세요!
-    			</p>
-		    </div>
-		    
-		    <div class="field">
-				  <div class="ui sub header">
-					   상세내용(*)
-				  </div>
-				  <textarea id="vote_contents" placeholder="투표 상세 내용을 입력 해 주세요" style="width:100% ;height: 200px; resize:none" name="vote_contents" maxlength="500"></textarea>
-				  <!--<p class="p validation" id="vote_contents_alert" style="color:red; visibility:hidden;">-->
-					 <!--*상세 내용을 작성해 주세요-->
-				  <!--</p>-->
-				</div>
+<div class="ui segment container">
 
-				<div class="field">
-    			<div class="ui sub header">
-    				 항목입력(*)
-    			</div>
-    			<!--<input type="text" placeholder="항목을 입력하세요." id="vote_item1" name="vote_item1" maxlength="20">-->
-    			<!--<input type="text" placeholder="항목을 입력하세요." id="vote_item2" name="vote_item2" maxlength="20">-->
-    			
-    			<input type="text" placeholder="항목을 입력하세요." id="vote_item0" name="vote_item" maxlength="20">
-    			<input type="text" placeholder="항목을 입력하세요." id="vote_item1" name="vote_item" maxlength="20">
-    			
-    			
-    			<div id="item_list"> </div>
-    		  <button type="button" class="small circular ui icon button" id="add_item" name="add_item" style="background-color:#ee5252; color:white" onclick=javascript:addItemList() >
-    		    <i class="icon plus"></i>항목추가
-    		  </button>
-    			<p class="p validation" id="vote_item_alert" style="color:red; visibility:hidden;">
-    				 *최소 2개 이상의 투표 항목을 입력해 주세요!
-    			</p>
-        </div>
+	<h3 class="ui left floated header" style="color:black"><%=data1.user_name %>님 투표를 등록 해 주세요!</h3>    
+	<div class="ui clearing divider"></div>
+	
+	<form id="voteloadForm" name="voteloadForm" class="ui form" action="/vote_loading" method="post">
+	  <div class="content">
+  	<div class="field">
+  	  
+  		<div class="ui sub header">
+  			 불러오기
+  		</div>
+  		
+  		<div class="ui four column grid">
+  		  <div class="eight wide column">
+      		<div id="listDropdown" class="ui submit selection dropdown" style=" width: 100%;">
+      		  <input id="vote_load" name="vote_load" type="hidden" value="">
+      			
+      			<i class="dropdown icon"></i>
+      			<div class="default text">
+      				 최근투표목록
+      			</div>
+      			<div class="menu">
+      			 
+      			 <% var count = 0;                      
+      			    if(data2.length > count) {count = 3}   //최근 목록 3개까지 조회 가능
+      			    else {count = data2.length} %>
+      			  
+      			  <% for(var i = 0; i < count; i++) { %>
+        				<div class="item" data-value="<%=data2[i].vote_id%>"> <%=data2[i].reg_dtm%> - <%=data2[i].subject%> </div>
+              <% } %>
+              
+      			</div>
+      		</div>
+    		</div>
+    		<div class="four wide column">
+    		  <div class="actions">
+    		    <button class="ui submit button" id="submit" name="submit">불러오기</button>
+    	    </div>
+    		</div>
+  		</div>
+    </div>
+    <p class="p validation" style="visibility:hidden;">/</p>
+    </div>
+  </form>
 
-  			<div class="column">
-  				<div class="ui sub header">
-  					 마감날짜(*)
-  				</div>
-  				<div class="ui calendar" id="deadline_dt">
-  					<div class="ui input left icon" style=" width: 100%;">
-  						<i class="calendar icon"></i>
-  						<input type="text" placeholder="마감날짜 선택" style=" width: 100%;" id="vote_deadline_dt" name="vote_deadline_dt" readonly="true">
-  					</div>
-  				</div>
-  				<!-- calendar -->
-  				<p class="p validation" id="deadlineDt_alert" style="color:red; visibility:hidden;">
-  					 *마감날짜를 선택해 주세요
-  				</p>
-  			</div>
-  			<div class="column">
-  				<div class="ui sub header">
-  					 마감시각(*)
-  				</div>
-  				<div class="ui calendar" id="deadline_time">
-  					<div class="ui input left icon" style=" width: 100%;">
-  						<i class="time icon"></i>
-  						<input type="text" placeholder="마감시간 선택" style=" width: 100%;" id="vote_deadline_time" name="vote_deadline_time" readonly="true">
-  					</div>
-  				</div>
-  				<p class="p validation" id="deadlineTime_alert" style="color:red; visibility:hidden;"> ??
-  				</p>
-  			<!--날짜합치기 히든-->
-		      <input type="hidden" id="vote_deadline" name="vote_deadline">
+  <form id="voteregForm" name="voteregForm" class="ui form" action="/vote_regist" method="post">
+   	<div class="content">
+   	  
+	    <div class="field">
+  			<div class="ui sub header">
+  				 투표제목(*)
   			</div>
   			
+  			<% if(data1.load_yn == 'N') { %>
+  			  <input type="text" placeholder="투표 제목을 입력해주세요." id="vote_name" name="vote_name" maxlength="20">
+  			<% } else { %>
+  			  <input type="text" value="<%=data1.subject%>" placeholder="투표 제목을 입력해주세요." id="vote_name" name="vote_name" maxlength="20">	
+  			<% } %>
+  			
+  			<p class="p validation" id="vote_name_alert" style="color:red; visibility:hidden;">
+  				 *투표 제목을 입력해 주세요!
+  			</p>
+	    </div>
+	    
+	    <div class="field">
+			  <div class="ui sub header">
+				   상세내용(*)
+			  </div>
+			  <% if(data1.load_yn == 'N') { %>
+			    <textarea id="vote_contents" placeholder="투표 상세 내용을 입력 해 주세요" style="width:100% ;height: 200px; resize:none" name="vote_contents" maxlength="500"></textarea>
+  			<% } else { %>
+  				<textarea id="vote_contents" placeholder="투표 상세 내용을 입력 해 주세요" style="width:100% ;height: 200px; resize:none" name="vote_contents" maxlength="500"><%=data1.comment%></textarea>
+  			<% } %>
+			  <!--<p class="p validation" id="vote_contents_alert" style="color:red; visibility:hidden;">-->
+				 <!--*상세 내용을 작성해 주세요-->
+			  <!--</p>-->
+			</div>
+
+			<div class="field">
+  			<div class="ui sub header">
+  				 항목입력(*)
+  			</div>
+
+			  <% if(data1.load_yn == 'N') { %>
+    			<input type="text" placeholder="항목을 입력하세요." class = "content_row" id="vote_item0" name="vote_item" maxlength="20">
+    			<input type="text" placeholder="항목을 입력하세요." class = "content_row" id="vote_item1" name="vote_item" maxlength="20">
+  			<% } else { %>
+    			<% for (var i = 0 ; i < data3.length ; i++) { %>
+    			  <input type="text" placeholder="항목을 입력하세요." value="<%=data3[i].item_name%>" name="vote_item" maxlength="20">
+    			<% } %>
+  			<% } %>
+  			
+  			<div id="item_list"> </div>
+  		  <button type="button" class="small circular ui icon button" id="add_item" name="add_item" style="background-color:#ee5252; color:white" onclick=javascript:addItemList() >
+  		    <i class="icon plus"></i>항목추가
+  		  </button>
+  		  <button type="button" class="small circular ui icon button" id="add_item" name="add_item" style="background-color:#ee5253; color:white" onclick=javascript:delItemList(vote_item.length-1) >
+  		    <i class="icon plus"></i>항목삭제
+  		  </button>
+  			<p class="p validation" id="vote_item_alert" style="color:red; visibility:hidden;">
+  				 *최소 2개 이상의 투표 항목을 입력해 주세요!
+  			</p>
+      </div>
+
+			<div class="column">
+				<div class="ui sub header">
+					 마감날짜(*)
+				</div>
+				<div class="ui calendar" id="deadline_dt">
+					<div class="ui input left icon" style=" width: 100%;">
+						<i class="calendar icon"></i>
+						<input type="text" placeholder="마감날짜 선택" style=" width: 100%;" id="vote_deadline_dt" name="vote_deadline_dt" readonly="true">
+					</div>
+				</div>
+				<!-- calendar -->
+				<p class="p validation" id="deadlineDt_alert" style="color:red; visibility:hidden;">
+					 *마감날짜를 선택해 주세요
+				</p>
+			</div>
+			<div class="column">
+				<div class="ui sub header">
+					 마감시각(*)
+				</div>
+				<div class="ui calendar" id="deadline_time">
+					<div class="ui input left icon" style=" width: 100%;">
+						<i class="time icon"></i>
+						<input type="text" placeholder="마감시간 선택" style=" width: 100%;" id="vote_deadline_time" name="vote_deadline_time" readonly="true">
+					</div>
+				</div>
+				<p class="p validation" id="deadlineTime_alert" style="color:red; visibility:hidden;"> ??
+				</p>
+			<!--날짜합치기 히든-->
+	      <input type="hidden" id="vote_deadline" name="vote_deadline">
+			</div>
+			
 
 
 
-				<div class="field">
-  				<div class="ui sub header">
-  					 참여범위(*)
+			<div class="field">
+				<div class="ui sub header">
+					 참여범위(*)
+				</div>
+				<div id="selectionDropdown" class="ui selection dropdown"  style=" width: 100%;">
+  				<input id="parti_org_id" name="parti_org_id" type="hidden" value="">
+  				
+  				<i class="dropdown icon"></i>
+  				<div class="default text">
+  					 참여 범위 선택
   				</div>
-  				<div id="selectionDropdown" class="ui selection dropdown"  style=" width: 100%;">
-    				<input id="parti_org_id" name="parti_org_id" type="hidden" value="">
-    				
-    				<i class="dropdown icon"></i>
-    				<div class="default text">
-    					 참여 범위 선택
-    				</div>
-    				<div class="menu">
-    					<div class="item" data-value="Team">
-    						 Team
-    					</div>
-    					<div class="item" data-value="SM">
-    						 SM
-    					</div>
-    				</div>
-    			</div>
-    			<p class="p validation" id="parti_org_id_alert" style="color:red; visibility:hidden;">
-    				 *참여 범위를 선택해 주세요
-    			</p>
-    	  </div>
-
-
-  			<div class="field">
-  				<div class="ui sub header">
-  					 옵션선택
+  				<div class="menu">
+  					<div class="item" data-value="Team">
+  						 Team
+  					</div>
+  					<div class="item" data-value="SM">
+  						 SM
+  					</div>
   				</div>
-  				<div class="ui two column grid">
-  				  <div class="column">
-          		<div class="ui toggle checkbox">
-                <input type="checkbox" id="multi_chk" name="multi_chk">
-                <input type="hidden" id="multi_yn" name="multi_yn">
-                <label>복수선택</label>
-              </div>
-            </div>
-            <div class="column">
-              <div class="ui toggle checkbox">
-                <input type="checkbox" id="secret_chk" name="secret_chk">
-                <input type="hidden" id="secret_yn" name="secret_yn">
-                <label>익명투표</label>
-              </div>
+  			</div>
+  			<p class="p validation" id="parti_org_id_alert" style="color:red; visibility:hidden;">
+  				 *참여 범위를 선택해 주세요
+  			</p>
+  	  </div>
+
+
+			<div class="field">
+				<div class="ui sub header">
+					 옵션선택
+				</div>
+				<div class="ui two column grid">
+				  <div class="column">
+        		<div class="ui toggle checkbox">
+              <input type="checkbox" id="multi_chk" name="multi_chk">
+              <input type="hidden" id="multi_yn" name="multi_yn">
+              <label>복수선택</label>
             </div>
           </div>
-  				<div class="ui two column grid">
-            <div class="column">
-              <div class="ui toggle checkbox">
-                <input type="checkbox" id="add_item_chk" name="add_item_chk">
-                <input type="hidden" id="add_item_yn" name="add_item_yn">
-                <label>항목추가</label>
-              </div>
-            </div>
-            <div class="column">
-              <div class="ui toggle checkbox">
-                <input type="checkbox" id="noti_chk" name="noti_chk">
-                <input type="hidden" id="noti_yn" name="noti_yn">
-                <label>공지(e-mail)</label>
-              </div>
+          <div class="column">
+            <div class="ui toggle checkbox">
+              <input type="checkbox" id="secret_chk" name="secret_chk">
+              <input type="hidden" id="secret_yn" name="secret_yn">
+              <label>익명투표</label>
             </div>
           </div>
-  	  	</div>
-  	  	<p class="p validation" style="visibility:hidden;">.</p>
-		
-    		<div class="actions">
-    		  <div class="ui two bottom attached buttons">
-      		  <div class="ui button" style="color:white; background:grey" onclick=javascript:goMain()>
-      			 취소
-      		  </div>
-      		  <button class="ui submit button" id="submit" name="submit" style="background-color:#ee5252; color:white">등록</button>
+        </div>
+				<div class="ui two column grid">
+          <div class="column">
+            <div class="ui toggle checkbox">
+              <input type="checkbox" id="add_item_chk" name="add_item_chk">
+              <input type="hidden" id="add_item_yn" name="add_item_yn">
+              <label>항목추가</label>
+            </div>
+          </div>
+          <div class="column">
+            <div class="ui toggle checkbox">
+              <input type="checkbox" id="noti_chk" name="noti_chk">
+              <input type="hidden" id="noti_yn" name="noti_yn">
+              <label>공지(e-mail)</label>
+            </div>
+          </div>
+        </div>
+	  	</div>
+	  	<p class="p validation" style="visibility:hidden;">.</p>
+	
+  		<div class="actions">
+  		  <div class="ui two bottom attached buttons">
+    		  <div class="ui button" style="color:white; background:grey" onclick=javascript:goMain()>
+    			 취소
     		  </div>
-    	  </div>
+    		  <button class="ui submit button" style="background-color:#ee5252; color:white">등록</button>
+  		  </div>
+  	  </div>
 
-		  </div> <!-- content -->
-    </form>
+	  </div> <!-- content -->
+  </form>
 </div> <!-- ui container -->
 </body>
 </html>
