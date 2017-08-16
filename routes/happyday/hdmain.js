@@ -1,16 +1,14 @@
-const models = require('../../models');
-const datetime = require('node-datetime');
+// const models = require('../../models');
+// const datetime = require('node-datetime');
 
-// Sequalize Model 전역변수
-const happyday_master = models.happyday_master;
-const happyday_user_hst = models.happyday_user_hst;
-const user = models.user;
-const com_org = models.com_org;
+// // Sequalize Model 전역변수
+// const happyday_master = models.happyday_master;
+// const happyday_user_hst = models.happyday_user_hst;
+// const user = models.user;
+// const com_org = models.com_org;
 
 
 module.exports = function(app, connectionPool) {
-
-
 
     app.get('/happyday/hdmain', function(req, res, next) {
 
