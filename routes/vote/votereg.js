@@ -166,7 +166,3 @@ module.exports = function(app, connectionPool) {
     
 }
 
-
-
-//select * from vote_master where reg_user_id = ? order by red_dtm desc;
-
