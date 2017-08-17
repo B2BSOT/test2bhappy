@@ -1,3 +1,13 @@
+const models = require('../../models');
+const datetime = require('node-datetime');
+
+// Sequalize Model 전역변수
+const happyday_master = models.happyday_master;
+const happyday_user_hst = models.happyday_user_hst;
+const user = models.user;
+const com_org = models.com_org;
+
+
 module.exports = function(app, connectionPool) {
 
 
@@ -9,9 +19,8 @@ module.exports = function(app, connectionPool) {
             res.redirect('/');
 
         }
-
         console.log("session : " + req.session.user_name + " / " + req.session.emp_num);
-
+        
         connectionPool.getConnection(function(err, connection) {
             connection.query('select hm.happyday_id, hm.happyday_name, hm.state, hm.place_name, hm.reg_user_id,'+
                              '       DATE_FORMAT(hm.reg_dtm, "%Y-%m-%d") AS reg_dtm, DATE_FORMAT(left(hm.happyday_dt,8), "%m월 %d일") AS happyday_date,'+
@@ -21,7 +30,7 @@ module.exports = function(app, connectionPool) {
                              '       u.user_name, u.user_img '+
                              '  from happyday_master hm, user u, (select hm.happyday_id, count(*) as curcnt from happyday_user_hst hp, happyday_master hm where hm.happyday_id=hp.happyday_id  and hp.state not in ("N") group by hm.happyday_id) p'+ 
                              ' where hm.reg_user_id = u.id and hm.happyday_id = p.happyday_id' +
-                             ' order by reg_dtm;', function(error, rows) {
+                             ' order by hm.reg_dtm desc, hm.state desc;', function(error, rows) {
                 if (error) {
                     connection.release();
                     throw error;
