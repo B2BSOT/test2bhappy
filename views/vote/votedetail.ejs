@@ -31,13 +31,18 @@
         
 
         //변수 설정
-        // ├ deadline_dtm = 마감일시
-        // ├ parti_org_id = SM or 팀 코드
-        // ├ multi_yn     = 다중/단일 투표
-        // ├ secret_yn    = 공개/비밀 투표
-        // ├ add_item_yn  = 항목 추가 yn
-        // ├ noti_yn      = 메일전송?
-        // └ vote_content_cnt  = 투표 항목 개수
+        // ├ deadline_dtm     = 마감일시
+        // ├ parti_org_id     = SM or 팀 코드
+        // ├ multi_yn         = 다중/단일 투표
+        // ├ secret_yn        = 공개/비밀 투표
+        // ├ add_item_yn      = 항목 추가 yn
+        // ├ noti_yn          = 메일전송?
+        // └ vote_content_cnt = 투표 항목 개수
+        // ├ vote_total_cnt   = ??
+        // ├ vote_reg_id      = 투표등록ID
+        // ├ login_id         = 로그인 Session ID
+        // ├ vote_state       = 투표 상태
+     
         var deadline_dtm = <%= data.master_info.deadline %>;
         var parti_org_id = <%= data.master_info.parti_org_id %>;
         var multi_yn     = "<%= data.master_info.multi_yn    %>";
@@ -46,9 +51,11 @@
         var noti_yn      = "<%= data.master_info.noti_yn     %>";
             vote_content_cnt  =  <%= data.detail_info.length %>;
         var vote_total_cnt = <%= data.vote_total_cnt %>;
+        var vote_reg_id  = "<%=data.master_info.reg_user_id %>";
+        var login_id     = "<%=session.user_id %>";
+        var vote_state   = "<%=data.master_info.state%>";
         
-        
-        
+
         // date_resizing() 
         //   ├ input  : 20170831000000
         //   └ output : 2017년 08월 31일 
@@ -69,7 +76,17 @@
         //  ├ 현재 투표 개수         hide()
         //  └ 현재 투표 progress-bar hide()
         init_vote_show(secret_yn);
-        // add_item_button_show(add_item_yn);
+        
+                
+        // show_hide_vote_update_button : 
+        //  ├ 로그인ID == 투표등록ID  -> button show
+        //  └ 로그인ID != 투표등록ID  -> button hide
+        show_hide_vote_update_button(vote_reg_id, login_id);
+        
+        
+        
+        Vote_Process_or_Complete(vote_state);
+        
       
     });
     
@@ -205,7 +222,6 @@
         //│ vote_type_show() : 투표 타입 Show			  │
         //│   ├ 단중/단일 투표                            │
         //│   ├ 비밀/공개 투표                            │  
-        //│   ├ ToDo                                      │
         //│   └ 항목 추가 가능/ 불가능 표시               │
         //│                                               │
         //└───────────────────────────────────────────────┘
@@ -355,7 +371,7 @@
                 if(result.status == 500){
                 
                     alert("이미 있는 항목입니다");
-                    
+                    return 0;
                 }
                 
                     var detail_info_list = result.data.detail_info;
@@ -371,20 +387,27 @@
             
         }
         
-        
-        // function add_item_button_show(add_item_yn)
-        // {    
-          
-            
-        // }
+        function goto_update_vote(vote_id){
+            location.href = '/vote/voteupdate/' + vote_id;
+        }
         
         
         
+        function show_hide_vote_update_button(vote_reg_id, login_id){
+            if(vote_reg_id != login_id){
+                $("#update_button").hide();
+            }
+        }
         
+        function Vote_Process_or_Complete(vote_state){
+            if(vote_state=='C'){
+                $(".ui.middle.icon.button").hide();
+                $(".yellow.ui.button").hide();
+                $(".brown.ui.button").hide();
+            }
+        }
         
-        
-        
-        
+
         
 </script>
     
@@ -439,7 +462,9 @@
 					<br>
 					<div class="ui two column grid">
 						<span class="date" id = "vote_type" style="width: 50%"></span>
+						<p>
 						<span class="date" id = "deadline_dtm" style="width: 40%; text-align: right;"></span>
+						</p>
 					</div>
 			</div>
 			<div class="ui segment">
@@ -449,6 +474,7 @@
 				</table>
 				<div class="ui buttons" id ="add_item_button">
 					<button class="yellow ui button" onClick="javascript:show_modal()">항목 추가하기</button>
+					<button class="brown ui button" id="update_button" onClick="javascript:goto_update_vote(<%= data.master_info.vote_id%>)" style="margin-left: 10px;">수정하기</button>
 				</div>
 				
 				<!--항목추가 modal Start-->
@@ -460,7 +486,7 @@
                 	    <table class="unstackable ui definition table" id="item_add_table">
                             <tr style='max-height:40px; '>
                             	<td style="margin-top: -15px; width:40px; ">
-                            		<button class="yellow ui middle icon button" onclick="javascript:add_item()" style="margin-right: 0px;"><i class="add icon"></i></button>
+                            		<button class="yellow ui middle icon button" style="margin-right: 0px;"><i class="add icon"></i></button>
                             	</td>
                             	<td>
                             		<div>

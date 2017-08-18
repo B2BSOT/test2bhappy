@@ -123,7 +123,7 @@ module.exports = function common() {
         return mailOptions;
     }
     
-       this.insertImage = function(req, connection) {
+    this.insertImage = function(req, connection) {
         var path = req.path;
         console.log('req path : ' + path);
         connection.query( 'insert into com_img values(?,?,?,?,sysdate(),?);',[req.body.imageUrl, req.body.deleteHash, req.body.source, req.session.user_id, 'N'],function(error, result){
@@ -139,45 +139,46 @@ module.exports = function common() {
 
     }
     
-    this.findBeforeImage = function(req, connection) {
-
-            connection.query('select deletehash from com_img' +
-                         ' where imageurl = ?;', req.body.beforeImageUrl, function(error, rows) {
-            
-            if(error) {
-                return new Error("Error in findBeforeImage : " + error);
-            }else {
-                if(rows.length > 0) {
-                    return rows[0].deletehash;
-                }else {
-                    return;
+    this.deleteImage = function(req, connection) {
+        console.log('common.js 안의 deleteImage 호출 imageurl = '+req.body.beforeImageUrl);
+        // select deletehash from com_img where imageurl=?;
+        connection.query('select * from com_img where imageurl= ?;', [req.body.beforeImageUrl], function(error, rowss) {
+            console.log("bbb");
+                if(error) 
+                {
+                    console.log('쿼리에러');
+                    return new Error("Error in deleteImage : " + error);
                 }
-            }
+                else 
+                {
+                    console.log('에러는 아님 ');
+                    if(rowss.length > 0) 
+                    {
+                        console.log('deletehash존재 : '+rowss[0].deletehash );
+                        //deletehash가 있으면..  삭제api호출
+                        var deleteHash = rowss[0].deletehash;
+                        var xmlHttpRequest = new XMLHttpRequest();
+                        xmlHttpRequest.open('POST', 'https://api.imgur.com/3/image/'+deleteHash, true); //연결
+                        xmlHttpRequest.setRequestHeader("Authorization", "Client-ID 285a540d6ec9798"); //client_id 설정
+                        xmlHttpRequest.onreadystatechange = function () {
+                       
+                        if (xmlHttpRequest.readyState == 4) {
+                            if (xmlHttpRequest.status == 200) { //성공값
+                            var result = JSON.parse(xmlHttpRequest.responseText);//결과값 수신
+                             console.log('호출 후 result 값 : '+result);
+                            }
+                        // }};
+                        }};
+                        return true;
+                        
+                    }else {
+                        return false;
+                    }
+                }
+            
         });
-    }
-    
-    /*
-    이미지 삽입 시 사용할 공통function
-    (단순 값 set후에 insert역할)
-    onPage : 이미지 삽입하는 화면
-    imageUrl : 업로드 성공후 실제로 올라간 url
-    deleteHash : 삭제 api 호출을 위한 값
-    */
-    function insertImage(onPage, imageUrl, deleteHash){
-        
-        
-    }
-    /*
-    이미지 삭제 시 사용할 공통function
-    (url을 키값으로 delete api호출 후에 이미지 삭제 후 isDeleted 값 Y로 변경)
-    DB에서 delete할 수 있지만 혹시 삭제가 잘 안될 경우를 대비해 url남기기 위해..
-    
-    imageUrl : 업로드 성공후 실제로 올라간 url(키값으로 활용)
-    */
-    function deleteImage(imageUrl){
-        
-    }
-    
+        console.log("aaa");
+     }
 }
 // var common = {};
 // common.setMileage = setMileage;

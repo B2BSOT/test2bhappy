@@ -12,8 +12,9 @@ var TEST_PARTI_ORG_ID = 10001;
 
 module.exports = function(app) {
     
-    app.get('/vote/votedetail', verifyVote, findDetailInfo, (req, res, next) => {
+    app.get('/vote/votedetail/:id', verifyVote, findDetailInfo, (req, res, next) => {
         
+        // console.log(req.params.id);
         /**********************************************************************************************************  
          *  0. 이전 vote main화면에서 vote_id, parti_org_id 를 넘겨준다고 가정
          *  1. 투표검증 
@@ -168,6 +169,19 @@ module.exports = function(app) {
         var com_org = models.com_org;
         
         var data = {};
+        
+        var vote_id=1;
+        
+        if(req.body.vote_id == null){
+            vote_id = req.params.id;
+        }
+        else{
+            vote_id = req.body.vote_id;
+        }
+        
+        
+        
+        console.log("verifyVote"+vote_id);
     
         /*  
          *  0. 이전 vote main화면에서 vote_id, parti_org_id 를 넘겨준다고 가정
@@ -199,7 +213,8 @@ module.exports = function(app) {
             
             vote_master.count({
                 where : {
-                    vote_id : TEST_VOTE_ID//req.body.vote_id
+                    // vote_id : TEST_VOTE_ID//req.body.vote_id
+                    vote_id : vote_id
                 }
             }).then(c => {
                 if(c == 0) {
@@ -341,11 +356,22 @@ module.exports = function(app) {
         var TEST_VOTE_ID = 1;
         var TEST_PARTI_ORG_ID = 10001;
         
+        var vote_id=1;
+        
+        if(req.body.vote_id == null){
+            vote_id = req.params.id;
+        }
+        else{
+            vote_id = req.body.vote_id;
+        }
+        
+        console.log("findVoteMaster"+vote_id);
         /* 2.1 vote_master의 정보 조회
           vote_master : user - 1 : 1 관계 설정 셋팅 
         */
+        
         vote_master.hasOne(user, {foreignKey: 'id', targetKey: 'reg_user_id'});
-        // vote_master.belongsTo(user, {foreignKey: 'reg_user_id', sourceKey: 'id'});
+        vote_master.belongsTo(user, {foreignKey: 'reg_user_id', sourceKey: 'id'});
         
         /*****************************************************************************************************
          * # find 함수에서 raw: true 옵션
@@ -371,7 +397,8 @@ module.exports = function(app) {
                 ]
             }],
             where : {
-                vote_id : TEST_VOTE_ID//req.body.vote_id
+                // vote_id : TEST_VOTE_ID//req.body.vote_id
+                vote_id : vote_id
             }
         }).then(master_info => {
             return master_info;
@@ -379,13 +406,25 @@ module.exports = function(app) {
     }
     
     function findMyVoteList(req) {
+        
+         var vote_id=1;
+        
+        if(req.body.vote_id == null){
+            vote_id = req.params.id;
+        }
+        else{
+            vote_id = req.body.vote_id;
+        }
+        
+        console.log("findMyVoteList"+vote_id);
         return vote_detail.findAll({
             raw: true,
             attributes: [
                 'item_id',
             ],
             where: {
-                'vote_id': TEST_VOTE_ID,//req.body.vote_id
+                // 'vote_id': TEST_VOTE_ID,//req.body.vote_id
+                'vote_id': vote_id,
                 'user_id': req.session.user_id
             }
         }).then(myList => {
@@ -394,9 +433,21 @@ module.exports = function(app) {
     }
     
     function findVoteTotalCount(req) {
+       
+         var vote_id=1;
+        
+        if(req.body.vote_id == null){
+            vote_id = req.params.id;
+        }
+        else{
+            vote_id = req.body.vote_id;
+        }
+        
+        console.log("findVoteTotalCount"+vote_id);
         return vote_detail.count({
             where : {
-                vote_id : TEST_VOTE_ID//req.body.vote_id
+                // vote_id : TEST_VOTE_ID//req.body.vote_id
+                vote_id : vote_id
             }
         }).then(vote_total_cnt => {
             return vote_total_cnt;
@@ -404,6 +455,17 @@ module.exports = function(app) {
     }
     
     function findVoteDetailToItems(req) {
+        
+        var vote_id=1;
+        
+        if(req.body.vote_id == null){
+            vote_id = req.params.id;
+        }
+        else{
+            vote_id = req.body.vote_id;
+        }
+        console.log("findVoteDetailToItems"+vote_id);
+        
         vote_items.hasMany(vote_detail, {as: 'vote_detail', foreignKey: 'item_id', sourceKey: 'item_id'});
         vote_detail.belongsTo(vote_items, {foreignKey: 'item_id', targetKey: 'item_id'});
             
@@ -418,14 +480,18 @@ module.exports = function(app) {
                 model: vote_detail,
                 as : 'vote_detail',
                 where : {
-                    vote_id: TEST_VOTE_ID//item_id : {$col : 'vote_items.item_id' }
+                    // vote_id: TEST_VOTE_ID
+                    vote_id: vote_id
+                    //item_id : {$col : 'vote_items.item_id' }
+                    
                 },
                 attributes : [],
                 required: false // LEFT OUTER JOIN
                 }
             ], // INNER JOIN 테이블 설정
             where : {
-                vote_id : TEST_VOTE_ID//req.body.vote_id
+                // vote_id : TEST_VOTE_ID//req.body.vote_id
+                vote_id : vote_id
             }, // 조건절
             group : [ 'item_id', 'item_name' ], // GROUP BY 설정
             // order : [ ['item_id', 'ASC'] ] // ORDER BY 설정

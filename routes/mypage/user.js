@@ -92,9 +92,7 @@ module.exports = function(app, connectionPool) {
     });
 
     app.post('/imageinsert', function(req, res, next) {
-            
          connectionPool.getConnection(function(err, connection) {
-             
             /* 이미지 변경, 삽입시 DB INSERT */
             var common = new (require('../common/common'))();
             var result = common.insertImage(req, connection);
@@ -109,20 +107,22 @@ module.exports = function(app, connectionPool) {
         });
     });
     
-        app.post('/findbeforeimage', function(req, res, next) {
-            
+        app.post('/deleteExsistingImage', function(req, res, next) {
          connectionPool.getConnection(function(err, connection) {
-
-            /* 유저img값 DB에 있는지 확인 */
-            var common = new (require('../common/common'))();
-            var result = common.findBeforeImage(req, connection);
-            alert('디리트해시값'+result);
+            console.log('user.js로 들어옴 url : '+req.body.beforeImageUrl);
+            /* 유저img값 DB에 있는지 확인 및 해당 해시로 삭제 */
+            var common1 = new (require('../common/common'))();
+            var result = common1.deleteImage(req, connection);
+            
             if(result) {
+                console.log('common.js에서 true 리턴')
+                res.json({success : "Successfully", status : 200});
+                connection.release();
+                return result;
+            }else {
+                 console.log('common.js에서 false 리턴')
                 connection.release();
                 throw result;
-            }else {
-                res.json({success : "Successfully", status : 200});
-                connection.release();    
             }
         });
     });
