@@ -493,7 +493,7 @@ module.exports = function(app) {
                 // vote_id : TEST_VOTE_ID//req.body.vote_id
                 vote_id : vote_id
             }, // 조건절
-            group : [ 'item_id', 'item_name' ], // GROUP BY 설정
+            group : [ 'item_id', 'item_name' ] // GROUP BY 설정
             // order : [ ['item_id', 'ASC'] ] // ORDER BY 설정
             
         }).then(detail_info => {
