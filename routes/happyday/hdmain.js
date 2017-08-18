@@ -96,7 +96,7 @@ module.exports = function(app, connectionPool) {
         user.belongsTo(com_org, {as: 'team', foreignKey: 'team_id'});
         user.belongsTo(com_org, {as: 'sm', foreignKey: 'sm_id'});
         
-        happyday_master.findAll({
+        return happyday_master.findAll({
             raw: true,
             attributes:[
                 'happyday_id', 'happyday_name', 'state', 'place_name', 'reg_user_id'
@@ -142,7 +142,7 @@ module.exports = function(app, connectionPool) {
     function findHappydayUserCount() {
         happyday_master.hasMany(happyday_user_hst, {as: 'happyday_user_hst', foreignKey: 'happyday_id', targetKey: 'happyday_id'});
             
-        happyday_master.findAll({
+        return happyday_master.findAll({
             raw: true,
             attributes:[
                 'happyday_id'
