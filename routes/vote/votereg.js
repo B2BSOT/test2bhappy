@@ -11,8 +11,10 @@ module.exports = function(app, connectionPool) {
                     throw error;
                 }else {
                     
-                    connection.query('select vm.*, concat("\'",substring(vm.reg_dtm,3,2),"/",substring(vm.reg_dtm,5,2),"/",substring(vm.reg_dtm,7,2))as regDtShow ' 
-                                   + 'from vote_master vm where vm.reg_user_id = ? order by vm.reg_dtm desc;', [req.session.user_id], function(error, rows2){
+                    connection.query('select vm.*, date_format(vm.reg_dtm, "%y/%m/%d") as regDtShow' 
+                                    + ' from vote_master vm where vm.reg_user_id = ?'
+                                    + ' order by vm.reg_dtm desc'
+                                    + ' limit 5;', [req.session.user_id], function(error, rows2){
                         if(error){
                             connection.release();
                             throw error;
