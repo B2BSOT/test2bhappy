@@ -92,9 +92,7 @@ module.exports = function(app, connectionPool) {
     });
 
     app.post('/imageinsert', function(req, res, next) {
-            
          connectionPool.getConnection(function(err, connection) {
-             
             /* 이미지 변경, 삽입시 DB INSERT */
             var common = new (require('../common/common'))();
             var result = common.insertImage(req, connection);
@@ -113,8 +111,8 @@ module.exports = function(app, connectionPool) {
          connectionPool.getConnection(function(err, connection) {
             console.log('user.js로 들어옴 url : '+req.body.beforeImageUrl);
             /* 유저img값 DB에 있는지 확인 및 해당 해시로 삭제 */
-            var common = new (require('../common/common'))();
-            var result = common.deleteImage(req, connection);
+            var common1 = new (require('../common/common'))();
+            var result = common1.deleteImage(req, connection);
             
             if(result) {
                 console.log('common.js에서 true 리턴')
