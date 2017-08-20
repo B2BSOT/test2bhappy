@@ -371,7 +371,7 @@
                 if(result.status == 500){
                 
                     alert("이미 있는 항목입니다");
-                    
+                    return 0;
                 }
                 
                     var detail_info_list = result.data.detail_info;
@@ -387,8 +387,8 @@
             
         }
         
-        function goto_update_vote(){
-            location.href = '/vote/voteupdate/';
+        function goto_update_vote(vote_id){
+            location.href = '/vote/voteupdate/' + vote_id;
         }
         
         
@@ -474,7 +474,7 @@
 				</table>
 				<div class="ui buttons" id ="add_item_button">
 					<button class="yellow ui button" onClick="javascript:show_modal()">항목 추가하기</button>
-					<button class="brown ui button" id="update_button" onClick="javascript:goto_update_vote()" style="margin-left: 10px;">수정하기</button>
+					<button class="brown ui button" id="update_button" onClick="javascript:goto_update_vote(<%= data.master_info.vote_id%>)" style="margin-left: 10px;">수정하기</button>
 				</div>
 				
 				<!--항목추가 modal Start-->
