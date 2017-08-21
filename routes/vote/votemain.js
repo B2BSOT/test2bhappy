@@ -15,7 +15,7 @@ module.exports = function(app) {
         var vote_detail = models.vote_detail;
         var com_org = models.com_org;
         var user = models.user;
-        var test = models.user;
+        //var test = models.user;
         
         var data = {}; 
 
@@ -26,8 +26,10 @@ module.exports = function(app) {
          * vote_detail.user_id = req.session.user_id 할때, 관계정의 M : N 어렵다...
          * 1-1) com_org.org_nm 은 reg_user_id 에 inner include(join)
          * 1-2) fn('count'~) 는 session.user_id 에 inner include(join)
-         * 2) deadline asc, reg_dtm 은 union하니까 이상함... 마감일 임박한게 먼저 아닌가? 대신 state를 0, 1로 바꿔서 제일 앞으로 빼줘야 할 듯  
-         * 
+         *  
+         * cnt만 하려면 detail이랑 user(test) 조인 필요가 없다... session만 하면되서
+         * sm_id랑 team_id 걸어주려면 detail랑 user(test)테이블 걸어줘야 한다 !!!
+         *
          *  select -- 투표 정보
          *         a.vote_id
          *        ,a.subject
@@ -51,7 +53,7 @@ module.exports = function(app) {
          *        -- 0:투표안함 1:투표함(.ejs에서 처리)
          *		  ,(select count(*) from vote_detail d where d.vote_id = a.vote_id and d.user_id = b.id) cnt 
          *  from  vote_master a
-         *        ,user b
+         *        ,user b 
          *        ,user c
          *        ,com_org d
          *  where 1=1
@@ -64,12 +66,13 @@ module.exports = function(app) {
          *
          *******************************************************************************************************/        
         /* user : vote_master - 1 : M 관계 설정 셋팅(등록자 정보 및 등록 투표 정보 조회) */
-        vote_master.belongsTo(user, {foreignKey: 'reg_user_id', targetKey: 'id'});
-        user.hasMany(vote_master, {as: 'vote_master', foreignKey: 'id'});
+        vote_master.belongsTo(user, {as : 'user' , foreignKey: 'reg_user_id', targetKey: 'id'});
+        user.hasMany(vote_master, {as: 'vote_master', foreignKey: 'id'});        
+
         
         /* test(user) : vote_detail  */
-        //test.belongsTo(vote_detail, {foreignKey: 'id', targetKey: 'user_id'});
-        //vote_detail.hasMany(test, {as: 'test', foreignKey: 'user_id'});
+        user.belongsTo(vote_detail, {foreignKey: 'id', targetKey: 'user_id'});
+        vote_detail.hasMany(user, {as: 'test', foreignKey: 'id'});
 
         /* com_org : user - 1 : M */
         user.belongsTo(com_org, {foreignKey: 'sm_id', targetKey: 'org_id'});
@@ -112,21 +115,23 @@ module.exports = function(app) {
                 attributes : [],
                 include : [{ model:com_org, as : 'com_org',where: {org_id : {$col : 'user.sm_id'}}}]
             }
-            // , {
-            //     model: vote_detail,
-            //     as : 'vote_detail',
-            //     where : { user_id : {$col : 'req.session.user_id' } },
-            //     attributes : [],
-            //     include : [{ model:test, as : 'test',where: {user_id : {$col : 'test.id'}}}]
-            // }
+            //   , {
+            //       model: vote_detail,
+            //      as : 'vote_detail',
+            //       where : { user_id : {$col : 'req.session.user_id' } },
+            //        where : { user_id : {$col : 'req.session.user_id' } },
+            //       attributes : [],
+            //       include : [{ model:user, as : 'test',where: {user_id : {$col : 'test.id'}}}]
+            //   }
             ],//include
+            //where : [ vote_id: {$col : 'vote_detail.vote_id' } ],
             //where : [ parti_org_id : {$in : 'test.sm_id','test.team_id' } ], 
-            order : [ ['state','DESC'] , ['deadline', 'ASC'], ['reg_dtm', 'DESC'] ]// 1) state='P' 2) deadline asc 3) reg_dtm desc 
+            order : [ ['state', 'desc'] , ['deadline', 'asc'], ['reg_dtm', 'desc'] ]
             //[models.Sequelize.fn('to_number', models.Sequelize.col('state')), 'DESC']
         }).then(master_info => {
             data.master_info = master_info;
             
-            console.log("**RESULT DATA : " + JSON.stringify(data));
+            //console.log("**RESULT DATA : " + JSON.stringify(data));
         
             res.render('vote/votemain', {data : data, session : req.session});    
             

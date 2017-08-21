@@ -70,7 +70,7 @@
 						<div class="ui orange label">진행중 D-
 						<%=data.master_info[i].ddate - data.master_info[i].sysdate %>
 						</div>
-					<% }else if((data.master_info[i].deadline < data.master_info[i].systime) || data.master_info[i].state=='C'){  %> 
+					<% }else if( data.master_info[i].state=='C' ){  %> <!--(data.master_info[i].deadline < data.master_info[i].systime)||-->
 						<div class="ui black label">마감</div>
 				    <% } %>
 				</div>
@@ -89,7 +89,7 @@
 					<%=data.master_info[i].comment%>...
 					</div>
 				  	<br>		
-					<% if((data.master_info[i].deadline < data.master_info[i].systime) || data.master_info[i].state=='C') { %>
+					<% if( data.master_info[i].state=='C') { %> <!--(data.master_info[i].deadline < data.master_info[i].systime) ||-->
 						<button class="fluid gray ui button" style="background-color:#4D586A;"><span style="color:#fff;">결과 확인하기</span></button>
 				    <% }else {%>
 				    <button class="fluid brown ui button" onclick="javascript:goDetail('<%=data.master_info[i].vote_id%>')" style="background-color:#673434;"> <i class="hand pointer icon"></i>투표하러 가기</button>
