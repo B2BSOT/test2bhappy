@@ -29,6 +29,7 @@ module.exports = function(app) {
          *  
          * cnt만 하려면 detail이랑 user(test) 조인 필요가 없다... session만 하면되서
          * sm_id랑 team_id 걸어주려면 detail랑 user(test)테이블 걸어줘야 한다 !!!
+         * -------> user테이블 별로 쿼리 분리할 예정 
          *
          *  select -- 투표 정보
          *         a.vote_id
