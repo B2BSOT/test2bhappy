@@ -15,7 +15,6 @@ module.exports = function(app) {
         var vote_detail = models.vote_detail;
         var com_org = models.com_org;
         var user = models.user;
-        //var test = models.user;
         
         var data = {}; 
 
@@ -70,11 +69,6 @@ module.exports = function(app) {
         vote_master.belongsTo(user, {as : 'user' , foreignKey: 'reg_user_id', targetKey: 'id'});
         user.hasMany(vote_master, {as: 'vote_master', foreignKey: 'id'});        
 
-        
-        /* test(user) : vote_detail  */
-        user.belongsTo(vote_detail, {foreignKey: 'id', targetKey: 'user_id'});
-        vote_detail.hasMany(user, {as: 'test', foreignKey: 'id'});
-
         /* com_org : user - 1 : M */
         user.belongsTo(com_org, {foreignKey: 'sm_id', targetKey: 'org_id'});
         com_org.hasMany(user, {as: 'user', foreignKey: 'org_id'});        
@@ -83,9 +77,6 @@ module.exports = function(app) {
         vote_detail.belongsTo(vote_master, {foreignKey: 'vote_id', targetKey: 'vote_id'});
         vote_master.hasMany(vote_detail, {as: 'vote_detail', foreignKey: 'vote_id'});
 
-
-        /* cnt */ 
-        /* select */
         vote_master.findAll({
             raw : true,
             attributes : [
@@ -116,30 +107,44 @@ module.exports = function(app) {
                 attributes : [],
                 include : [{ model:com_org, as : 'com_org',where: {org_id : {$col : 'user.sm_id'}}}]
             }
-            //   , {
-            //       model: vote_detail,
-            //      as : 'vote_detail',
-            //       where : { user_id : {$col : 'req.session.user_id' } },
-            //        where : { user_id : {$col : 'req.session.user_id' } },
-            //       attributes : [],
-            //       include : [{ model:user, as : 'test',where: {user_id : {$col : 'test.id'}}}]
-            //   }
+           
             ],//include
-            //where : [ vote_id: {$col : 'vote_detail.vote_id' } ],
-            //where : [ parti_org_id : {$in : 'test.sm_id','test.team_id' } ], 
-            order : [ ['state', 'desc'] , ['deadline', 'asc'], ['reg_dtm', 'desc'] ]
-            //[models.Sequelize.fn('to_number', models.Sequelize.col('state')), 'DESC']
+            order : [ ['state', 'desc'] , ['reg_dtm', 'desc'], ['deadline', 'asc'] ]
+            
         }).then(master_info => {
             data.master_info = master_info;
             
+            console.log("a");
+            user.findAll({
+            raw : true,
+            attributes : [
+                'id','user_name','sm_id', 'team_id'
+
+            ], // 실제 결과 컬럼
+            where :  {id: user_id }
+            }).then(user_info => {
+                data.master_info = master_info;
+                console.log("**RESULT DATA : " + JSON.stringify(data.master_info));
+                data.user_info = user_info;
+                console.log("**USER DATA : " + JSON.stringify(data.user_info));
+                
+                console.log("****************data***************"+data);
+            
+                res.render('vote/votemain', {data: data,  session : req.session});    
+                
+            }).catch(function(err) {
+                console.log(err);
+            });
+            console.log("b");
+            
             //console.log("**RESULT DATA : " + JSON.stringify(data));
         
-            res.render('vote/votemain', {data : data, session : req.session});    
+            // res.render('vote/votemain', {data : data, session : req.session});    
             
         }).catch(function(err) {
             console.log(err);
         });
-
-    });//app.get
+          /* 여기에 vote_detail을 조인해서 vote_id를 가져온 다음에 ejs에서 같은지 안같은지 비교해서 같으면 투표현황 다르면 투표하기로 가면되지 않을까 cnt대신에 */
+    });
 
 }
