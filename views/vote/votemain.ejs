@@ -67,12 +67,16 @@
 				<span style="color:#fff; font-size:1.0em; "><%=data.master_info[i].subject%></span>
 				<div class="right floated meta" style=" font-size:0.8em">
 					<% if (data.master_info[i].deadline >= data.master_info[i].systime) {  %>
-						<div class="ui orange label">진행중 D-
+						<div class="ui orange label">진행중 D -
 						<%=data.master_info[i].ddate - data.master_info[i].sysdate %>
 						</div>
 					<% }else if( data.master_info[i].state=='C' ){  %> <!--(data.master_info[i].deadline < data.master_info[i].systime)||-->
 						<div class="ui black label">마감</div>
-				    <% } %>
+				    <% }else { %>
+				    	<div class="ui orange label">진행중 D +
+						<%=data.master_info[i].sysdate - data.master_info[i].ddate  %>
+						</div>
+					<% } %>	
 				</div>
 			</div>
 			<div class="content" onclick="javascript:goDetail('<%=data.master_info[i].vote_id%>')">
