@@ -1,3 +1,6 @@
+var models = require('../../models');
+var datetime = require('node-datetime');
+
 module.exports = function common() {
     this.setMileage = function(req, connection) {
         var path = req.path;
@@ -123,6 +126,18 @@ module.exports = function common() {
         return mailOptions;
     }
     
+    
+    /*****************************************************************************************
+     * 이미지 업로드 method
+     * local에 있는 file이 업로드 성공했을때 호출됨
+     * Parameter 설명
+     *  imageUrl(imgur상에 올라간 이미지 경로)
+     *  deleteHash(차후 이미지 삭제를 위한 hash value)
+     *  source(이미지가 올라온 화면 - 공통 활용 위함)
+     *  user_id(업로드 유저ID)
+     *  isDisplaying - N(모든 이미지는 일차적으로 서버에 모두 업로드 되므로 최종 summit때 해당 값을 Y로 update -> 사용, 미사용 이미지 구분)
+     *****************************************************************************************/
+    
     this.insertImage = function(req, connection) {
         var path = req.path;
         console.log('req path : ' + path);
@@ -139,10 +154,17 @@ module.exports = function common() {
 
     }
     
+    /*****************************************************************************************
+     * 이미지 삭제 method
+     * 공통으로 이미지 삭제에 활용
+     * 해당 method가 호출되는 시점 -> 이미지가 변경되어 기존 이미지를 서버에서 삭제해야 하는 경우
+     * Parameter 설명
+     *  imageUrl(imgur상에 올라간 이미지 경로)
+     *****************************************************************************************/
     this.deleteImage = function(req, connection) {
         console.log('common.js 안의 deleteImage 호출 imageurl = '+req.body.beforeImageUrl);
         // select deletehash from com_img where imageurl=?;
-        connection.query('select * from com_img where imageurl= ?;', [req.body.beforeImageUrl], function(error, rowss) {
+        connection.query('select * from com_img where imageurl= ?;', [req.body.beforeImageUrl], function(error, rows) {
             console.log("bbb");
                 if(error) 
                 {
@@ -152,11 +174,11 @@ module.exports = function common() {
                 else 
                 {
                     console.log('에러는 아님 ');
-                    if(rowss.length > 0) 
+                    if(rows.length > 0) 
                     {
-                        console.log('deletehash존재 : '+rowss[0].deletehash );
+                        console.log('deletehash존재 : '+rows[0].deletehash );
                         //deletehash가 있으면..  삭제api호출
-                        var deleteHash = rowss[0].deletehash;
+                        var deleteHash = rows[0].deletehash;
                         var xmlHttpRequest = new XMLHttpRequest();
                         xmlHttpRequest.open('POST', 'https://api.imgur.com/3/image/'+deleteHash, true); //연결
                         xmlHttpRequest.setRequestHeader("Authorization", "Client-ID 285a540d6ec9798"); //client_id 설정
@@ -179,6 +201,30 @@ module.exports = function common() {
         });
         console.log("aaa");
      }
+     
+    
+    /*****************************************************************************************
+     * 이미지 사이트 내 표시 구분을 위한 Method
+     * 공통으로 이미지 업로드 처리 후 활용
+     * 해당 method가 호출되는 시점 -> 이미지가 변경되어 업로드된 이미지가 차후 노출될 경우
+     * Parameter 설명
+     *  imageUrl(imgur상에 올라간 이미지 경로)
+     *****************************************************************************************/ 
+    this.displayImage = function(req, connection) {
+        var path = req.path;
+        console.log('req path : ' + path);
+        connection.query( 'update com_img set isDisplaying = ? where imageurl = ?;',['Y', req.body.imageurl],function(error, result){
+            if(error){
+                console.log('error msg = '+ error);
+            }else{
+                console.log('success' + result);
+                return result;
+            }
+        }
+
+        )
+
+    }
 }
 // var common = {};
 // common.setMileage = setMileage;

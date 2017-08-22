@@ -127,4 +127,20 @@ module.exports = function(app, connectionPool) {
         });
     });
     
+        app.post('/displayimage', function(req, res, next) {
+         connectionPool.getConnection(function(err, connection) {
+            /* 이미지 변경확정시, 삽입시 DB UPDATE */
+            var common = new (require('../common/common'))();
+            var result = common.displayImage(req, connection);
+            
+            if(result) {
+                connection.release();
+                throw result;
+            }else {
+                res.json({success : "Successfully", status : 200});
+                connection.release();    
+            }
+        });
+    });
+    
 };
