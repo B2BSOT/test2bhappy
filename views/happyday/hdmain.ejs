@@ -165,9 +165,8 @@
 				모집정원 <%=data[i].num_participants%>명</span>
 						</div>
 						<div class="extra content">
-							<% if (data[i].num_participants-data[i].vacancy>0) {  %>
-								<span><i class="user icon"></i>현재 참가자 <%=data[i].num_participants-data[i].vacancy%>명<a onclick="javascript:showParticipants('<%=data[i].happyday_id%>')" class="ui label right floated">참가자확인</a></span>
-								<% }%>
+							<span><i class="user icon"></i>현재 참가자 <%=data[i].cur_parti%>명<a onclick="javascript:showParticipants('<%=data[i].happyday_id%>')" class="ui label right floated">참가자확인</a></span>
+							
 						</div>
 						<div class="extra content">
 							<span>

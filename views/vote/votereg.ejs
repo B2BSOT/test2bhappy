@@ -413,12 +413,7 @@
           				 최근투표목록
           			</div>
           			<div class="menu" >
-          			 
-          			 <% var count = 0;                      
-          			    if(data2.length > count) {count = 5}   //최근 목록 5개까지 조회 가능
-          			    else {count = data2.length} %>
-          			  
-          			  <% for(var i = 0; i < count; i++) { %>
+          			  <% for(var i = 0; i < data2.length; i++) { %>
             				<div class="item" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;" data-value="<%=data2[i].vote_id%>"> 
             				  <%=data2[i].regDtShow%> - <%=data2[i].subject%>
             				</div>
