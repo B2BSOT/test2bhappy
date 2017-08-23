@@ -28,17 +28,72 @@ module.exports = function(app, connectionPool) {
                                 connection.release();
                             }    
                         }
-                    
                     });
                 }
             });
         });
     });
+    
 
-    // 해피데이 등록 시 진행 될 사항
+    app.post('/voteload', function(req, res, next) {
+        connectionPool.getConnection(function(err, connection) {
+            //console.log(req.body);
+            connection.query('select vm.*, (select u.user_name from user u where u.id = vm.reg_user_id) as user_name, "Y" as load_yn from vote_master vm where vm.vote_id = ?;', [req.body.vote_load], function(error, rows1){
+            
+                connection.beginTransaction(function(err) {
+                    if(err) {
+                        connection.release();
+                        throw err;
+                    }
+                    
+                    else {
+                        connection.query('select vm.*, date_format(vm.reg_dtm, "%y/%m/%d") as regDtShow' 
+                                    + ' from vote_master vm where vm.reg_user_id = ?'
+                                    + ' order by vm.reg_dtm desc'
+                                    + ' limit 5;', [req.session.user_id], function(error, rows2){
+                            
+                            connection.beginTransaction(function(err) {
+                                if(err) {
+                                    connection.release();
+                                    throw err;
+                                }
+                                
+                                else {
+                                    connection.query('select * from vote_items where vote_id = ?;', [req.body.vote_load], function(error, rows3){
+                                        
+                                        connection.beginTransaction(function(err) {
+                                            if(error){
+                                                connection.release();
+                                                throw error;
+                                            
+                                            }else{
+                                                if(rows1.length > 0) {
+                                                    res.render('vote/votereg', {data1 : rows1[0], data2 : rows2 , data3 : rows3, session : req.session});
+                                                    connection.release();
+                                                }else {
+                                                    res.redirect('/');
+                                                    connection.release();
+                                                }    
+                                            }
+                                        });
+                                    });
+                                }
+                            });
+                        
+                        });
+                    }
+                });//connection.beginTransaction
+            });
+            
+        });//connectionPool.getConnection
+    });//post
+    
+    
+
+    // 투표 등록 시 진행 될 사항
     // 1. vote_master 테이블 insert
     // 2. vote_items 테이블 insert
-    // 3. 해피데이 등록 메일 발송(메일 발송 여부에 따라)
+    // 3. 투표 등록 메일 발송(메일 발송 여부에 따라)
     app.post('/vote_regist', function(req, res, next) {
         connectionPool.getConnection(function(err, connection) {
             //console.log(req.body);
@@ -68,7 +123,6 @@ module.exports = function(app, connectionPool) {
                                 throw error;
                             }else {
                                 console.log("Success Insert1");
-                             //   console.log("test = " +req.body.vote_item.length);
                                 
                                 var count = 0;
                                 for(var i=0; i<req.body.vote_item.length; i++) {
@@ -108,63 +162,8 @@ module.exports = function(app, connectionPool) {
                             }
                         });
                 
-                /////
-
             });//connection.beginTransaction
         });//connectionPool.getConnection
     });//post
     
-    
-    
-    app.post('/vote_loading', function(req, res, next) {
-        connectionPool.getConnection(function(err, connection) {
-            //console.log(req.body);
-            connection.query('select vm.*, (select u.user_name from user u where u.id = vm.reg_user_id) as user_name, "Y" as load_yn from vote_master vm where vm.vote_id = ?;', [req.body.vote_load], function(error, rows1){
-            
-                connection.beginTransaction(function(err) {
-                    if(err) {
-                        connection.release();
-                        throw err;
-                    }
-                    
-                    else {
-                        connection.query('select * from vote_master where reg_user_id = ? order by reg_dtm desc;', [req.session.user_id], function(error, rows2){
-                            
-                            connection.beginTransaction(function(err) {
-                                if(err) {
-                                    connection.release();
-                                    throw err;
-                                }
-                                
-                                else {
-                                    connection.query('select * from vote_items where vote_id = ?;', [req.body.vote_load], function(error, rows3){
-                                        
-                                        connection.beginTransaction(function(err) {
-                                            if(error){
-                                                connection.release();
-                                                throw error;
-                                            
-                                            }else{
-                                                if(rows1.length > 0) {
-                                                    res.render('vote/votereg', {data1 : rows1[0], data2 : rows2 , data3 : rows3, session : req.session});
-                                                    connection.release();
-                                                }else {
-                                                    res.redirect('/');
-                                                    connection.release();
-                                                }    
-                                            }
-                                        });
-                                    });
-                                }
-                            });
-                        
-                        });
-                    }
-                });//connection.beginTransaction
-            });
-            
-        });//connectionPool.getConnection
-    });//post
-    
 }
-
