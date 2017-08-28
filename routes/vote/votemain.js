@@ -93,10 +93,15 @@ module.exports = function(app) {
         user.belongsTo(com_org, {foreignKey: 'sm_id', targetKey: 'org_id'});
         com_org.hasMany(user, {as: 'user', foreignKey: 'org_id'});        
         
-        /* vote_master : vote_detail - 1 : M */        
-        vote_detail.belongsTo(vote_master, {foreignKey: 'vote_id', targetKey: 'vote_id'});
-        vote_master.hasMany(vote_detail, {as: 'vote_detail', foreignKey: 'vote_id'});
-
+        /* vote_master : vote_detail - 1 : M 관계 
+         * has~함수와 belongsTo~ 함수를 언제 사용하는가?
+         *  쿼리를 시작하는 모델이 source, 쿼리 내부에 include된 모델이 target
+         *      -> vote_master (source), vote_detail (target)
+         *  관계를 정의하는 정보가 source에 있으면 belongsTo~ 함수를 사용, target에 있으면 has~ 함수를 사용
+         *      -> target인 vote_detail의 vote_id가 vote_master와의 관계를 정의하는 정보이므로 hasMany 사용
+        */        
+        vote_master.hasMany(vote_detail, {as: 'vote_detail', foreignKey: 'vote_id', targetKey: 'vote_id'});
+        //vote_detail.belongsTo(vote_master, {foreignKey: 'vote_id', sourceKey: 'vote_id'});
 
         /* cnt */ 
         /* select */
@@ -125,28 +130,32 @@ module.exports = function(app) {
                 [models.Sequelize.col('user.user_name'), 'user_name'],
                 [models.Sequelize.col('user.user_img'), 'user_img'],
                 [models.Sequelize.col('user.com_org.org_nm'), 'org_nm']
-                //,[models.Sequelize.fn('count', models.Sequelize.col('vote_detail.vote_id')), 'cnt']
-                //,[models.Sequelize.query(('') as "cnt" from , vote_master, {raw:false})]
+                // ,[models.sequelize.fn('count', models.sequelize.col('vote_detail.user_id')), 'cnt']
+                // ,[models.Sequelize.query(('') as "cnt" from , vote_master, {raw:false})]
             ], // 실제 결과 컬럼
             include : [ 
-            {
-                model: user,
-                as : 'user',
-                where : { id : {$col : 'vote_master.reg_user_id' } },
-                attributes : [],
-                include : [{ model:com_org, as : 'com_org',where: {org_id : {$col : 'user.sm_id'}}}]
-                //include : [{ model:vote_detail, as : 'vote_detail',where: {vote_id : {$col : 'vote_master.vote_id'} ,user_id : {$in : 'req.session.user_id'} }}]
-            }
-            //  ,{
-            //     model: vote_detail,
-            //     as : 'vote_detail',
-            //     where : { vote_id : {$col : 'vote_master.vote_id' }, user_id : {$col : 'req.session.user_id'} },
-            //     attributes : []
- 
-            // }
+                {
+                    model: user,
+                    as : 'user',
+                    where : { id : {$col : 'vote_master.reg_user_id' } },
+                    attributes : [],
+                    include : [{ model:com_org, as : 'com_org',where: {org_id : {$col : 'user.sm_id'}}}]
+                },
+                {
+                    model: vote_detail,
+                    as : 'vote_detail',
+                    where : { 
+                       'user_id' : user_id 
+                    },
+                    attributes : [ 'item_id' ],
+                    required: false
+                }
             ], //include
-            where : {}, 
-            order : [ ['deadline', 'ASC'] ]// 1) state='P' 2) deadline asc 3) reg_dtm desc 
+            where : {
+                
+            },
+            group : [ 'vote_id' ]
+            //, order : [ ['state', 'DESC'], ['deadline', 'ASC'] ]// 1) state='P' 2) deadline asc 3) reg_dtm desc 
             
         }).then(master_info => {
             data.master_info = master_info;
