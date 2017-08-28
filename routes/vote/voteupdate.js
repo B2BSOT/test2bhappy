@@ -10,7 +10,7 @@ module.exports = function(app, connectionPool) {
         
         connectionPool.getConnection(function(err, connection) {
             //  console.log("aa");
-            var TEST_VOTE_ID = 105;
+            var TEST_VOTE_ID = 1;
 
             connection.query('select *, concat(left(vm.deadline,4),"/",substring(vm.deadline,5,2),"/",substring(vm.deadline,7,2))as deadlinedtShow'
                             + ', concat(substring(vm.deadline,9,2),"시",substring(vm.deadline,11,2),"분") as deadlinetimeShow'
