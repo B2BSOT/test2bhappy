@@ -89,6 +89,12 @@ module.exports = function(app, connectionPool) {
          * happyday_master 에 reg_user_id 라는 관계 정보가 있음.
          * source model에 관계정보가 있으면 belongsTo
          * target model에 관계정보가 있으면 hasOne
+        
+         * has~함수와 belongsTo~ 함수를 언제 사용하는가?
+         *  쿼리를 시작하는 모델이 source, 쿼리 내부에 include된 모델이 target
+         *      -> vote_master (source), vote_detail (target)
+         *  관계를 정의하는 정보가 source에 있으면 belongsTo~ 함수를 사용, target에 있으면 has~ 함수를 사용
+         *      -> target인 vote_detail의 vote_id가 vote_master와의 관계를 정의하는 정보이므로 hasMany 사용
          */
         happyday_master.belongsTo(user, {foreignKey: 'reg_user_id'});
         // user.hasOne(happyday_master, {foreignKey: 'reg_user_id', targetKey: 'reg_user_id'});

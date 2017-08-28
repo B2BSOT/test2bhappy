@@ -37,6 +37,9 @@ module.exports = function(app) {
         data.master_info = req.master_info;
         data.vote_total_cnt = req.vote_total_cnt;
         
+        console.log("****************data***************"+data);
+        
+        
         res.render('vote/votedetail', {data : data, session : req.session});
     
     });
