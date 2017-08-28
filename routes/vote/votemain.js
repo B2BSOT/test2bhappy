@@ -15,6 +15,7 @@ module.exports = function(app) {
         var vote_detail = models.vote_detail;
         var com_org = models.com_org;
         var user = models.user;
+        var user_vote_detail = models.user_vote_detail;
         
         var data = {}; 
 
@@ -77,6 +78,10 @@ module.exports = function(app) {
         vote_detail.belongsTo(vote_master, {foreignKey: 'vote_id', targetKey: 'vote_id'});
         vote_master.hasMany(vote_detail, {as: 'vote_detail', foreignKey: 'vote_id'});
 
+        /* vote_detail : user - 1 : M */
+        user.belongsTo(vote_detail, {foreignKey: 'id', targetKey: 'user_id'});
+        vote_detail.hasMany(user, {as: 'user', foreignKey: 'user_id'});        
+
         vote_master.findAll({
             raw : true,
             attributes : [
@@ -115,13 +120,15 @@ module.exports = function(app) {
             data.master_info = master_info;
             
             console.log("a");
+            
             user.findAll({
             raw : true,
             attributes : [
-                'id','user_name','sm_id', 'team_id'
-
-            ], // 실제 결과 컬럼
-            where :  {id: user_id }
+                'id','user_name','sm_id', 'team_id', 
+                [models.Sequelize.col('vote_detail.vote_id'), 'vote_id'],
+            ], 
+            include : [{ model:vote_detail, as: 'vote_detail',where: {user_id : {$col : 'user.id'}}}],
+            where :  {id: user_id } 
             }).then(user_info => {
                 data.master_info = master_info;
                 console.log("**RESULT DATA : " + JSON.stringify(data.master_info));
@@ -144,7 +151,14 @@ module.exports = function(app) {
         }).catch(function(err) {
             console.log(err);
         });
-          /* 여기에 vote_detail을 조인해서 vote_id를 가져온 다음에 ejs에서 같은지 안같은지 비교해서 같으면 투표현황 다르면 투표하기로 가면되지 않을까 cnt대신에 */
     });
 
 }
+
+/*
+ * 내가 보면 안되는 vote_master.vote_id는 1)쿼리로 떨어지는 조건문으로 이미 걸러진다 따라서 
+ * user.id랑 조인한 vote_detail.vote_id 랑 vote_master의 id랑 다르면 투표안한 상태, 같으면 투표한 상태
+ * 문제는 detail.user_id 가 있는지 보면 되는데 문제는 등록자는 투표안했는데도 detail에 들어있다 ... 
+ * 화면에서 reg_user_id =user_id 인 경우만 투표하기로 
+ * 
+ */
