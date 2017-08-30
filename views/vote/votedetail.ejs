@@ -391,11 +391,20 @@
             location.href = '/vote/voteupdate/' + vote_id;
         }
         
+        function goto_vote_main(){
+            location.href = '/vote/votemain/';
+        }
+        
+        function delete_vote(vote_id){
+            goto_vote_main()
+        }
+        
         
         
         function show_hide_vote_update_button(vote_reg_id, login_id){
             if(vote_reg_id != login_id){
                 $("#update_button").hide();
+                $("#delete_button").hide();
             }
         }
         
@@ -407,6 +416,10 @@
             }
         }
         
+        function show_modal2()
+        {
+             $('.ui.longer.modal.state').modal('show');
+        }
 
         
 </script>
@@ -431,7 +444,12 @@
     
     .ui.middle.icon.button {
     	margin-right: 0px;
-    }    
+    }
+    
+    .ui.button{
+        padding-right: 2px;
+        padding-left: 2px;
+    }
         
 </style>
 </head>
@@ -455,6 +473,7 @@
 				</div>
 				
 					<a class="author"><%= data.master_info.user_name %></a>
+					<button class="yellow ui button" onClick="javascript:show_modal2()" style="float: right">투표 현황</button>
 					<p>
 						<span class="date"><%= data.master_info.comment %></span>
 					</p>
@@ -475,6 +494,7 @@
 				<div class="ui buttons" id ="add_item_button">
 					<button class="yellow ui button" onClick="javascript:show_modal()">항목 추가하기</button>
 					<button class="brown ui button" id="update_button" onClick="javascript:goto_update_vote(<%= data.master_info.vote_id%>)" style="margin-left: 10px;">수정하기</button>
+					<button class="red ui button" id="delete_button" onClick="javascript:delete_vote(<%= data.master_info.vote_id%>)" style="margin-left: 10px;">삭제하기</button>
 				</div>
 				
 				<!--항목추가 modal Start-->
@@ -485,9 +505,9 @@
                 	<div class="scrolling content">
                 	    <table class="unstackable ui definition table" id="item_add_table">
                             <tr style='max-height:40px; '>
-                            	<td style="margin-top: -15px; width:40px; ">
-                            		<button class="yellow ui middle icon button" style="margin-right: 0px;"><i class="add icon"></i></button>
-                            	</td>
+                            	<!--<td style="margin-top: -15px; width:40px; ">-->
+                            	<!--	<button class="yellow ui middle icon button" style="margin-right: 0px;"><i class="add icon"></i></button>-->
+                            	<!--</td>-->
                             	<td>
                             		<div>
                             			<input type='text' id='add_vote_item_name' placeholder='항목을 입력해주세요' style='width: 100%'>
@@ -503,6 +523,60 @@
                     </div>
                 </div>
 				<!--항목추가 modal End-->
+				
+				<!--항목추가 modal Start-->
+				<div class="ui longer modal state">
+                	<div class="header" >
+                		투표 현황
+                	</div>
+                	<div class="scrolling content">
+                	    <table class="unstackable ui definition table" id="item_add_table">
+                            <tr style='max-height:40px; '>
+                            	<td>
+                            		<div>
+                            		    <span>미참여</span><br>
+                            		    <span>김준범  </span>
+                            		    <span>김준범  </span>
+                            		    <span>김준범  </span>
+                            		</div>
+                            		<br>
+                            		<div>
+                            		    <span>미참여</span><br>
+                            		    <span>김준범  </span>
+                            		    <span>김준범  </span>
+                            		    <span>김준범  </span>
+                            		</div>
+                            		<br>
+                            		<div>
+                            		    <span>미참여</span><br>
+                            		    <span>김준범  </span>
+                            		    <span>김준범  </span>
+                            		    <span>김준범  </span>
+                            		</div>
+                            		<br>
+                            		<div>
+                            		    <span>미참여</span><br>
+                            		    <span>김준범  </span>
+                            		    <span>김준범  </span>
+                            		    <span>김준범  </span>
+                            		</div>
+                            		
+                            	</td>
+                            </tr>
+                            
+                         </table>
+                	</div>
+                    <div class="actions">
+                        <div class="ui primary approve button">Cancel</div>
+                    </div>
+                </div>
+				<!--항목추가 modal End-->
+				
+				
+				
+				
+				
+				
 			</div>
 		</div>
 		<!-- 상세보기 segment -->

@@ -37,8 +37,6 @@ module.exports = function(app) {
         data.master_info = req.master_info;
         data.vote_total_cnt = req.vote_total_cnt;
         
-        console.log("****************data***************"+data);
-        
         
         res.render('vote/votedetail', {data : data, session : req.session});
     
@@ -184,7 +182,7 @@ module.exports = function(app) {
         
         
         
-        console.log("verifyVote"+vote_id);
+       
     
         /*  
          *  0. 이전 vote main화면에서 vote_id, parti_org_id 를 넘겨준다고 가정
@@ -368,7 +366,7 @@ module.exports = function(app) {
             vote_id = req.body.vote_id;
         }
         
-        console.log("findVoteMaster"+vote_id);
+        //console.log("findVoteMaster"+vote_id);
         /* 2.1 vote_master의 정보 조회
           vote_master : user - 1 : 1 관계 설정 셋팅 
         */
@@ -419,7 +417,7 @@ module.exports = function(app) {
             vote_id = req.body.vote_id;
         }
         
-        console.log("findMyVoteList"+vote_id);
+        //console.log("findMyVoteList"+vote_id);
         return vote_detail.findAll({
             raw: true,
             attributes: [
@@ -446,7 +444,7 @@ module.exports = function(app) {
             vote_id = req.body.vote_id;
         }
         
-        console.log("findVoteTotalCount"+vote_id);
+        //console.log("findVoteTotalCount"+vote_id);
         return vote_detail.count({
             where : {
                 // vote_id : TEST_VOTE_ID//req.body.vote_id
@@ -467,7 +465,7 @@ module.exports = function(app) {
         else{
             vote_id = req.body.vote_id;
         }
-        console.log("findVoteDetailToItems"+vote_id);
+        //console.log("findVoteDetailToItems"+vote_id);
         
         vote_items.hasMany(vote_detail, {as: 'vote_detail', foreignKey: 'item_id', sourceKey: 'item_id'});
         vote_detail.belongsTo(vote_items, {foreignKey: 'item_id', targetKey: 'item_id'});
