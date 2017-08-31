@@ -502,6 +502,111 @@ module.exports = function(app) {
         })
     }
     
+    app.post('/delete_vote', function(req, res, next) {
+        
+       console.log("vote_id :" + req.body.vote_id);
+       
+       vote_master.update(
+                {
+                    state : 'N'
+                 },
+                {
+                    where: {
+                        'vote_id': req.body.vote_id
+                    },
+                    returning: true
+                }
+            ).then(result => {
+                res.redirect('/vote/votemain/');
+                // res.render('/vote/votemain');
+            
+            }).catch(err => {
+                console.log(err);
+                res.json({type: 'error', status: 400, err: err});
+            });
+    });
+    
+    
+    
+    app.post('/vote_current_state', function(req, res, next) {
+        
+       console.log("vote_id :" + req.body.vote_id);
+       
+        var vote_detail = models.vote_detail;
+        var vote_items = models.vote_items;
+        var com_org = models.com_org;
+        var user = models.user;
+          
+        var data2 = {}; 
+        
+        
+        /* vote_detail : vote_items - 1 : M */
+        /*  has~함수와 belongsTo~ 함수를 언제 사용하는가?
+          *  쿼리를 시작하는 모델이 source, 쿼리 내부에 include된 모델이 target
+          *      -> vote_master (source), vote_detail (target)
+          *  관계를 정의하는 정보가 source에 있으면 belongsTo~ 함수를 사용, target에 있으면 has~ 함수를 사용
+          *      -> target인 vote_detail의 vote_id가 vote_master와의 관계를 정의하는 정보이므로 hasMany 사용
+         */
+        vote_detail.belongsTo(vote_items, {as : 'vote_items' , foreignKey: 'item_id', targetKey: 'item_id'});
+          
+        vote_detail.belongsTo(user, {as: 'user', foreignKey: 'user_id'});        
+         
+        vote_detail.findAll({
+            raw : true,
+            attributes : [
+                'item_id',
+                [models.Sequelize.col('vote_items.item_name'), 'item_name'],
+                [models.Sequelize.col('user.user_name'), 'user_name']
+                
+            ], // 실제 결과 컬럼
+            include : [ {
+                model: vote_items,
+                as : 'vote_items',
+                where : {
+                    vote_id: {$col : 'vote_detail.vote_id'}
+                    },
+                attributes : []
+                },
+                {
+                    model: user,
+                    as : 'user',
+                    attributes : [],
+                    required: true
+                }
+            ],
+            where : {
+                 vote_id : req.body.vote_id
+            }, // 조건절
+            
+        }).then(state_info => {
+            data2.state_info = state_info; 
+            
+            console.log("****************data***************"+JSON.stringify(data2.state_info));
+            res.json({type: req.checkType,status : 200, data2 : data2.state_info});
+        })
+        
+
+    });
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
 }
 
 /*******

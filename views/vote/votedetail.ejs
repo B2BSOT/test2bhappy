@@ -392,12 +392,33 @@
         }
         
         function goto_vote_main(){
-            location.href = '/vote/votemain/';
+            location.href = '/vote/votemain';
         }
         
-        function delete_vote(vote_id){
-            goto_vote_main()
-        }
+        // function delete_vote(vote_id){
+        //     goto_vote_main()
+        // }
+        
+        function delete_vote(vote_id) {
+         
+        // alert(post_id);
+         $.ajax({
+         type: "post",
+         url : "/delete_vote",
+         data: {
+         vote_id : vote_id
+         },
+        success:function(data){   
+            goto_vote_main();
+        },
+        error:function(e){  
+            alert(e.responseText);  
+        }  
+      });   
+    }
+        
+        
+        
         
         
         
@@ -415,6 +436,91 @@
                 $(".brown.ui.button").hide();
             }
         }
+        
+        
+        /* 투표 현황 Select query */
+        function vote_current_state(vote_id){
+           
+              $.ajax({
+                 type: "post",
+                 url : "/vote_current_state",
+                 data: {
+                 vote_id : vote_id
+               
+                 },
+                success:function(result){
+                    
+                    var vote_state_info = result.data2;
+                    
+                    init_state_table(vote_state_info);
+                },
+                error:function(e){  
+                    alert(e.responseText);  
+                }  
+              });   
+            
+            // show_modal2();
+            
+        }
+        
+        
+        function init_state_table(vote_state_info) {
+     		//console.log(detail_info_list);
+	        var vote_state_table_tr = $("#vote_state_table_tr");
+	        vote_state_table_tr.empty();
+	          
+	       // for(var i in vote_state_info) {
+	            
+	        	var state_info = vote_state_info;
+	            
+	        	
+	        	setVoteStateDetail(state_info, vote_state_table_tr);
+	       // }
+	        show_modal2();
+     	}
+     	
+                            		
+     	function setVoteStateDetail(state_info, vote_state_table_tr)
+     	{
+     	    var row = '';
+     	    var j;
+     	    for(var i in state_info){
+                //맨 처음 아이템은 그냥 Put     	     
+                if(i==0){
+     	            // div 생성
+     	             row = row + "<div>";
+			         row = row + "<span>";
+			         row = row + state_info[i].item_name;
+			         row = row + "</span>";
+			         row = row + "<br>";
+			         row = row + "<span>";
+			         row = row + state_info[i].user_name;
+			         row = row + "</span>";
+			    }
+			    else{
+			       j = i-1;
+			       if(state_info[i].item_id == state_info[j].item_id){
+			           row = row + "<span>";
+			           row = row + state_info[i].user_name;
+			           row = row + "</span>";
+			       }
+			       else{
+			           row = row + "</div>";
+			           row = row + "<br>";
+			           row = row + "<div>";
+			           row = row + "<span>";
+			           row = row + state_info[i].item_name;
+			           row = row + "</span>";
+			           row = row + "<br>";
+			           row = row + "<span>";
+			           row = row + state_info[i].user_name;
+			           row = row + "</span>";
+			       }
+			    }
+			}
+		    row = row+"</div>";
+         	vote_state_table_tr.append(row);
+     	}
         
         function show_modal2()
         {
@@ -473,7 +579,7 @@
 				</div>
 				
 					<a class="author"><%= data.master_info.user_name %></a>
-					<button class="yellow ui button" onClick="javascript:show_modal2()" style="float: right">투표 현황</button>
+					<button class="yellow ui button" onClick="javascript:vote_current_state(<%= data.master_info.vote_id%>)" style="float: right">투표 현황</button>
 					<p>
 						<span class="date"><%= data.master_info.comment %></span>
 					</p>
@@ -491,8 +597,8 @@
 				<table class="unstackable ui definition table" id="vote_detail_table">
 					<!-- setVoteItemDetail -->
 				</table>
-				<div class="ui buttons" id ="add_item_button">
-					<button class="yellow ui button" onClick="javascript:show_modal()">항목 추가하기</button>
+				<div class="ui buttons">
+					<button class="yellow ui button" id ="add_item_button" onClick="javascript:show_modal()">항목 추가하기</button>
 					<button class="brown ui button" id="update_button" onClick="javascript:goto_update_vote(<%= data.master_info.vote_id%>)" style="margin-left: 10px;">수정하기</button>
 					<button class="red ui button" id="delete_button" onClick="javascript:delete_vote(<%= data.master_info.vote_id%>)" style="margin-left: 10px;">삭제하기</button>
 				</div>
@@ -524,53 +630,50 @@
                 </div>
 				<!--항목추가 modal End-->
 				
-				<!--항목추가 modal Start-->
+				<!--투표현황 modal Start-->
 				<div class="ui longer modal state">
                 	<div class="header" >
                 		투표 현황
                 	</div>
                 	<div class="scrolling content">
-                	    <table class="unstackable ui definition table" id="item_add_table">
-                            <tr style='max-height:40px; '>
-                            	<td>
-                            		<div>
-                            		    <span>미참여</span><br>
-                            		    <span>김준범  </span>
-                            		    <span>김준범  </span>
-                            		    <span>김준범  </span>
-                            		</div>
-                            		<br>
-                            		<div>
-                            		    <span>미참여</span><br>
-                            		    <span>김준범  </span>
-                            		    <span>김준범  </span>
-                            		    <span>김준범  </span>
-                            		</div>
-                            		<br>
-                            		<div>
-                            		    <span>미참여</span><br>
-                            		    <span>김준범  </span>
-                            		    <span>김준범  </span>
-                            		    <span>김준범  </span>
-                            		</div>
-                            		<br>
-                            		<div>
-                            		    <span>미참여</span><br>
-                            		    <span>김준범  </span>
-                            		    <span>김준범  </span>
-                            		    <span>김준범  </span>
-                            		</div>
-                            		
-                            	</td>
-                            </tr>
+                	    <table class="unstackable ui definition table" id="vote_state_table">
+                            <tr id="vote_state_table_tr" style='max-height:40px;'>
                             
-                         </table>
+                             	<!--	<div>-->
+                            		<!--    <span>미참여</span><br>-->
+                            		<!--    <span>김준범  </span>-->
+                            		<!--    <span>김준범  </span>-->
+                            		<!--    <span>김준범  </span>-->
+                            		<!--</div>-->
+                            		<!--<br>-->
+                            		<!--<div>-->
+                            		<!--    <span>미참여</span><br>-->
+                            		<!--    <span>김준범  </span>-->
+                            		<!--    <span>김준범  </span>-->
+                            		<!--    <span>김준범  </span>-->
+                            		<!--</div>-->
+                            		<!--<br>-->
+                            		<!--<div>-->
+                            		<!--    <span>미참여</span><br>-->
+                            		<!--    <span>김준범  </span>-->
+                            		<!--    <span>김준범  </span>-->
+                            		<!--    <span>김준범  </span>-->
+                            		<!--</div>-->
+                            		<!--<br>-->
+                            		<!--<div>-->
+                            		<!--    <span>미참여</span><br>-->
+                            		<!--    <span>김준범  </span>-->
+                            		<!--    <span>김준범  </span>-->
+                            		<!--    <span>김준범  </span>-->
+                            		<!--</div>-->
+                            </tr>
+                          </table>
                 	</div>
                     <div class="actions">
                         <div class="ui primary approve button">Cancel</div>
                     </div>
                 </div>
-				<!--항목추가 modal End-->
+				<!--투표현황 modal End-->
 				
 				
 				
