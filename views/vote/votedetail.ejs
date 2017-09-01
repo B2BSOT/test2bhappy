@@ -259,12 +259,14 @@
         //│                                               │
         //└───────────────────────────────────────────────┘
         function init_vote_show(secret_yn) {
-        	if(secret_yn == "Y") {
-        		$('.vote_cnt').hide();
-        		$('.ui.teal.progress.active').attr('data-percent',"0");	
-        	}else {
-        		$('.ui.teal.progress').progress();
-        	}
+            $('.ui.teal.progress').progress();
+            return 0;
+        // 	if(secret_yn == "Y") {
+        // 		$('.vote_cnt').hide();
+        // 		$('.ui.teal.progress.active').attr('data-percent',"0");	
+        // 	}else {
+        // 		$('.ui.teal.progress').progress();
+        // 	}
         	
         	
         }
@@ -423,11 +425,6 @@
             }
         }
         
-        
-        
-        
-        
-        
         function show_hide_vote_update_button(vote_reg_id, login_id){
             if(vote_reg_id != login_id){
                 $("#update_button").hide();
@@ -437,9 +434,11 @@
         
         function Vote_Process_or_Complete(vote_state){
             if(vote_state=='C'){
+                $("#update_button").hide();
+                $("#delete_button").hide();
                 $(".ui.middle.icon.button").hide();
-                $(".yellow.ui.button").hide();
-                $(".brown.ui.button").hide();
+                // $(".yellow.ui.button").hide();
+                // $(".brown.ui.button").hide();
             }
         }
         
