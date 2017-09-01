@@ -284,7 +284,7 @@
       
       // 마감 시간 check
       if(deadlineTime == ''){
-        $('#deadlineTime_alert').css("visibility","visible").text("마감시간을 선택해 주세요");
+        $('#deadlineTime_alert').css("visibility","visible").text("* 마감시간을 선택해 주세요");
       }
       else{
         $('#deadlineTime_alert').css("visibility","hidden");
@@ -293,7 +293,7 @@
       
       //마감 일시 체크,
       if(deadlineDt != '' && deadlineTime != '' && vote_deadline <= today_date){
-        $('#deadlineTime_alert').css("visibility","visible").text("마감시간이 현재시간보다 빠릅니다.");
+        $('#deadlineTime_alert').css("visibility","visible").text("* 마감시간이 현재시간보다 빠릅니다.");
       }
       else if(deadlineDt != '' && deadlineTime != '' && vote_deadline > today_date){
         $('#deadlineTime_alert').css("visibility","hidden");
@@ -493,7 +493,7 @@
     					</div>
     				</div>
     				<!-- calendar -->
-    				<p class="p validation" id="deadlineDt_alert" style="color:red; visibility:hidden;">
+    				<p class="p validation" id="deadlineDt_alert" style="color:red; visibility:hidden;"> ..
     					 *마감날짜를 선택해 주세요
     				</p>
     			</div>
@@ -507,7 +507,7 @@
     						<input type="text" placeholder="마감시간 선택" style=" width: 100%;" id="vote_deadline_time" name="vote_deadline_time" readonly="true">
     					</div>
     				</div>
-    				<p class="p validation" id="deadlineTime_alert" style="color:red; visibility:hidden;"> ??
+    				<p class="p validation" id="deadlineTime_alert" style="color:red; visibility:hidden;"> ..
     				</p>
     			<!--날짜합치기 히든-->
     	      <input type="hidden" id="vote_deadline" name="vote_deadline">

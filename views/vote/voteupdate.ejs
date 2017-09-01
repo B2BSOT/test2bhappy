@@ -193,7 +193,7 @@
         
         //마감 일시 체크,
         if(deadlineDt != '' && deadlineTime != '' && vote_deadline <= today_date){
-          $('#deadlineTime_alert').css("visibility","visible").text("마감시간이 현재시간보다 빠릅니다.");
+          $('#deadlineTime_alert').css("visibility","visible").text("* 마감시간이 현재시간보다 빠릅니다.");
           flag = -1;
         }
         else if(deadlineDt != '' && deadlineTime != '' && vote_deadline > today_date){
@@ -360,7 +360,7 @@
     						<input type="hidden" id="deadline_time_DB" name="deadline_time_DB" value="<%=data1.deadlinetimeDB %>">
     					</div>
     				</div>
-    				<p class="p validation" id="deadlineTime_alert" style="color:red; visibility:hidden;">
+    				<p class="p validation" id="deadlineTime_alert" style="color:red; visibility:hidden;"> ..
     				</p>
     			<!--날짜합치기 히든-->
   		      <input type="hidden" id="vote_deadline" name="vote_deadline">
