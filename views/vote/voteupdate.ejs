@@ -20,9 +20,9 @@
   var deadlineTime = '';
 
  
-  // 뒤로가기 버튼 -> 메인화면 이동
-  function goMain(){
-      location.href = '../vote/votemain';    // detail 화면으로 수정 필요
+  // 뒤로가기 버튼 -> detail 화면 이동
+  function goDetail(vote_id){
+      location.href = '../votedetail/' + vote_id;
   }
 
   // 화면 reload 될 때마다 실행 되는 함수
@@ -458,14 +458,15 @@
 		
     		<div class="actions">
     		  <div class="ui two bottom attached buttons">
-      		  <div class="ui button" style="color:white; background:grey" onclick=javascript:goMain()>
+      		  <div class="ui button" style="color:white; background:grey" onclick="javascript:goDetail('<%=data1.vote_id%>')">
       			 취소
       		  </div>
       		  <button class="ui submit button" id="submit" name="submit" style="background-color:#ee5252; color:white">수정</button>
     		  </div>
     	  </div>
-    	  
+    	<input type="hidden" id="vote_id" name="vote_id" value=<%=data1.vote_id %>>  
       </form>
+      
 		</div> <!-- content -->
   </div> <!-- ui container -->
 </body>
