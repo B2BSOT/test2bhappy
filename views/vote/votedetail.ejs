@@ -311,7 +311,7 @@
         //└───────────────────────────────────────────────┘
         function show_modal()
         {    
-            $('.ui.longer.modal').modal('show');
+            $('.ui.longer.modal.item.add').modal('show');
         }
         
         
@@ -494,14 +494,14 @@
 			         row = row + "</span>";
 			         row = row + "<br>";
 			         row = row + "<span>";
-			         row = row + state_info[i].user_name;
+			         row = row + state_info[i].user_name+ ' ';
 			         row = row + "</span>";
 			    }
 			    else{
 			       j = i-1;
 			       if(state_info[i].item_id == state_info[j].item_id){
 			           row = row + "<span>";
-			           row = row + state_info[i].user_name;
+			           row = row + state_info[i].user_name+ ' ';
 			           row = row + "</span>";
 			       }
 			       else{
@@ -513,7 +513,7 @@
 			           row = row + "</span>";
 			           row = row + "<br>";
 			           row = row + "<span>";
-			           row = row + state_info[i].user_name;
+			           row = row + state_info[i].user_name+ ' ';
 			           row = row + "</span>";
 			       }
 			    }
@@ -526,8 +526,6 @@
         {
              $('.ui.longer.modal.state').modal('show');
         }
-
-        
 </script>
     
 <style type="text/css">
@@ -604,7 +602,7 @@
 				</div>
 				
 				<!--항목추가 modal Start-->
-				<div class="ui longer modal ">
+				<div class="ui longer modal item add">
                 	<div class="header" >
                 		항목추가
                 	</div>
@@ -625,7 +623,7 @@
                 	</div>
                     <div class="actions">
                         <div class="ui primary approve button" onClick="javascript:Check_duplicate_vote_item()" >항목추가 완료</div>
-                        <div class="ui primary approve button">Cancel</div>
+                        <div class="ui primary approve button">취소</div>
                     </div>
                 </div>
 				<!--항목추가 modal End-->

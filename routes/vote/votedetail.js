@@ -577,7 +577,7 @@ module.exports = function(app) {
             where : {
                  vote_id : req.body.vote_id
             }, // 조건절
-            
+            order :  ['vote_items.item_id'] 
         }).then(state_info => {
             data2.state_info = state_info; 
             
