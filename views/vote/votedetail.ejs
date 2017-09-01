@@ -260,7 +260,9 @@
         //└───────────────────────────────────────────────┘
         function init_vote_show(secret_yn) {
             $('.ui.teal.progress').progress();
-            return 0;
+            if(secret_yn == "Y") {
+                $("#vote_current_state_button").hide();
+            }
         // 	if(secret_yn == "Y") {
         // 		$('.vote_cnt').hide();
         // 		$('.ui.teal.progress.active').attr('data-percent',"0");	
@@ -582,7 +584,7 @@
 				</div>
 				
 					<a class="author"><%= data.master_info.user_name %></a>
-					<button class="yellow ui button" onClick="javascript:vote_current_state(<%= data.master_info.vote_id%>)" style="float: right">투표 현황</button>
+					<button class="yellow ui button" id="vote_current_state_button" onClick="javascript:vote_current_state(<%= data.master_info.vote_id%>)" style="float: right">투표 현황</button>
 					<p>
 						<span class="date"><%= data.master_info.comment %></span>
 					</p>
