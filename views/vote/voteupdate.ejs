@@ -409,8 +409,8 @@
   				<div class="ui sub header">
   					 옵션선택
   				</div>
-  				<div class="ui two column grid">
-  				  <div class="column">
+  				<!--<div class="ui two column grid">-->
+  				  <div class="column" style="margin-top:10px">
           		<div class="ui toggle checkbox">
           		  <% if(data1.voteCount == 0) { %>
                   <input type="checkbox" id="multi_chk" name="multi_chk" <%=data1.multiYnShow%> >
@@ -421,7 +421,7 @@
                 <label>복수선택</label>
               </div>
             </div>
-            <div class="column">
+            <div class="column" style="margin-top:10px">
               <div class="ui toggle checkbox">
                 <% if(data1.voteCount == 0) { %>
                   <input type="checkbox" id="secret_chk" name="secret_chk" <%=data1.secretYnShow%> >
@@ -432,9 +432,9 @@
                 <label>익명투표</label>
               </div>
             </div>
-          </div>
-  				<div class="ui two column grid">
-            <div class="column">
+          <!--</div>-->
+  				<!--<div class="ui two column grid">-->
+            <div class="column" style="margin-top:10px">
               <div class="ui toggle checkbox">
                 <% if(data1.voteCount == 0) { %>
                   <input type="checkbox" id="add_item_chk" name="add_item_chk" <%=data1.addItemYnShow%>>
@@ -445,14 +445,14 @@
                 <label>항목추가</label>
               </div>
             </div>
-            <div class="column">
-              <div class="ui toggle checkbox">
+            <!--<div class="column">-->
+            <!--  <div class="ui toggle checkbox">-->
                 <!--수정불가능-->
-                <input type="checkbox" id="noti_chk" name="noti_chk" disabled="false" readonly="true" <%=data1.notiYnShow%>>
-                <label>공지(e-mail)</label>
-              </div>
-            </div>
-          </div>
+            <!--    <input type="checkbox" id="noti_chk" name="noti_chk" disabled="false" readonly="true" <%=data1.notiYnShow%>>-->
+            <!--    <label>공지(e-mail)</label>-->
+            <!--  </div>-->
+            <!--</div>-->
+          <!--</div>-->
   	  	</div>
   	  	<p class="p validation" style="visibility:hidden;">.</p>
 		
