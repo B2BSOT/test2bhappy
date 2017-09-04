@@ -119,14 +119,14 @@ module.exports = function common() {
                 break;
                 
             case 'VOTEREG':
-                const day = maildata.vote_deadline;
+                const deadline = maildata.vote_deadline;
                 
                 mailOptions.to = "ljw82@sk.com";
                 mailOptions.subject = "[NEW VOTE] " + maildata.vote_name;
                 mailOptions.template = "regvote";
                 mailOptions.context = {
                     user_name: maildata.user_name,
-                    vote_deadline: day.substring(0,4)+"/"+day.substring(4,6)+"/"+day.substring(6,8),
+                    vote_deadline: deadline.substring(0,4)+"/"+deadline.substring(4,6)+"/"+deadline.substring(6,8),
                     vote_contents: maildata.vote_contents,
                     parti_org_id: maildata.parti_org_id
                 };
