@@ -139,9 +139,6 @@ module.exports = function(app, connectionPool) {
                                     }
                                  }
 
-                                connection.release();
-                                res.redirect('../vote/votemain');
-                                
                                 if(rows.affectedRows > 0) {
                                     connection.commit(function(err) {
                                         if(err) {
@@ -155,10 +152,20 @@ module.exports = function(app, connectionPool) {
                                     //commit success
                                     });//commit
                                 }else {
-                                    //fail
+                                    //failㅁ
                                     connection.release();
                                     res.redirect('happyday/error');     //에러처리?!?!?
                                 }
+                                
+                                connection.release();
+                                res.redirect('../vote/votemain');
+                                    
+                                /* 투표 등록 메일 발송 */
+                                req.body.user_name = req.session.user_name;
+                                req.body.type = 'VOTEREG';
+                                const common = new (require("../common/common.js"))();
+                                common.sendMail(req.body);
+                                
                             }
                         });
                 

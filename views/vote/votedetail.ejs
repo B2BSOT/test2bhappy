@@ -5,6 +5,7 @@
 <script src="../../javascripts/jquery.js"></script>
 <script src="../../javascripts/jquery.min.js"></script>
 <link rel="stylesheet" type="text/css" href="/dist/semantic.min.css">
+<link rel="stylesheet" type="text/css" href="/stylesheets/common.css">
 <script src="/dist/semantic.min.js"></script>
 <script type="text/javascript" src="//apis.daum.net/maps/maps3.js?apikey=770adf51a5a246189a8db45706f471ce&libraries=services"></script>
 <meta charset="utf-8">
@@ -55,6 +56,7 @@
         var login_id     = "<%=session.user_id %>";
         var vote_state   = "<%=data.master_info.state%>";
         
+        $("#loader").hide();
 
         // date_resizing() 
         //   ├ input  : 20170831000000
@@ -92,6 +94,8 @@
     
     function click_checkbutton() {
     	console.log("check button CLICK : " + this.id);
+    	
+    	$("#loader").show();
         	
     	var voteData = {};
     	var item_id = this.id;
@@ -116,6 +120,8 @@
                 	}else {
                     	alert("투표하였습니다.");
                 	}
+                	
+                	$("#loader").hide();
                     
                     var detail_info_list = result.data.detail_info;
                     var vote_total_cnt = result.data.vote_total_cnt;
@@ -683,11 +689,6 @@
                 </div>
 				<!--투표현황 modal End-->
 				
-				
-				
-				
-				
-				
 			</div>
 		</div>
 		<!-- 상세보기 segment -->
@@ -695,6 +696,16 @@
 	<!-- content -->
 </div>
 <!-- container -->
+
+<!-- Loading div -->
+<div class="common-loading" id="loader">
+  <div class="ui active dimmer">
+    <div class="ui indeterminate text loader">투표 반영중입니다.</div>
+  </div>
+  <p></p>
+</div>
+
+
 </body>
 </html>
 

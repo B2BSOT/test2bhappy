@@ -101,8 +101,8 @@ module.exports = function common() {
                     req_point: maildata.req_point+"P",
                     place_name: maildata.place_name        
                 };
-                
                 break;
+                
             case 'HDCANCEL':
                 var userList = maildata.userList;
                 var emails = "";
@@ -115,6 +115,20 @@ module.exports = function common() {
                 mailOptions.template = "delhappyday";
                 mailOptions.context = {
                     happyday_name: maildata.happyday_name,
+                };
+                break;
+                
+            case 'VOTEREG':
+                const deadline = maildata.vote_deadline;
+                
+                mailOptions.to = "ljw82@sk.com";
+                mailOptions.subject = "[NEW VOTE] " + maildata.vote_name;
+                mailOptions.template = "regvote";
+                mailOptions.context = {
+                    user_name: maildata.user_name,
+                    vote_deadline: deadline.substring(0,4)+"/"+deadline.substring(4,6)+"/"+deadline.substring(6,8),
+                    vote_contents: maildata.vote_contents,
+                    parti_org_id: maildata.parti_org_id
                 };
                 
                 break;
