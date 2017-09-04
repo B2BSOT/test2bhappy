@@ -257,23 +257,25 @@
         
         //┌───────────────────────────────────────────────┐
         //│ init_vote_show() : 비밀투표 경우			  │
-        //│   ├ 현재 투표 개수 hide                       │
-        //│   ├ progress bar : 0%로 통일                 │  
+        //│   ├ 투표현황 button hide                      │
+        //│   ├ 등록자만 투표현황 button show             │  
         //│                                               │
         //└───────────────────────────────────────────────┘
         function init_vote_show(secret_yn) {
+            
+            var login_id     = "<%=session.user_id %>";
+            var vote_reg_id  = "<%=data.master_info.reg_user_id %>";
+            
             $('.ui.teal.progress').progress();
             if(secret_yn == "Y") {
                 $("#vote_current_state_button").hide();
+                
+                if(login_id == vote_reg_id){
+                    $("#vote_current_state_button").show();
+                }
+                
             }
-        // 	if(secret_yn == "Y") {
-        // 		$('.vote_cnt').hide();
-        // 		$('.ui.teal.progress.active').attr('data-percent',"0");	
-        // 	}else {
-        // 		$('.ui.teal.progress').progress();
-        // 	}
-        	
-        	
+          	
         }
         
          //┌───────────────────────────────────────────────┐
@@ -588,9 +590,10 @@
 				
 					<a class="author"><%= data.master_info.user_name %></a>
 					<button class="yellow ui button" id="vote_current_state_button" onClick="javascript:vote_current_state(<%= data.master_info.vote_id%>)" style="float: right">투표 현황</button>
-					<p>
-						<span class="date"><%= data.master_info.comment %></span>
-					</p>
+					<pre style="white-space: pre-wrap; font-size:1em; font-family:'Jeju Gothic', serif !important; margin-left: 15px; ">
+						<!--<span class="date"></span>-->
+						<p style="margin-top:-20px"><%= data.master_info.comment %></p>
+					</pre>
 					
 					<br>
 					<div class="ui two column grid">
