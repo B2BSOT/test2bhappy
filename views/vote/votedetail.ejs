@@ -30,7 +30,6 @@
     	}else { //"OK" 
     	}
         
-
         //변수 설정
         // ├ deadline_dtm     = 마감일시
         // ├ parti_org_id     = SM or 팀 코드
@@ -56,8 +55,6 @@
         var login_id     = "<%=session.user_id %>";
         var vote_state   = "<%=data.master_info.state%>";
         
-        $("#loader").hide();
-
         // date_resizing() 
         //   ├ input  : 20170831000000
         //   └ output : 2017년 08월 31일 
@@ -116,13 +113,13 @@
             	console.log(result);
             	if(result.status == 200){
 					if(result.type == "delete") {
-                    	alert("투표를 취소했습니다.");
+                    //	alert("투표를 취소했습니다.");
                 	}else {
-                    	alert("투표하였습니다.");
+                    //	alert("투표하였습니다.");
                 	}
                 	
                 	$("#loader").hide();
-                    
+                	
                     var detail_info_list = result.data.detail_info;
                     var vote_total_cnt = result.data.vote_total_cnt;
                     var secret_yn = result.data.master_info.secret_yn;
@@ -689,18 +686,18 @@
 			</div>
 		</div>
 		<!-- 상세보기 segment -->
+		
+        <!-- Loader segment -->
+        <div id="loader" style="display: none">
+            <div class="ui active dimmer">
+                <div class="ui small text loader">Loading</div>
+            </div>
+        </div>		
 	</div>
 	<!-- content -->
 </div>
 <!-- container -->
 
-<!-- Loading div -->
-<div class="common-loading" id="loader">
-  <div class="ui active dimmer">
-    <div class="ui indeterminate text loader">투표 반영중입니다.</div>
-  </div>
-  <p></p>
-</div>
 
 
 </body>
