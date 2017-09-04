@@ -459,7 +459,7 @@
     			<div class="ui sub header">
     				 항목입력(*)
     			</div>
-  
+      
   			  <% if(data1.load_yn == 'N') { %>
       			<input type="text" placeholder="항목을 입력하세요." name="vote_item" maxlength="20">
       			<input type="text" placeholder="항목을 입력하세요." name="vote_item" maxlength="20">
@@ -470,6 +470,8 @@
     			<% } %>
     			
     			<div id="item_list"> </div>
+    			<div style="margin-top:10px;"> </div>
+    			
     		  <button type="button" class="small circular ui icon button" id="add_item" name="add_item" style="background-color:#ee5252; color:white" onclick=javascript:addItemList() >
     		    <i class="icon plus"></i>항목추가
     		  </button>
