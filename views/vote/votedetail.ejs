@@ -5,7 +5,6 @@
 <script src="../../javascripts/jquery.js"></script>
 <script src="../../javascripts/jquery.min.js"></script>
 <link rel="stylesheet" type="text/css" href="/dist/semantic.min.css">
-<link rel="stylesheet" type="text/css" href="/stylesheets/common.css">
 <script src="/dist/semantic.min.js"></script>
 <script type="text/javascript" src="//apis.daum.net/maps/maps3.js?apikey=770adf51a5a246189a8db45706f471ce&libraries=services"></script>
 <meta charset="utf-8">
@@ -30,7 +29,6 @@
     	}else { //"OK" 
     	}
         
-
         //변수 설정
         // ├ deadline_dtm     = 마감일시
         // ├ parti_org_id     = SM or 팀 코드
@@ -56,8 +54,6 @@
         var login_id     = "<%=session.user_id %>";
         var vote_state   = "<%=data.master_info.state%>";
         
-        $("#loader").hide();
-
         // date_resizing() 
         //   ├ input  : 20170831000000
         //   └ output : 2017년 08월 31일 
@@ -116,13 +112,13 @@
             	console.log(result);
             	if(result.status == 200){
 					if(result.type == "delete") {
-                    	alert("투표를 취소했습니다.");
+                    //	alert("투표를 취소했습니다.");
                 	}else {
-                    	alert("투표하였습니다.");
+                    //	alert("투표하였습니다.");
                 	}
                 	
                 	$("#loader").hide();
-                    
+                	
                     var detail_info_list = result.data.detail_info;
                     var vote_total_cnt = result.data.vote_total_cnt;
                     var secret_yn = result.data.master_info.secret_yn;
@@ -260,23 +256,25 @@
         
         //┌───────────────────────────────────────────────┐
         //│ init_vote_show() : 비밀투표 경우			  │
-        //│   ├ 현재 투표 개수 hide                       │
-        //│   ├ progress bar : 0%로 통일                 │  
+        //│   ├ 투표현황 button hide                      │
+        //│   ├ 등록자만 투표현황 button show             │  
         //│                                               │
         //└───────────────────────────────────────────────┘
         function init_vote_show(secret_yn) {
+            
+            var login_id     = "<%=session.user_id %>";
+            var vote_reg_id  = "<%=data.master_info.reg_user_id %>";
+            
             $('.ui.teal.progress').progress();
             if(secret_yn == "Y") {
                 $("#vote_current_state_button").hide();
+                
+                if(login_id == vote_reg_id){
+                    $("#vote_current_state_button").show();
+                }
+                
             }
-        // 	if(secret_yn == "Y") {
-        // 		$('.vote_cnt').hide();
-        // 		$('.ui.teal.progress.active').attr('data-percent',"0");	
-        // 	}else {
-        // 		$('.ui.teal.progress').progress();
-        // 	}
-        	
-        	
+          	
         }
         
          //┌───────────────────────────────────────────────┐
@@ -591,9 +589,10 @@
 				
 					<a class="author"><%= data.master_info.user_name %></a>
 					<button class="yellow ui button" id="vote_current_state_button" onClick="javascript:vote_current_state(<%= data.master_info.vote_id%>)" style="float: right">투표 현황</button>
-					<p>
-						<span class="date"><%= data.master_info.comment %></span>
-					</p>
+					<pre style="white-space: pre-wrap; font-size:1em; font-family:'Jeju Gothic', serif !important; margin-left: 15px; ">
+						<!--<span class="date"></span>-->
+						<p style="margin-top:-20px"><%= data.master_info.comment %></p>
+					</pre>
 					
 					<br>
 					<div class="ui two column grid">
@@ -686,7 +685,11 @@
                 </div>
 				<!--투표현황 modal End-->
 				
-			</div>
+				<!-- Loader-->
+                <div class="ui active inverted dimmer" id="loader" style="display: none">
+                    <div class="ui small text loader">투표 반영중</div>
+                </div>
+            </div>	
 		</div>
 		<!-- 상세보기 segment -->
 	</div>
@@ -694,13 +697,6 @@
 </div>
 <!-- container -->
 
-<!-- Loading div -->
-<div class="common-loading" id="loader">
-  <div class="ui active dimmer">
-    <div class="ui indeterminate text loader">투표 반영중입니다.</div>
-  </div>
-  <p></p>
-</div>
 
 
 </body>
