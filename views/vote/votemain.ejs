@@ -59,7 +59,7 @@
 				</div>
 				<% for (var i=0; i < data.master_info.length; i++) { %>
 
-					<% if (data.master_info[i].parti_org_id == data.user_info[0].team_id ) { %>
+					<% if (data.master_info[i].parti_org_id == data.user_info[0].team_id || data.master_info[i].parti_org_id == data.user_info[0].sm_id ) { %>
 						<div class="card">
 							<div class="content" onclick="javascript:goDetail('<%=data.master_info[i].vote_id%>')" style="background-color:#ee5252; max-height:56px">
 
@@ -70,17 +70,14 @@
 
 								<div class="right floated meta" style=" font-size:0.8em">
 									<% if (data.master_info[i].deadline >= data.master_info[i].systime) {  %>
-										<div class="ui orange label">진행중 D-
-											<%=data.master_info[i].ddate - data.master_info[i].sysdate %>
-										</div>
-										<% }else if( data.master_info[i].state=='C' ){  %>
-											<!--(data.master_info[i].deadline < data.master_info[i].systime)||-->
-											<div class="ui black label">마감</div>
-											<% }else { %>
-												<div class="ui orange label">진행중 D+
-													<%=data.master_info[i].sysdate - data.master_info[i].ddate  %>
-												</div>
-												<% } %>
+										<div class="ui orange label">진행중 D -
+											<%=data.master_info[i].dday  %></div>
+									<% } else if( data.master_info[i].state=='C' ){  %>
+										<div class="ui black label">마감</div>
+									<% } else { %>
+										<div class="ui yellow label">미완료</div>
+									<% } %>	
+
 								</div>
 							</div>
 							<div class="content" onclick="javascript:goDetail('<%=data.master_info[i].vote_id%>')">
@@ -101,16 +98,14 @@
 								</div>
 								<br>
 
-								<% if( data.master_info[i].state == 'P' && (data.master_info[i].vote_id != data.user_info[0].vote_id )) { %>
+								<% if( data.master_info[i].state == 'C' ) { %>
+									<button class="fluid gray ui button" style="background-color:#4D586A;"><span style="color:#fff;">결과 확인하기</span></button>
+								<% }else if( data.master_info[i].vote_id == data.user_info[0].vote_id){%>
+									<button class="fluid brown ui button" onclick="javascript:goDetail('<%=data.master_info[i].vote_id%>')" style="background-color:#673434;">투표현황 보기</button>
+								<% }else if( (data.master_info[i].vote_id != data.user_info[0].vote_id) || data.user_info[0].vote_id == null ) { %>
 									<button class="fluid brown ui button" onclick="javascript:goDetail('<%=data.master_info[i].vote_id%>')" style="background-color:#673434;"> <i class="hand pointer icon"></i>투표하러 가기</button>
-									<% }else if(data.master_info[i].state == 'P' && (data.master_info[i].vote_id == data.user_info[0].vote_id)){%>
-										<button class="fluid brown ui button" onclick="javascript:goDetail('<%=data.master_info[i].vote_id%>')" style="background-color:#673434;">투표현황 보기</button>
-										<% }else if(data.master_info[i].state == 'C') {%>
-											<button class="fluid gray ui button" style="background-color:#4D586A;"><span style="color:#fff;">결과 확인하기</span></button>
-											<% }%>
-
-
-
+								<% }%>										
+																				
 							</div>
 
 

@@ -85,23 +85,25 @@ module.exports = function(app) {
         vote_master.findAll({
             raw : true,
             attributes : [
-                'vote_id', 'parti_org_id', 'reg_user_id', 'reg_dtm', 'deadline', 'state',
-                [models.Sequelize.fn('left', models.Sequelize.col('subject'),15), 'subject'],
-                [models.Sequelize.fn('date_format',models.Sequelize.fn('now'), '%Y%m%d%H%i%s'),'systime'],
-                [models.Sequelize.fn('date_format',models.Sequelize.fn('now'), '%Y%m%d'),'sysdate'],
-                [models.Sequelize.fn('date_format',models.Sequelize.fn('left', models.Sequelize.col('reg_dtm'), 8), '%m월 %d일'), 'reg_date'],
-                [models.Sequelize.fn('substr',"일월화수목금토",models.Sequelize.fn('dayofweek',models.Sequelize.fn('left', models.Sequelize.col('reg_dtm'), 8)) , 1), 'reg_week'],
-                [models.Sequelize.fn('date_format', models.Sequelize.col('reg_dtm'), '%H:%i'), 'reg_time'], 
-                [models.Sequelize.fn('left', models.Sequelize.col('deadline'),8), 'ddate'],
-                [models.Sequelize.fn('date_format',models.Sequelize.fn('left', models.Sequelize.col('deadline'), 8), '%m월 %d일'), 'dday_date'],
-                [models.Sequelize.fn('substr',"일월화수목금토",models.Sequelize.fn('dayofweek',models.Sequelize.fn('left', models.Sequelize.col('deadline'), 8)) , 1), 'dday_week'],
-                [models.Sequelize.fn('date_format', models.Sequelize.col('deadline'), '%H:%i'), 'dday_time'],
-                [models.Sequelize.fn('left', models.Sequelize.col('comment'),15), 'comment'],
-                [models.Sequelize.col('user.id'), 'id'],
-                [models.Sequelize.col('user.user_name'), 'user_name'],
-                [models.Sequelize.col('user.user_img'), 'user_img'],
-                [models.Sequelize.col('user.sm_id'), 'sm_id'],
-                [models.Sequelize.col('user.com_org.org_nm'), 'org_nm']
+                'vote_id', 'parti_org_id', 'reg_user_id', 'reg_dtm', 'deadline', 'state'
+                , [models.Sequelize.fn('left', models.Sequelize.col('subject'),15), 'subject']
+                , [models.Sequelize.fn('date_format',models.Sequelize.fn('now'), '%Y%m%d%H%i%s'),'systime']
+                , [models.Sequelize.fn('date_format',models.Sequelize.fn('now'), '%Y%m%d'),'sysdate']
+                , [models.Sequelize.fn('date_format',models.Sequelize.fn('left', models.Sequelize.col('reg_dtm'), 8), '%m월 %d일'), 'reg_date']
+                , [models.Sequelize.fn('substr',"일월화수목금토",models.Sequelize.fn('dayofweek',models.Sequelize.fn('left', models.Sequelize.col('reg_dtm'), 8)) , 1), 'reg_week']
+                , [models.Sequelize.fn('date_format', models.Sequelize.col('reg_dtm'), '%H:%i'), 'reg_time']
+                , [models.Sequelize.fn('left', models.Sequelize.col('deadline'),8), 'ddate']
+                , [models.Sequelize.fn('date_format',models.Sequelize.fn('left', models.Sequelize.col('deadline'), 8), '%m월 %d일'), 'dday_date']
+                , [models.Sequelize.fn('substr',"일월화수목금토",models.Sequelize.fn('dayofweek',models.Sequelize.fn('left', models.Sequelize.col('deadline'), 8)) , 1), 'dday_week']
+                , [models.Sequelize.fn('date_format', models.Sequelize.col('deadline'), '%H:%i'), 'dday_time']
+                , [models.Sequelize.fn('left', models.Sequelize.col('comment'),15), 'comment']
+                , [models.Sequelize.col('user.id'), 'id']
+                , [models.Sequelize.col('user.user_name'), 'user_name']
+                , [models.Sequelize.col('user.user_img'), 'user_img']
+                , [models.Sequelize.col('user.sm_id'), 'sm_id']
+                , [models.Sequelize.col('user.com_org.org_nm'), 'org_nm']
+                , [models.sequelize.fn('datediff', models.Sequelize.fn('left', models.Sequelize.col('deadline'),8), models.Sequelize.fn('date_format',models.Sequelize.fn('now'), '%Y%m%d')), 'dday']
+
                 //,[models.Sequelize.fn('count', models.Sequelize.col('vote_detail.user_id')), 'cnt']
             ], // 실제 결과 컬럼
             include : [ 
