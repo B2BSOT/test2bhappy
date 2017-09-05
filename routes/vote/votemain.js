@@ -130,7 +130,7 @@ module.exports = function(app) {
                 [models.Sequelize.col('vote_detail.vote_id'), 'vote_id'],
             ], 
             include : [{ model:vote_detail, as: 'vote_detail',where: {user_id : {$col : 'user.id'}}}],
-            where :  {id: user_id } 
+            where :  { id: user_id } 
             }).then(user_info => {
                 data.master_info = master_info;
                 console.log("**RESULT DATA : " + JSON.stringify(data.master_info));
