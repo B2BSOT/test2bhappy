@@ -577,7 +577,7 @@
 <div class="ui container">
 	<div class="content">
 		<div class="ui segments">
-			<div class="ui segment" style="background-color:#ffB914;">
+			<div class="ui segment" style="background-color:#ee5252">
 				<div class="header" href="#">
 					<span style="font-family: 'Jeju Gothic'; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block; line-height: 1.2; font-size:1.5em; letter-spacing:-1.4px; width:100%; color:#FFFFFF"><%= data.master_info.subject %></span>
 				</div>
@@ -588,7 +588,9 @@
 				</div>
 				
 					<a class="author"><%= data.master_info.user_name %></a>
-					<button class="yellow ui button" id="vote_current_state_button" onClick="javascript:vote_current_state(<%= data.master_info.vote_id%>)" style="float: right">투표 현황</button>
+					<button class="yellow small circular ui icon button" id="vote_current_state_button" onClick="javascript:vote_current_state(<%= data.master_info.vote_id%>)" style="float: right">
+					    투표 현황
+					</button>
 					<pre style="white-space: pre-wrap; font-size:1em; font-family:'Jeju Gothic', serif !important; margin-left: 15px; ">
 						<!--<span class="date"></span>-->
 						<p style="margin-top:-20px"><%= data.master_info.comment %></p>
@@ -607,11 +609,15 @@
 				<table class="unstackable ui definition table" id="vote_detail_table">
 					<!-- setVoteItemDetail -->
 				</table>
-				<div class="ui buttons">
-					<button class="yellow ui button" id ="add_item_button" onClick="javascript:show_modal()">항목 추가하기</button>
-					<button class="brown ui button" id="update_button" onClick="javascript:goto_update_vote(<%= data.master_info.vote_id%>)" style="margin-left: 10px;">수정하기</button>
-					<button class="red ui button" id="delete_button" onClick="javascript:delete_vote(<%= data.master_info.vote_id%>)" style="margin-left: 10px;">삭제하기</button>
-				</div>
+
+					<button class="small circular ui icon button" id ="add_item_button" style="background-color:#ee5252; color:white; margin-top : -5px" onClick="javascript:show_modal()">
+					    <i class="icon plus"></i>항목추가
+					</button>
+					<div class="ui two bottom attached buttons" style="margin-top : 20px"> 
+    					<button class="ui button" id="update_button" onClick="javascript:goto_update_vote(<%= data.master_info.vote_id%>)" style="background-color:#ee5252; color:white">수정</button>
+    					<button class="ui button" id="delete_button" onClick="javascript:delete_vote(<%= data.master_info.vote_id%>)" style="background:grey; color:white">삭제</button>
+					</div>
+
 				
 				<!--항목추가 modal Start-->
 				<div class="ui longer modal item add">
