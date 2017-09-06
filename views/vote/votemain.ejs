@@ -94,20 +94,21 @@
 
 
 								<div class="description">
-									<%=data.master_info[i].comment%>...<%=data.master_info[i].vote_id%> // <%=data.user_info[0].vote_id%>
+									<%=data.master_info[i].comment%>...
 								</div>
 								<br>
-								<% if( data.master_info[i].state == 'C' ) { %>
+								<!-- for (var k=0; k < data.detail_info.length; k++) -->
+								<!-- else if( data.master_info[i].vote_id == data.detail_info[k].vote_id ) -->
+						
+								<% if( data.master_info[i].state == 'C') { %>
 									<button class="fluid gray ui button" style="background-color:#4D586A;"><span style="color:#fff;">결과 확인하기</span></button>
-								<% }else if( (data.master_info[i].vote_id != data.user_info[0].vote_id) ) { %>
+								<% }else if( data.master_info[i].vote_id != null) { %>
 									<button class="fluid brown ui button" onclick="javascript:goDetail('<%=data.master_info[i].vote_id%>')" style="background-color:#673434;"> <i class="hand pointer icon"></i>투표하러 가기</button>
-								<% }else {%>
+								<% }else  { %>
 									<button class="fluid brown ui button" onclick="javascript:goDetail('<%=data.master_info[i].vote_id%>')" style="background-color:#673434;">투표현황 보기</button>
-								<% }%>										
-													
+																
+							<% }%>						
 							</div>
-
-
 						</div>
 						<br>
 						<% } %>

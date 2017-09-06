@@ -15,8 +15,7 @@ module.exports = function(app) {
         var vote_detail = models.vote_detail;
         var com_org = models.com_org;
         var user = models.user;
-        var user_vote_detail = models.user_vote_detail;
-        
+       
         var data = {}; 
 
         var user_id = req.session.user_id;
@@ -82,6 +81,23 @@ module.exports = function(app) {
         user.belongsTo(vote_detail, {foreignKey: 'id', targetKey: 'user_id'});
         vote_detail.hasMany(user, {as: 'user', foreignKey: 'user_id'});        
 
+         vote_master.update(
+             {
+             state : 'C'
+             }
+             ,{ 
+             // lt: '<', lte: '<=', gt: '>', gte: '>='     
+             where : { 'deadline' : {$lt : '20170831000000' } } 
+             //where : { 'deadline' : {$gt : new Date(new Date() - 24 * 60 * 60 * 1000) } } 
+             //where : { 'deadline' : {$gt : new Date().toString(14)} }             
+             //[models.Sequelize.fn('date_format',models.Sequelize.fn('now'), '%Y%m%d%H%i%s')]
+             ,returning: true
+             }
+         ).then(update_info => {
+             return update_info;
+         });
+        
+        
         vote_master.findAll({
             raw : true,
             attributes : [
@@ -103,8 +119,6 @@ module.exports = function(app) {
                 , [models.Sequelize.col('user.sm_id'), 'sm_id']
                 , [models.Sequelize.col('user.com_org.org_nm'), 'org_nm']
                 , [models.sequelize.fn('datediff', models.Sequelize.fn('left', models.Sequelize.col('deadline'),8), models.Sequelize.fn('date_format',models.Sequelize.fn('now'), '%Y%m%d')), 'dday']
-
-                //,[models.Sequelize.fn('count', models.Sequelize.col('vote_detail.user_id')), 'cnt']
             ], // 실제 결과 컬럼
             include : [ 
             {
@@ -126,41 +140,45 @@ module.exports = function(app) {
             user.findAll({
             raw : true,
             attributes : [
-                'id','user_name','sm_id', 'team_id', 
-                [models.Sequelize.col('vote_detail.vote_id'), 'vote_id'],
-            ], 
-            include : [{ model:vote_detail, as: 'vote_detail',where: {user_id : {$col : 'user.id'}}}],
-            where :  { id: user_id } 
+                'id','user_name','sm_id', 'team_id'
+                //,[models.Sequelize.col('vote_detail.vote_id'), 'vote_id']
+            ]
+//            ,include : [{ model:vote_detail, as: 'vote_detail',where: {user_id : {$col : 'user.id'}}}]
+            ,where :  { id: user_id } 
             }).then(user_info => {
+                data.master_info = master_info;
+                data.user_info = user_info;
+
+            vote_detail.findAll({
+            raw : true,
+            attributes : [
+                'vote_id'
+            ]
+            ,where :  { user_id: user_id } 
+
+            }).then(detail_info => {
+                
                 data.master_info = master_info;
                 console.log("**RESULT DATA : " + JSON.stringify(data.master_info));
                 data.user_info = user_info;
                 console.log("**USER DATA : " + JSON.stringify(data.user_info));
-                
+                data.detail_info = detail_info;
+                console.log("**DETAIL DATA : " + JSON.stringify(data.detail_info));
+                                
                 console.log("****************data***************"+data);
             
                 res.render('vote/votemain', {data: data,  session : req.session});    
-                
+            }).catch(function(err) {
+            console.log(err);
+        });    
             }).catch(function(err) {
                 console.log(err);
             });
             console.log("b");
-            
-            //console.log("**RESULT DATA : " + JSON.stringify(data));
-        
-            // res.render('vote/votemain', {data : data, session : req.session});    
-            
+       
         }).catch(function(err) {
             console.log(err);
         });
     });
 
 }
-
-/*
- * 내가 보면 안되는 vote_master.vote_id는 1)쿼리로 떨어지는 조건문으로 이미 걸러진다 따라서 
- * user.id랑 조인한 vote_detail.vote_id 랑 vote_master의 id랑 다르면 투표안한 상태, 같으면 투표한 상태
- * 문제는 detail.user_id 가 있는지 보면 되는데 문제는 등록자는 투표안했는데도 detail에 들어있다 ... 
- * 화면에서 reg_user_id =user_id 인 경우만 투표하기로 
- * 
- */
