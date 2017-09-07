@@ -252,7 +252,7 @@ module.exports = function(app) {
             next(); // NEXT middleware
             
         }).catch(function(err) {
-            console.log(err);
+            
             next(err);
         });;
     }
