@@ -106,10 +106,10 @@ module.exports = function(app, connectionPool) {
                 
                 ////
                 
-                connection.query('insert into vote_master(subject, comment, reg_user_id, reg_dtm, deadline, modify_dtm, state, parti_org_id, multi_yn, secret_yn, add_item_yn, noti_yn)' 
+                connection.query('insert into vote_master(subject, comment, reg_user_id, reg_dtm, deadline, modify_dtm, state, parti_org_id, multi_yn, secret_yn, add_item_yn) ' 
                                + 'values(?,?,?,date_format(sysdate(), "%Y%m%d%H%i%s"),?,date_format(sysdate(), "%Y%m%d%H%i%s"),"P",'
-                                     + '(case ? when "Team" then (select team_id from user where id = ?) when "SM" then (select sm_id from user where id = ?) else 0 end),?,?,?,?);'
-                             , [req.body.vote_name, req.body.vote_contents, req.session.user_id, req.body.vote_deadline, req.body.parti_org_id , req.session.user_id , req.session.user_id , req.body.multi_yn, req.body.secret_yn, req.body.add_item_yn, req.body.noti_yn], function(error, rows) {
+                                     + '(case ? when "Team" then (select team_id from user where id = ?) when "SM" then (select sm_id from user where id = ?) else 0 end),?,?,?);'
+                             , [req.body.vote_name, req.body.vote_contents, req.session.user_id, req.body.vote_deadline, req.body.parti_org_id , req.session.user_id , req.session.user_id , req.body.multi_yn, req.body.secret_yn, req.body.add_item_yn], function(error, rows) {
                             if(error){
                                 console.log("ERROR1");
                                 

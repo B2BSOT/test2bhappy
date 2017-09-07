@@ -19,7 +19,7 @@ module.exports = function(app, connectionPool) {
                             + ', case when vm.multi_yn = "Y" then "checked" else "" end multiYnShow'
                             + ', case when vm.secret_yn = "Y" then "checked" else "" end secretYnShow'
                             + ', case when vm.add_item_yn = "Y" then "checked" else "" end addItemYnShow'
-                            + ', case when vm.noti_yn = "Y" then "checked" else "" end notiYnShow'
+//                            + ', case when vm.noti_yn = "Y" then "checked" else "" end notiYnShow'
                             + ', (select count(*) from vote_detail vd where vd.vote_id = vm.vote_id) as voteCount'
                             + ', case when vm.add_item_yn = "N" then "disabled" else "" end addItemButtonShow from vote_master vm where vm.vote_id = ?;'
                             , [req.params.vote_id], function(error, rows1) {
@@ -66,10 +66,10 @@ module.exports = function(app, connectionPool) {
                 connection.query('update vote_master '
                                 +'set comment = ?, reg_user_id = ?, deadline = ?, modify_dtm = date_format(sysdate(), "%Y%m%d%H%i%s") '
                                 +', parti_org_id = (case ? when "Team" then (select team_id from user where id = ?) when "SM" then (select sm_id from user where id = ?) else 0 end) '
-                                +', multi_yn = ?, secret_yn = ?, add_item_yn = ?, noti_yn = ? '
+                                +', multi_yn = ?, secret_yn = ?, add_item_yn = ? '
                                 +' where vote_id = ?;'
                              , [req.body.vote_contents, req.session.user_id, req.body.vote_deadline, req.body.parti_org_id, req.session.user_id, req.session.user_id, req.body.multi_yn,
-                                req.body.secret_yn, req.body.add_item_yn, req.body.noti_yn, req.body.vote_id], function(error, rows) {
+                                req.body.secret_yn, req.body.add_item_yn, req.body.vote_id], function(error, rows) {
                                     
                                 console.log("vote_id"+ req.body.vote_id);
                                     

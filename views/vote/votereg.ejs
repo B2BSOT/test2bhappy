@@ -172,7 +172,7 @@
       var multi_yn = document.voteregForm.multi_chk.checked;                //복수 선택 여부
       var secret_yn = document.voteregForm.secret_chk.checked;              //익명 투표 여부
       var add_item_yn = document.voteregForm.add_item_chk.checked;          //항목 추가 여부
-      var noti_yn = document.voteregForm.noti_chk.checked;                  //E-mail전송 여부
+      //var noti_yn = document.voteregForm.noti_chk.checked;                  //E-mail전송 여부
       
       var flag = 0;  // 정합성 체크 var
 
@@ -333,12 +333,12 @@
         $('#add_item_yn').val('N');
       }
       
-      if(noti_yn){
-        $('#noti_yn').val('Y');
-      }
-      else{
-        $('#noti_yn').val('N');
-      }      
+      // if(noti_yn){
+      //   $('#noti_yn').val('Y');
+      // }
+      // else{
+      //   $('#noti_yn').val('N');
+      // }      
       
 
       //모두 정상 입력 했을 시, 포인트 수정 불가 공지 진행

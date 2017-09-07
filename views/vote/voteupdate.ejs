@@ -118,7 +118,7 @@
         var multi_yn = document.voteupForm.multi_chk.checked;         //복수 선택 여부
         var secret_yn = document.voteupForm.secret_chk.checked;       //익명 투표 여부
         var add_item_yn = document.voteupForm.add_item_chk.checked;   //항목 추가 여부
-        var noti_yn = document.voteupForm.noti_chk.checked;           //E-mail전송 여부
+     //   var noti_yn = document.voteupForm.noti_chk.checked;           //E-mail전송 여부
         
         var flag = 0;  // 정합성 체크 var
         var today_date_ojbect = new Date();                     // 현재 날짜 object
@@ -229,12 +229,12 @@
           $('#add_item_yn').val('N');
         }
         
-        if(noti_yn){
-          $('#noti_yn').val('Y');
-        }
-        else{
-          $('#noti_yn').val('N');
-        }
+        // if(noti_yn){
+        //   $('#noti_yn').val('Y');
+        // }
+        // else{
+        //   $('#noti_yn').val('N');
+        // }
         
         if(flag == 1){
           var check = confirm("투표를 수정하시겠습니까?");
@@ -448,7 +448,7 @@
             <!--<div class="column">-->
             <!--  <div class="ui toggle checkbox">-->
                 <!--수정불가능-->
-            <!--    <input type="checkbox" id="noti_chk" name="noti_chk" disabled="false" readonly="true" <%=data1.notiYnShow%>>-->
+            <!--    <input type="checkbox" id="noti_chk" name="noti_chk" disabled="false" readonly="true" %=data1.notiYnShow%>-->
             <!--    <label>공지(e-mail)</label>-->
             <!--  </div>-->
             <!--</div>-->
