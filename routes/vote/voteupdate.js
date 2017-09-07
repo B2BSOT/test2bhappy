@@ -53,7 +53,7 @@ module.exports = function(app, connectionPool) {
     // 3. 해피데이 등록 메일 발송(메일 발송 여부에 따라)
     app.post('/vote_update', function(req, res, next) {
         connectionPool.getConnection(function(err, connection) {
-            //console.log(req.body);
+            console.log(req.body);
 
             connection.beginTransaction(function(err) {
                 if(err) {
@@ -65,11 +65,11 @@ module.exports = function(app, connectionPool) {
                 
                 connection.query('update vote_master '
                                 +'set comment = ?, reg_user_id = ?, deadline = ?, modify_dtm = date_format(sysdate(), "%Y%m%d%H%i%s") '
-                                +', parti_org_id = (case ? when "Team" then (select team_id from user where id = ?) when "SM" then (select sm_id from user where id = ?) else 0 end) '
+                                +', parti_org_id = ? '
                                 +', multi_yn = ?, secret_yn = ?, add_item_yn = ? '
                                 +' where vote_id = ?;'
-                             , [req.body.vote_contents, req.session.user_id, req.body.vote_deadline, req.body.parti_org_id, req.session.user_id, req.session.user_id, req.body.multi_yn,
-                                req.body.secret_yn, req.body.add_item_yn, req.body.vote_id], function(error, rows) {
+                             , [req.body.vote_contents, req.session.user_id, req.body.vote_deadline, req.body.parti_org_id, 
+                                req.body.multi_yn, req.body.secret_yn, req.body.add_item_yn, req.body.vote_id], function(error, rows) {
                                     
                                 console.log("vote_id"+ req.body.vote_id);
                                     

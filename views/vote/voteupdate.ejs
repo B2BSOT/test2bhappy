@@ -28,10 +28,12 @@
   // 화면 reload 될 때마다 실행 되는 함수
   $(document).ready(function() {
     
-
-      // 참여범위 드롭다운
+    // 참여범위 변경시 hidden값 변경 
     $('#selectionDropdown').dropdown({
-     });
+      onChange: function(val) {
+        $('#parti_org_id').val(val);  
+      }
+    });
      
       // 마감 날짜(등록,수정)
     $('#deadline_dt').calendar({
@@ -114,7 +116,6 @@
       
       if(<%=data1.voteCount%> == 0){  //투표자가 없을 경우 start,
 
-        var parti_org_id = $("#parti_org_id").val();                  //투표 참석 범위
         var multi_yn = document.voteupForm.multi_chk.checked;         //복수 선택 여부
         var secret_yn = document.voteupForm.secret_chk.checked;       //익명 투표 여부
         var add_item_yn = document.voteupForm.add_item_chk.checked;   //항목 추가 여부
@@ -202,11 +203,6 @@
           flag = 1;
         }
 
-        // 참석 범위 지정
-        if(parti_org_id == ''){                              //참석범위를 수정하지 않았을 경우,
-          $('#parti_org_id').val('<%=data1.partiShow%>');  //기존 DB 데이터로 지정
-        }
-        
         //기타 옵션 체크박스 체크여부에 따라 value값 지정
         if(multi_yn){
           $('#multi_yn').val('Y');
@@ -265,8 +261,8 @@
         //'상세내용' 글자수 체크 코딩 추가
 
       }
+    });
   });
-});
 
 
 </script>
@@ -376,31 +372,29 @@
   				
   				<% if(data1.voteCount == 0) { %>
   				  <div id="selectionDropdown" class="ui selection dropdown"  style=" width: 100%;">
-      				<input id="parti_org_id" name="parti_org_id" type="hidden" value="">
-      				
       				<i class="dropdown icon"></i>
       				<div class="default text" style="color: black">
       				  <%=data1.partiShow%>
       				</div>
       				<div class="menu">
-      					<div class="item" data-value="Team">
+      					<div class="item" data-value=<%=session.team_id%>>
       						 Team
       					</div>
-      					<div class="item" data-value="SM">
+      					<div class="item" data-value=<%=session.sm_id%>>
       						 SM
       					</div>
       				</div>
     			  </div>
   				<% }else{ %>
   				  <div id="selectionDropdown" class="ui selection dropdown"  style=" width: 100%;" readonly="true" disabled="false">
-  				    <input id="parti_org_id" name="parti_org_id" type="hidden" value="">
   				    <i class="dropdown icon" ></i>  
 
       				<div class="default text">
       				  <%=data1.partiShow%>
       				</div>
       			</div>
-  				<% } %>  
+  				<% } %>
+  				<input type="hidden" id="parti_org_id" name="parti_org_id"  value=<%=data1.parti_org_id%>>
     			<p class="p validation" style="visibility:hidden;">.</p>
     		</div>
     			
