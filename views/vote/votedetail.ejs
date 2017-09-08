@@ -563,8 +563,12 @@
 					<!--<span class="date"></span>-->
 					<p style="margin-top:-35px"><%= data.master_info.comment %></p>
 				</pre>
-				<div class="ui clearing divider"></div>
-				<div class="ui two column grid" style="margin-top : -20px; margin-bottom : -30px">
+				<!--<div class="ui clearing divider"></div>-->
+
+			</div>
+			<div class="ui segment" style="margin:0; padding:0">
+			    
+				<div class="ui two column grid" style="margin-top : 0.5px; margin-left:0.1px; margin-right:0.1px;" >
 				    <div class= "ui column">
 				        <div id="vote_type"></div>
 				    </div>
@@ -574,8 +578,6 @@
 				        </button>
 				    </div>
 				</div>
-			</div>
-			    
 							<!--<h3>투표 현황</h3>-->
 				<table class="unstackable ui definition table" id="vote_detail_table" >
 					<!-- setVoteItemDetail -->
@@ -584,10 +586,12 @@
                         <div class="ui small text loader">투표 반영중</div>
                     </div>
 				</table>
-			<button class="small circular ui icon button" id ="add_item_button" style="background-color:#ee5252; color:white; margin-left : 12px;" onClick="javascript:show_modal()">
-			    <i class="icon plus"></i>항목추가
-			</button>
-			
+			</div>
+			<div class="ui segment">
+    			<button class="small circular ui icon button" id ="add_item_button" style="background-color:#ee5252; color:white;" onClick="javascript:show_modal()">
+    			    <i class="icon plus"></i>항목추가
+    			</button>
+			</div>
 			<div class="ui segment" style="margin-top : 30px">
 					<div class="ui two bottom attached buttons"> 
     					<button class="ui button" id="update_button" onClick="javascript:goto_update_vote(<%= data.master_info.vote_id%>)" style="background-color:#ee5252; color:white">수정</button>
