@@ -617,41 +617,46 @@
     <!-- Page Content -->
     <div class="ui container">
         <div class="content">
-            <div class="ui segments">
+            <div class="ui segments" style="background-color:white">
                 <div class="ui segment" style="background-color:#ffB914;">
                     <div class="header" href="#"><span style="font-family: 'Jeju Gothic'; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block; line-height: 1.2; font-size:1.5em; letter-spacing:-1.4px; width:100%; color:#FFFFFF"><%= data.happyday_name %></span></div>
                 </div>
                 <div class="ui segment">
                     <img class="ui centered fluid image" src="<%=data.img_url%>" style = "max-height:600px; max-width:800px" >
                 </div>
-            
-                <div class="ui segment">
-                    <div class="two ui buttons">
-                        <button class="yellow ui button" id="detailBtn" onClick="javascript:goDetail('<%=data.happyday_id%>')">상세보기</button>
-                        <button class="ui button" id="postBtn" onClick="javascript:goPostList('<%=data.happyday_id%>')"><span style="color:000000">후기보기</span></button>
-                    </div>
+                <div class="two ui buttons">
+                    <button class="yellow ui button" id="detailBtn" onClick="javascript:goDetail('<%=data.happyday_id%>')">상세보기</button>
+                    <button class="ui button" id="postBtn" style="background-color:#c8c8c8" onClick="javascript:goPostList('<%=data.happyday_id%>')"><span style="color:000000">후기보기</span></button>
+                </div>           
+                <div class="ui segment" style="margin-top:-3px">
     
-                    <div class="ui horizontal segments" style="background-color:#FFFFFF">
-                        <div class="ui segment" style="width:50%">
+                    <!--<div class="ui horizontal segments" style="background-color:#FFFFFF">-->
+                    <div class="ui two column grid">
+                        <!--<div class="ui segment" style="width:50%">-->
+                        <div class="ui column">
                             <div class="image">
                                 <img class="ui avatar image" src="<%=data.user_img%>" onclick="javascript:infoUser('<%=data.reg_user_id%>')"> 
                                 <span style="letter-spacing:-1.4px"> 작성자 : <%= data.user_name %> </span>
                             </div>
     
                         </div>    
-                        <div class="ui segment" style="width:50%">
-                                <p style="margin-top:7px; letter-spacing:-1.2px" > 등록 : <%= data.reg_dtm %> </p>
+                        <!--<div class="ui segment" style="width:50%">-->
+                        <div class="ui column">
+                                <p style="margin-top:7px; letter-spacing:-1px; float:right" > 등록 : <%= data.reg_dtm %> </p>
                         </div>
                     </div>
-                    <div class="ui segment">
+                    <!--<div class="ui segment">-->
+                    <div class="ui clearing divider"></div>
+                    <div class="ui column">
                         <span style="color:#ee5252">
                             <span id='category'>#<%=data.category_code%> </span>
                             <span id='category2'>#<%=data.category_code2%> </span>
                             <span id='category3'>#<%=data.category_code3%></span>
                     </div>
-                </div>
+                <!--</div>-->
                 
-                <div class="ui segment">
+                <!--<div class="ui segment">-->
+                <div class="ui clearing divider"></div>
                     <div class="ui labeled button" tabindex="0" style="background-color:#000000" onClick="javascript:likeHappyDay('<%=data.happyday_id%>')">
                         <div class="ui red button" id="likeY" > 
                             <i class="like icon"></i> 좋아요
@@ -669,8 +674,8 @@
                     </div>
                 </div>
     
-                <div class="ui segment">
-                    <table class="ui definition table">
+                <!--<div class="ui segment">-->
+                    <table class="ui table">
                         <tbody>
                             <tr style = 'max-height:50px'>
                                 <td class="two wide column" style = "margin-top: -15px;">출발일시</td>
@@ -709,7 +714,7 @@
                             </tr>
                         </tbody>
                     </table>
-                </div>
+                <!--</div>-->
     
                 <div class="ui segment">
                     <div id="mapArea"></div>

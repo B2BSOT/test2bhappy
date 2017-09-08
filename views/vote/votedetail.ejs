@@ -575,10 +575,14 @@
 				    </div>
 				</div>
 			</div>
-			
+			    
 							<!--<h3>투표 현황</h3>-->
 				<table class="unstackable ui definition table" id="vote_detail_table" >
 					<!-- setVoteItemDetail -->
+    				<!-- Loader-->
+                    <div class="ui active inverted dimmer" id="loader" style="display: none">
+                        <div class="ui small text loader">투표 반영중</div>
+                    </div>
 				</table>
 			<button class="small circular ui icon button" id ="add_item_button" style="background-color:#ee5252; color:white; margin-left : 12px;" onClick="javascript:show_modal()">
 			    <i class="icon plus"></i>항목추가
@@ -663,10 +667,6 @@
                 </div>
 				<!--투표현황 modal End-->
 				
-				<!-- Loader-->
-                <div class="ui active inverted dimmer" id="loader" style="display: none">
-                    <div class="ui small text loader">투표 반영중</div>
-                </div>
             </div>	
 		</div>
 		<!-- 상세보기 segment -->
