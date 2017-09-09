@@ -579,7 +579,7 @@
 		<div class="ui segments" style="background-color:white">
 			<div class="ui segment" style="background-color:#ee5252">
 				<div class="header" href="#">
-					<span style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block; line-height: 1.2; font-size:1.4em; letter-spacing:-1.4px; width:100%; color:#FFFFFF"><%= data.master_info.subject %></span>
+					<span style="font-family: 'Jeju Gothic'; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block; line-height: 1.2; font-size:1.4em; letter-spacing:-1.4px; width:100%; color:#FFFFFF"><%= data.master_info.subject %></span>
 				</div>
 			</div>
 			<div class="ui segment">
@@ -622,12 +622,13 @@
 						<!--</p>-->
 					</div>
 			</div>
-			<!--<div class="ui segment">-->
+			<div class="ui segment" style="margin:2px; padding:2px">
 				<!--<h3>투표 현황</h3>-->
 				<table class="unstackable ui definition table" id="vote_detail_table">
 					<!-- setVoteItemDetail -->
 				</table>
-
+            </div>
+			<div class="ui segment">
 					<button class="small circular ui icon button" id ="add_item_button" style="background-color:#ee5252; color:white; margin-top : -5px; margin-left : 10px" onClick="javascript:show_modal()">
 					    <i class="icon plus"></i>항목추가
 					</button>
@@ -658,8 +659,10 @@
                          </table>
                 	</div>
                     <div class="actions">
-                        <div class="ui primary approve button" onClick="javascript:Check_duplicate_vote_item()" >항목추가 완료</div>
-                        <div class="ui primary approve button">취소</div>
+                        <div class="ui two bottom attached buttons">
+                            <div class="ui primary approve button" onClick="javascript:Check_duplicate_vote_item()" >항목추가 완료</div>
+                            <div class="ui primary approve button">취소</div>
+                        </div>
                     </div>
                 </div>
 				<!--항목추가 modal End-->
@@ -713,7 +716,7 @@
                 <div class="ui active inverted dimmer" id="loader" style="display: none">
                     <div class="ui small text loader">투표 반영중</div>
                 </div>
-            <!--</div>	-->
+            </div>	
 		</div>
 		<!-- 상세보기 segment -->
 	</div>

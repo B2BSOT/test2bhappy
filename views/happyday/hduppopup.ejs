@@ -337,7 +337,7 @@ $(document).ready(function() {
 			<div class="ui sub header">
 				 해피데이 이름(*)
 			</div>
-			<input type="text" placeholder="" id="happyday_name_show" name="happyday_name" value="<%=data.happyday_name%>">
+			<input type="text" placeholder="" id="happyday_name_show" name="happyday_name" value="<%=data.happyday_name%>" style="font-family:'Jeju Gothic'">
 			<p class="p validation" id="happyday_name_alert" style="color:red; visibility:hidden;">
 				 *해피데이 이름을 입력해 주세요
 			</p>
@@ -427,7 +427,7 @@ $(document).ready(function() {
 				<div class="ui label" style="background:#A5673F; color:white">
 					 <i class="image icon"> URL </i>
 				</div>
-				<input type="text" placeholder="" name="img_url" id="img_url_show" value="<%=data.img_url%>">
+				<input type="text" placeholder="" name="img_url" id="img_url_show" value="<%=data.img_url%>" style="font-family:'Jeju Gothic'">
 			</div>
 		</div>
 		<div class="field">
@@ -436,7 +436,7 @@ $(document).ready(function() {
 			</div>
 			<div class="ui right labeled left icon action input">
 				<i class="marker icon"></i>
-				<input id="place_name_show" type="text" placeholder="" name="place_name" readonly="true" value="<%=data.place_name %> ">
+				<input id="place_name_show" type="text" placeholder="" name="place_name" readonly="true" value="<%=data.place_name %>" style="font-family:'Jeju Gothic'">
 				<div class="ui label" onclick="javascript:showMap()" style="background:#A5673F; color:white; cursor: pointer;">
 					<i class="search icon"></i>
 				</div>
@@ -455,7 +455,7 @@ $(document).ready(function() {
 					<div class="ui calendar" name="example2">
 						<div class="ui input left icon" style=" width: 100%;">
 							<i class="calendar icon"></i>
-							<input id="happday_dt" type="text" name="happday_dt" readonly="true" value="<%=data.HDstartdtShow %>">
+							<input id="happday_dt" type="text" name="happday_dt" readonly="true" value="<%=data.HDstartdtShow %>" style="font-family:'Jeju Gothic'">
 						</div>
 					</div>
 					<!-- calendar -->
@@ -474,7 +474,7 @@ $(document).ready(function() {
 					<div class="ui calendar" name="example3">
 						<div class="ui input left icon" style=" width: 100%;">
 							<i class="time icon"></i>
-    					<input type="text" id="starttime_show"  style=" width: 100%;" name="happyday_time" readonly="true" value="<%=data.HDstarttimeShow %>" >
+    					<input type="text" id="starttime_show"  style=" width: 100%; font-family:'Jeju Gothic'" name="happyday_time" readonly="true" value="<%=data.HDstarttimeShow %>" >
     				</div>
 						
 					</div>
@@ -494,7 +494,7 @@ $(document).ready(function() {
 			<div class="ui calendar" name="example4">
 				<div class="ui input left icon" style=" width: 100%;">
 					<i class="calendar icon"></i>
-					<input type="text" id="dday_dt_show" name="dday_dt_show"  style=" width: 100%;" readonly="true" value="<%=data.HDddaydtShow %>">
+					<input type="text" id="dday_dt_show" name="dday_dt_show"  style=" width: 100%; font-family:'Jeju Gothic'" readonly="true" value="<%=data.HDddaydtShow %>">
 				  
 				</div>
 				<p class="p validation" id="dday_dt_alert" style="color:red; visibility:hidden;">
@@ -508,7 +508,7 @@ $(document).ready(function() {
 			<div class="ui sub header">
 				 차감포인트(*)
 			</div>
-			<input type="text" id="req_point_show" name="req_point" value="<%=data.req_point %> P" style=" width: 100%;" readonly="true">
+			<input type="text" id="req_point_show" name="req_point" value="<%=data.req_point %> P" style=" width: 100%; font-family:'Jeju Gothic'" readonly="true" >
       
 			<p class="p validation" id="point_alert" style="color:red; visibility:hidden;">
 			</p>
