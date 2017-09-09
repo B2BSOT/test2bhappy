@@ -367,6 +367,10 @@
 </script>
 <style type="text/css">
 
+	/*제목 글자*/
+	.ui.sub.header {
+    	color:#46649B;
+	}
 
 </style>
 </head>
@@ -377,8 +381,8 @@
 
   <div class="ui container">
     <div class="content">
-      <div class="ui segment" style="background-color:#ee5252; height:90p">
-      	<div class="header"><span style="font-size:1.3em; color:#FFFFFF">
+      <div class="ui segment" style="background-color:#ee5252; height:60px">
+      	<div class="ui left floated header" style="font-size:1.4em; letter-spacing: -1.4px; color:#FFFFFF">
       	  <%=session.user_name%>님 투표를 등록하세요!
       	 </div>  
       </div> <!-- ui segment -->	
@@ -398,7 +402,7 @@
           		  <input id="vote_load" name="vote_load" type="hidden" value="">
         			
           			<i class="dropdown icon"></i>
-          			<div class="default text" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block;">
+          			<div class="default text" style="overflow:hidden; text-overflow:ellipsis; white-space:nowrap; display:block; font-family:'Jeju Gothic'">
           				 최근투표목록
           			</div>
           			<div class="menu" >
@@ -429,7 +433,7 @@
     			</div>
     			
     			<% if(data1.load_yn == 'N') { %>
-    			  <input type="text" placeholder="투표 제목을 입력해주세요." id="vote_name" name="vote_name" maxlength="20">
+    			  <input type="text" placeholder="투표 제목을 입력해주세요" id="vote_name" name="vote_name" maxlength="20" style="font-family:'Jeju Gothic'">
     			<% } else { %>
     			  <input type="text" value="<%=data1.subject%>" placeholder="투표 제목을 입력해주세요." id="vote_name" name="vote_name" maxlength="20">	
     			<% } %>
@@ -461,11 +465,11 @@
     			</div>
       
   			  <% if(data1.load_yn == 'N') { %>
-      			<input type="text" placeholder="항목을 입력하세요." name="vote_item" maxlength="20">
-      			<input type="text" placeholder="항목을 입력하세요." name="vote_item" maxlength="20">
+      			<input type="text" placeholder="항목을 입력하세요" name="vote_item" maxlength="20" style="font-family:'Jeju Gothic'">
+      			<input type="text" placeholder="항목을 입력하세요" name="vote_item" maxlength="20" style="font-family:'Jeju Gothic'">
     			<% } else { %>
       			<% for (var i = 0 ; i < data3.length ; i++) { %>
-      			  <input type="text" placeholder="항목을 입력하세요." name="vote_item" maxlength="20" value="<%=data3[i].item_name%>">
+      			  <input type="text" placeholder="항목을 입력하세요" name="vote_item" maxlength="20" value="<%=data3[i].item_name%>" style="font-family:'Jeju Gothic'">
       			<% } %>
     			<% } %>
     			
@@ -491,7 +495,7 @@
     				<div class="ui calendar" id="deadline_dt">
     					<div class="ui input left icon" style=" width: 100%;">
     						<i class="calendar icon"></i>
-    						<input type="text" placeholder="마감날짜 선택" style=" width: 100%;" id="vote_deadline_dt" name="vote_deadline_dt" readonly="true">
+    						<input type="text" placeholder="마감날짜 선택" style=" width: 100%; font-family:'Jeju Gothic'" id="vote_deadline_dt" name="vote_deadline_dt" readonly="true">
     					</div>
     				</div>
     				<!-- calendar -->
@@ -506,7 +510,7 @@
     				<div class="ui calendar" id="deadline_time">
     					<div class="ui input left icon" style=" width: 100%;">
     						<i class="time icon"></i>
-    						<input type="text" placeholder="마감시간 선택" style=" width: 100%;" id="vote_deadline_time" name="vote_deadline_time" readonly="true">
+    						<input type="text" placeholder="마감시간 선택" style=" width: 100%; font-family:'Jeju Gothic'" id="vote_deadline_time" name="vote_deadline_time" readonly="true">
     					</div>
     				</div>
     				<p class="p validation" id="deadlineTime_alert" style="color:red; visibility:hidden;"> ..

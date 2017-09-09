@@ -272,6 +272,10 @@
 </script>
 <style type="text/css">
  
+		/*제목 글자*/
+	.ui.sub.header {
+    	color:#46649B;
+	}
 	
 </style>
 </head>
@@ -282,9 +286,9 @@
   
   <div class="ui container">
     <div class="content">
-      <div class="ui segment" style="background-color:#ee5252; height:90p">
-      	<div class="header"><span style="font-size:1.3em; color:#FFFFFF">
-      	  <%=session.user_name%>님의 투표 수정 화면입니다.
+      <div class="ui segment" style="background-color:#ee5252; height:60px">
+      	<div class="ui left floated header" style="font-size:1.4em; letter-spacing: -1.4px; color:#FFFFFF">
+      	  투표를 수정해주세요.
       	 </div>  
       </div> <!-- ui segment -->	
       <form id="voteupForm" name="voteupForm" class="ui segment form" action="/vote_update" method="post" style="top: -20px;">
@@ -293,7 +297,7 @@
     			<div class="ui sub header">
     				 투표제목(*)
     			</div>
-    			<input type="text" value="<%=data1.subject%>" id="vote_name" name="vote_name" maxlength="20" readonly="true" disabled="false" >
+    			<input type="text" value="<%=data1.subject%>" id="vote_name" name="vote_name" maxlength="20" readonly="true" disabled="false" style="font-family:'Jeju Gothic'">
     			<p class="p validation" style="visibility:hidden;">.</p>
 		    </div>
 		    
@@ -313,7 +317,7 @@
     			</div>
     		
     			<% for (var i = 0; i < data2.length; i++) { %>
-    			  <input type="text" value="<%=data2[i].item_name%>" name="vote_item" maxlength="20" readonly="true" disabled="false">
+    			  <input type="text" value="<%=data2[i].item_name%>" name="vote_item" maxlength="20" readonly="true" disabled="false" style="font-family:'Jeju Gothic'">
     			<% } %>
     			<div id="item_list"> </div>
     			
@@ -335,9 +339,9 @@
     					<div class="ui input left icon" style=" width: 100%;">
     						<i class="calendar icon"></i>
     						<% if(data1.voteCount == 0) { %>
-    						  <input type="text" value="<%=data1.deadlinedtShow%>" style=" width: 100%;" id="vote_deadline_dt" name="vote_deadline_dt">
+    						  <input type="text" value="<%=data1.deadlinedtShow%>" style=" width: 100%; font-family:'Jeju Gothic'" id="vote_deadline_dt" name="vote_deadline_dt">
     						<% }else{ %>
-    						  <input type="text" value="<%=data1.deadlinedtShow%>" style=" width: 100%;" id="vote_deadline_dt" name="vote_deadline_dt" readonly="true" disabled="false">
+    						  <input type="text" value="<%=data1.deadlinedtShow%>" style=" width: 100%; font-family:'Jeju Gothic'" id="vote_deadline_dt" name="vote_deadline_dt" readonly="true" disabled="false">
     						<% } %>
     						<input type="hidden" id="deadline_dt_DB" name="deadline_dt_DB" value="<%=data1.deadlinedtDB %>">
     					</div>
@@ -353,9 +357,9 @@
     					<div class="ui input left icon" style=" width: 100%;">
     						<i class="time icon"></i>
     						<% if(data1.voteCount == 0) { %>
-    						  <input type="text" value="<%=data1.deadlinetimeShow%>" style=" width: 100%;" id="vote_deadline_time" name="vote_deadline_time">
+    						  <input type="text" value="<%=data1.deadlinetimeShow%>" style=" width: 100%; font-family:'Jeju Gothic'" id="vote_deadline_time" name="vote_deadline_time">
     						<% }else{ %>
-    						  <input type="text" value="<%=data1.deadlinetimeShow%>" style=" width: 100%;" id="vote_deadline_time" name="vote_deadline_time" readonly="true" disabled="false">
+    						  <input type="text" value="<%=data1.deadlinetimeShow%>" style=" width: 100%; font-family:'Jeju Gothic'" id="vote_deadline_time" name="vote_deadline_time" readonly="true" disabled="false">
     						<% } %>
     						<input type="hidden" id="deadline_time_DB" name="deadline_time_DB" value="<%=data1.deadlinetimeDB %>">
     					</div>

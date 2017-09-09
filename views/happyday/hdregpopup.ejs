@@ -328,7 +328,7 @@ $(document).ready(function() {
     
     /*등록버튼*/
     .ui.segment.form {
-    background: #FBBD08;
+    background: white;
 	}
 	
 	/*취소 버튼*/
@@ -336,9 +336,9 @@ $(document).ready(function() {
     background: peru;
 	}
 	
-	/*제목마다 흰글자*/
+	/*제목 글자*/
 	.ui.sub.header {
-    	color:white;
+    	color:#46649B;
 	}
 
 	
@@ -351,17 +351,21 @@ $(document).ready(function() {
   
 <div class="ui container">
 <!--<form id="hdregForm" class="ui segment form" action="/happyday_regist" method="post" style="margin-left: 100px; margin-right: 100px;">-->
-<form id="hdregForm" class="ui segment form" action="/happyday_regist" method="post">
-	<h3 class="ui left floated header" style="color:white"><%=data.user_name %>님 HappyDay를 등록 해 주세요</h3>
-	<div class="ui clearing divider">
-	</div>
-	<div class="content">
+<div class="content">
+	<div class="ui segment" style="background-color:#FBBD08; height:60px">
+  	<div class="ui left floated header"  style="font-size:1.4em; letter-spacing: -1.4px; color:#FFFFFF"><%=data.user_name %>님 HappyDay를 등록 해 주세요</div>
+  	<!--<div class="ui clearing divider">-->
+  	<!--</div>-->
+  </div>
+  
+  <form id="hdregForm" class="ui segment form" action="/happyday_regist" method="post" style="top: -20px;" >
+
 		<div class="column">
 			<div class="ui sub header">
-				 *해피데이 이름
+				 해피데이 이름(*)
 			</div>
-			<input type="text" placeholder="해피데이 이름을 입력해주세요" id="happyday_name" name="happyday_name" maxlength="20">
-			<p class="p validation" id="happyday_name_alert" style="color:red; visibility:hidden;">
+			<input type="text" placeholder="해피데이 이름을 입력해주세요" id="happyday_name" name="happyday_name" maxlength="20" style="font-family:'Jeju Gothic'">
+			<p class="p validation" id="happyday_name_alert" style="color:red; visibility:hidden; ">
 				 *해피데이 이름을 입력해 주세요
 			</p>
 		</div>
@@ -371,7 +375,7 @@ $(document).ready(function() {
 		<div class="ui two column grid">
 			<div class="column">
 				<div class="ui sub header">
-					 **카테고리
+					 카테고리(*)
 				</div>
 				<div id="MultipleSelection" class="ui multiple selection dropdown"  style=" width: 100%;">
 					<input id="category_code" name="category_code" type="hidden" value="">
@@ -407,7 +411,7 @@ $(document).ready(function() {
 			</div>
 			<div class="column">
 				<div class="ui sub header">
-					 **모집 정원
+					 모집 정원(*)
 				</div>
 				<div class="ui selection dropdown" id="SelectionDropdown2" style=" width: 100%;">
 					<input type="hidden" id="num_participants" name="num_participants" style=" width: 100%;" readonly="true">
@@ -450,16 +454,16 @@ $(document).ready(function() {
 				<div class="ui label" style="background:#A5673F; color:white">
 					 <i class="image icon"> URL </i>
 				</div>
-				<input type="text" placeholder="http://test.com/example.jpg" id="img_url" name="img_url" maxlength="150">
+				<input type="text" placeholder="http://test.com/example.jpg" id="img_url" name="img_url" maxlength="150" style="font-family:'Jeju Gothic'">
 			</div>
 		</div>
 		<div class="field">
 			<div class="ui sub header">
-				 **장소
+				 장소(*)
 			</div>
 			<div class="ui right labeled left icon action input">
 				<i class="marker icon"></i>
-				<input id="place_name" type="text" placeholder="검색아이콘을 클릭하세요." name="place_name" onclick="javascript:showMap()" readonly="true">
+				<input id="place_name" type="text" placeholder="검색아이콘을 클릭하세요." name="place_name" onclick="javascript:showMap()" readonly="true" style="font-family:'Jeju Gothic'">
 				<div class="ui label" onclick="javascript:showMap()" style="background:#A5673F; color:white; cursor: pointer;">
 					<i class="search icon"></i>
 				</div>
@@ -473,12 +477,12 @@ $(document).ready(function() {
 		<div class="ui two column grid" style="margin-top: -30px">
 			<div class="column">
 				<div class="ui sub header">
-					 **출발 날짜
+					 출발 날짜(*)
 				</div>
 				<div class="ui calendar" name="example2">
 					<div class="ui input left icon" style=" width: 100%;">
 						<i class="calendar icon"></i>
-						<input type="text" placeholder="출발날짜 선택" style=" width: 100%;" name="happyday_dt" readonly="true">
+						<input type="text" placeholder="출발날짜 선택" style=" width: 100%; font-family:'Jeju Gothic'" name="happyday_dt" readonly="true">
 					</div>
 				</div>
 				<!-- calendar -->
@@ -489,12 +493,12 @@ $(document).ready(function() {
 			<!-- column -->
 			<div class="column">
 				<div class="ui sub header">
-					 **출발 시각
+					 출발 시각(*)
 				</div>
 				<div class="ui calendar" name="example3">
 					<div class="ui input left icon" style=" width: 100%;">
 						<i class="time icon"></i>
-						<input type="text" placeholder="출발시간 선택" style=" width: 100%;" id="happyday_time" name="happyday_time" readonly="true">
+						<input type="text" placeholder="출발시간 선택" style=" width: 100%; font-family:'Jeju Gothic'" id="happyday_time" name="happyday_time" readonly="true">
 					</div>
 				</div>
 				<p class="p validation" id="starttime_alert" style="color:red; visibility:hidden;">
@@ -507,12 +511,12 @@ $(document).ready(function() {
 
 			<div class="column">
 				<div class="ui sub header">
-					 **마감일
+					 마감일(*)
 				</div>
 				<div class="ui calendar" name="example4">
 					<div class="ui input left icon" style=" width: 100%;">
 						<i class="calendar icon"></i>
-						<input type="text" placeholder="마감일 선택" style=" width: 100%;" id="dday_dt" name="dday_dt" readonly="true">
+						<input type="text" placeholder="마감일 선택" style=" width: 100%; font-family:'Jeju Gothic'" id="dday_dt" name="dday_dt" readonly="true">
 						
 					</div>
 				</div>
@@ -523,7 +527,7 @@ $(document).ready(function() {
 			</div>
 			<div class="column">
 				<div class="ui sub header">
-					 **차감 포인트
+					 차감 포인트(*)
 				</div>
   				<div class="ui selection dropdown" id="SelectionDropdown" style=" width: 100%;">
   					<input type="hidden" id="req_point" name="req_point" style=" width: 100%;">
@@ -596,7 +600,7 @@ $(document).ready(function() {
 			<!--<div class="ui two column grid" >-->
 				<div class="field">
 					<div class="ui sub header" style="margin-top: 0px;">
-						 **참가 포인트 상세 내역
+						 참가 포인트 상세 내역(*)
 					</div>
 					<div class="ui input" style=" width: 100%;">
 						<!--<input type="text" id="point_rsn" name="point_rsn" placeholder="사유를입력해주세요..." style=" width: 100%;">-->
@@ -610,7 +614,7 @@ $(document).ready(function() {
 	
 			<div class="field">
 				<div class="ui sub header">
-					 **활동 내용
+					 활동 내용(*)
 				</div>
 				<textarea id="happyday_contents" placeholder="해피데이 내용을 입력 해 주세요" style="width:100% ;height: 200px; resize:none" name="happyday_contents" maxlength="500"></textarea>
 				<p class="p validation" id="happyday_contents_alert" style="color:red; visibility:hidden;">
@@ -621,16 +625,19 @@ $(document).ready(function() {
 			<div class="ui clearing divider">
 			</div>
 			<div class="actions">
-				<div class="ui button" style="color:white; background:dimgrey" onclick=javascript:goMain()>
-					 취소
+			  <div class="ui two bottom attached buttons">
+  				<button class="ui submit button" id="submit" name="submit" style="background:#A5673F; color:white">등록</button>
+  				<button class="ui button" style="color:white; background:grey" onclick=javascript:goMain()>취소</button>
+
 				</div>
-				<button class="ui submit button" id="submit" name="submit" style="background:#A5673F; color:white">등록</button>
+
 			</div>
 
 			<!-- actions -->
-		</div>
+
+	  </form>
+	</div>
 		<!-- content -->
-	</form>
 	
 	</div>
 	</body>
