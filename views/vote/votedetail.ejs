@@ -577,7 +577,7 @@
 				</div>
 
 			</div>
-			<div class="ui segment" style="margin:1px; padding:2px">
+			<div class="ui segment" style="margin:0px; padding:2px">
 				<!--<h3>투표 현황</h3>-->
 				<table class="unstackable ui definition table" id="vote_detail_table" >
 				<!-- setVoteItemDetail -->
@@ -592,87 +592,84 @@
     			</button>
 				
 			</div>
+			
+            <div class="ui right aligned segment" style="margin-top:30px">
+                <button class="ui primary button" id="update_button" onClick="javascript:goto_update_vote(<%= data.master_info.vote_id%>)" style="background-color:#ee5252; color:white; width:80px">  수정  </button>
+                <button class="ui button" id="delete_button" onClick="javascript:delete_vote(<%= data.master_info.vote_id%>)" style="background:grey; color:white; width:80px">  삭제  </button>
+            </div>
 
-			<div class="ui segment" style="margin-top : 30px">
-					<div class="ui two bottom attached buttons"> 
-    					<button class="ui button" id="update_button" onClick="javascript:goto_update_vote(<%= data.master_info.vote_id%>)" style="background-color:#ee5252; color:white">수정</button>
-    					<button class="ui button" id="delete_button" onClick="javascript:delete_vote(<%= data.master_info.vote_id%>)" style="background:grey; color:white">삭제</button>
-					</div>
-
-				
-				<!--항목추가 modal Start-->
-				<div class="ui longer modal item add">
-                	<div class="header" >
-                		항목추가
-                	</div>
-                	<div class="scrolling content">
-                	    <table class="unstackable ui definition table" id="item_add_table">
-                            <tr style='max-height:40px; '>
-                            	<!--<td style="margin-top: -15px; width:40px; ">-->
-                            	<!--	<button class="yellow ui middle icon button" style="margin-right: 0px;"><i class="add icon"></i></button>-->
-                            	<!--</td>-->
-                            	<td>
-                            		<div>
-                            			<input type='text' id='add_vote_item_name' placeholder='항목을 입력해주세요' style='width: 100%'>
-                            		</div>
-                            	</td>
-                            </tr>
-                            
-                         </table>
-                	</div>
-                    <div class="actions">
-                        <div class="ui primary approve button" onClick="javascript:Check_duplicate_vote_item()" >항목추가 완료</div>
-                        <div class="ui primary approve button">취소</div>
-                    </div>
+			<!--항목추가 modal Start-->
+			<div class="ui longer modal item add">
+            	<div class="header" >
+            		항목추가
+            	</div>
+            	<div class="scrolling content">
+            	    <table class="unstackable ui definition table" id="item_add_table">
+                        <tr style='max-height:40px; '>
+                        	<!--<td style="margin-top: -15px; width:40px; ">-->
+                        	<!--	<button class="yellow ui middle icon button" style="margin-right: 0px;"><i class="add icon"></i></button>-->
+                        	<!--</td>-->
+                        	<td>
+                        		<div>
+                        			<input type='text' id='add_vote_item_name' placeholder='항목을 입력해주세요' style='width: 100%'>
+                        		</div>
+                        	</td>
+                        </tr>
+                        
+                     </table>
+            	</div>
+                <div class="actions">
+                    <div class="ui primary approve button" onClick="javascript:Check_duplicate_vote_item()" >항목추가 완료</div>
+                    <div class="ui primary approve button">취소</div>
                 </div>
-				<!--항목추가 modal End-->
-				
-				<!--투표현황 modal Start-->
-				<div class="ui longer modal state">
-                	<div class="header" >
-                		투표 현황
-                	</div>
-                	<div class="scrolling content">
-                	    <table class="unstackable ui definition table" id="vote_state_table">
-                            <tr id="vote_state_table_tr" style='max-height:40px;'>
-                            
-                             	<!--	<div>-->
-                            		<!--    <span>미참여</span><br>-->
-                            		<!--    <span>김준범  </span>-->
-                            		<!--    <span>김준범  </span>-->
-                            		<!--    <span>김준범  </span>-->
-                            		<!--</div>-->
-                            		<!--<br>-->
-                            		<!--<div>-->
-                            		<!--    <span>미참여</span><br>-->
-                            		<!--    <span>김준범  </span>-->
-                            		<!--    <span>김준범  </span>-->
-                            		<!--    <span>김준범  </span>-->
-                            		<!--</div>-->
-                            		<!--<br>-->
-                            		<!--<div>-->
-                            		<!--    <span>미참여</span><br>-->
-                            		<!--    <span>김준범  </span>-->
-                            		<!--    <span>김준범  </span>-->
-                            		<!--    <span>김준범  </span>-->
-                            		<!--</div>-->
-                            		<!--<br>-->
-                            		<!--<div>-->
-                            		<!--    <span>미참여</span><br>-->
-                            		<!--    <span>김준범  </span>-->
-                            		<!--    <span>김준범  </span>-->
-                            		<!--    <span>김준범  </span>-->
-                            		<!--</div>-->
-                            </tr>
-                          </table>
-                	</div>
-                    <div class="actions">
-                        <div class="ui primary approve button">Cancel</div>
-                    </div>
+            </div>
+			<!--항목추가 modal End-->
+			
+			<!--투표현황 modal Start-->
+			<div class="ui longer modal state">
+            	<div class="header" >
+            		투표 현황
+            	</div>
+            	<div class="scrolling content">
+            	    <table class="unstackable ui definition table" id="vote_state_table">
+                        <tr id="vote_state_table_tr" style='max-height:40px;'>
+                        
+                         	<!--	<div>-->
+                        		<!--    <span>미참여</span><br>-->
+                        		<!--    <span>김준범  </span>-->
+                        		<!--    <span>김준범  </span>-->
+                        		<!--    <span>김준범  </span>-->
+                        		<!--</div>-->
+                        		<!--<br>-->
+                        		<!--<div>-->
+                        		<!--    <span>미참여</span><br>-->
+                        		<!--    <span>김준범  </span>-->
+                        		<!--    <span>김준범  </span>-->
+                        		<!--    <span>김준범  </span>-->
+                        		<!--</div>-->
+                        		<!--<br>-->
+                        		<!--<div>-->
+                        		<!--    <span>미참여</span><br>-->
+                        		<!--    <span>김준범  </span>-->
+                        		<!--    <span>김준범  </span>-->
+                        		<!--    <span>김준범  </span>-->
+                        		<!--</div>-->
+                        		<!--<br>-->
+                        		<!--<div>-->
+                        		<!--    <span>미참여</span><br>-->
+                        		<!--    <span>김준범  </span>-->
+                        		<!--    <span>김준범  </span>-->
+                        		<!--    <span>김준범  </span>-->
+                        		<!--</div>-->
+                        </tr>
+                      </table>
+            	</div>
+                <div class="actions">
+                    <div class="ui primary approve button">Cancel</div>
                 </div>
-				<!--투표현황 modal End-->
-				
-            </div>	
+            </div>
+			<!--투표현황 modal End-->
+	
 		</div>
 		<!-- 상세보기 segment -->
 	</div>
