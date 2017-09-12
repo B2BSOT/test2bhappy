@@ -162,7 +162,10 @@ module.exports = function(app) {
             where : {
                 parti_org_id : { 
                     $in : [req.session.team_id, req.session.sm_id]  // so투표가능여부
-                }    
+                },
+                state : {
+                    $notIn : ['N']
+                }
             },
             order : [ ['state', 'desc'] , ['reg_dtm', 'desc'], ['deadline', 'asc'] ]
         }).then(master_info => {
