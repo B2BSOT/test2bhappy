@@ -18,7 +18,8 @@
 <script type="text/javascript">
   var deadlineDt = '';
   var deadlineTime = '';
-
+  var voteCount = <%=data1.voteCount%>;
+  var tooltipStr = "투표 건수가 있는 경우 해당 항목은 수정이 불가합니다."
  
   // 뒤로가기 버튼 -> detail 화면 이동
   function goDetail(vote_id){
@@ -28,10 +29,14 @@
   // 화면 reload 될 때마다 실행 되는 함수
   $(document).ready(function() {
     
+    setReadOnlyByVoteCnt();
 
-      // 참여범위 드롭다운
+    // 참여범위 드롭다운
     $('#selectionDropdown').dropdown({
-     });
+      onChange: function(val) {
+        $('#parti_org_id').val(val);  
+      }
+    });
      
       // 마감 날짜(등록,수정)
     $('#deadline_dt').calendar({
@@ -112,8 +117,6 @@
       
       // '상세내용' 글자수 체크 코딩 추가 필요
       
-
-      var parti_org_id = $("#parti_org_id").val();                  //투표 참석 범위
       var multi_yn = document.voteupForm.multi_chk.checked;         //복수 선택 여부
       var secret_yn = document.voteupForm.secret_chk.checked;       //익명 투표 여부
       var add_item_yn = document.voteupForm.add_item_chk.checked;   //항목 추가 여부
@@ -201,11 +204,6 @@
         flag = 1;
       }
 
-      // 참석 범위 지정
-      if(parti_org_id == ''){                              //참석범위를 수정하지 않았을 경우,
-        $('#parti_org_id').val('<%=data1.partiShow%>');  //기존 DB 데이터로 지정
-      }
-      
       //기타 옵션 체크박스 체크여부에 따라 value값 지정
       if(multi_yn){
         $('#multi_yn').val('Y');
@@ -257,9 +255,20 @@
         alert("필수값을 모두 입력해주세요.");
         return false;
       }
-      
-  });
-});
+    }); // end submit
+  }); // end onload
+
+  function setReadOnlyByVoteCnt() {
+    if(voteCount > 0) {
+      $('#vote_deadline_dt').attr({"readonly" : "true", "disabled" : "false"}); 
+      $('#vote_deadline_time').attr({"readonly" : "true", "disabled" : "false"}); 
+      $('#selectionDropdown').attr({"readonly" : "true", "disabled" : "false"});
+      $('#multi_chk').attr({"disabled" : "true"});
+      $('#secret_chk').attr({"disabled" : "true"}); 
+      $('#add_item_chk').attr({"disabled" : "true"}); 
+      $('.ui.tooltip').attr({"data-tooltip" : tooltipStr, "data-position" : "bottom left", "data-inverted" : " "});
+    }
+  }
 
 
 </script>
@@ -288,7 +297,7 @@
 	   	  <!--수정불가능-->
 		    <div class="field">
     			<div class="ui sub header">
-    				 투표제목(*)
+    				 투표제목(*) - 수정불가
     			</div>
     			<input type="text" value="<%=data1.subject%>" id="vote_name" name="vote_name" maxlength="20" readonly="true" disabled="false" style="font-family:'Jeju Gothic'">
     			<p class="p validation" style="visibility:hidden;">.</p>
@@ -306,7 +315,7 @@
         <!--수정불가능.-->
 				<div class="field">
     			<div class="ui sub header">
-    				 항목입력(*)    
+    				 항목입력(*) - 수정불가    
     			</div>
     		
     			<% for (var i = 0; i < data2.length; i++) { %>
@@ -325,17 +334,13 @@
 				<!--투표자 존재시 수정불가능. 투표자 미존재시 수정가능-->
   			<div class="ui two column grid">
     			<div class="column">
-    				<div class="ui sub header">
+    				<div class="ui sub header tooltip"> 
     					 마감날짜(*)
     				</div>
     				<div class="ui calendar" id="deadline_dt" readonly="true">
     					<div class="ui input left icon" style=" width: 100%;">
     						<i class="calendar icon"></i>
-    						<% if(data1.voteCount == 0) { %>
-    						  <input type="text" value="<%=data1.deadlinedtShow%>" style=" width: 100%; font-family:'Jeju Gothic'" id="vote_deadline_dt" name="vote_deadline_dt">
-    						<% }else{ %>
-    						  <input type="text" value="<%=data1.deadlinedtShow%>" style=" width: 100%; font-family:'Jeju Gothic'" id="vote_deadline_dt" name="vote_deadline_dt" readonly="true" disabled="false">
-    						<% } %>
+    						<input type="text" value="<%=data1.deadlinedtShow%>" style=" width: 100%; font-family:'Jeju Gothic'" id="vote_deadline_dt" name="vote_deadline_dt">
     						<input type="hidden" id="deadline_dt_DB" name="deadline_dt_DB" value="<%=data1.deadlinedtDB %>">
     					</div>
     				</div>
@@ -343,18 +348,14 @@
     				<p class="p validation" style="visibility:hidden;">.</p>
     			</div>
     			<div class="column">
-    				<div class="ui sub header">
+    				<div class="ui sub header tooltip">
     					 마감시각(*)
     				</div>
     				<div class="ui calendar" id="deadline_time">
     					<div class="ui input left icon" style=" width: 100%;">
     						<i class="time icon"></i>
-    						<% if(data1.voteCount == 0) { %>
-    						  <input type="text" value="<%=data1.deadlinetimeShow%>" style=" width: 100%; font-family:'Jeju Gothic'" id="vote_deadline_time" name="vote_deadline_time">
-    						<% }else{ %>
-    						  <input type="text" value="<%=data1.deadlinetimeShow%>" style=" width: 100%; font-family:'Jeju Gothic'" id="vote_deadline_time" name="vote_deadline_time" readonly="true" disabled="false">
-    						<% } %>
-    						<input type="hidden" id="deadline_time_DB" name="deadline_time_DB" value="<%=data1.deadlinetimeDB %>">
+    						<input type="text" value="<%=data1.deadlinetimeShow%>" style=" width: 100%; font-family:'Jeju Gothic'" id="vote_deadline_time" name="vote_deadline_time">
+    						<input type="hidden" id="deadline_time_DB" name="deadline_time_DB" value="<%=data1.deadlinetimeDB %>"> 
     					</div>
     				</div>
     				<p class="p validation" id="deadlineTime_alert" style="color:red; visibility:hidden;"> ..
@@ -367,78 +368,52 @@
 
         <!--투표자 존재시 수정불가능. 투표자 미존재시 수정가능-->
 				<div class="field">
-  				<div class="ui sub header">
+  				<div class="ui sub header tooltip">
   					 참여범위(*)
   				</div>
-  				
-  				<% if(data1.voteCount == 0) { %>
-  				  <div id="selectionDropdown" class="ui selection dropdown"  style=" width: 100%;">
-      				<input id="parti_org_id" name="parti_org_id" type="hidden" value="">
-      				
-      				<i class="dropdown icon"></i>
-      				<div class="default text" style="color: black">
-      				  <%=data1.partiShow%>
-      				</div>
+  				<div id="selectionDropdown" class="ui selection dropdown"  style=" width: 100%;">
+    				<i class="dropdown icon"></i>
+    				<div class="default text" style="color: black">
+    				  <%=data1.partiShow%>
+    				</div>
+    				<% if(data1.voteCount == 0) { %>
       				<div class="menu">
-      					<div class="item" data-value="Team">
+      					<div class="item" data-value=<%=session.team_id%>>
       						 Team
       					</div>
-      					<div class="item" data-value="SM">
+      					<div class="item" data-value=<%=session.sm_id%>>
       						 SM
       					</div>
       				</div>
-    			  </div>
-  				<% }else{ %>
-  				  <div id="selectionDropdown" class="ui selection dropdown"  style=" width: 100%;" readonly="true" disabled="false">
-  				    <input id="parti_org_id" name="parti_org_id" type="hidden" value="">
-  				    <i class="dropdown icon" ></i>  
-
-      				<div class="default text">
-      				  <%=data1.partiShow%>
-      				</div>
-      			</div>
-  				<% } %>  
+    				<% } %>  
+  			  </div>
+  				<input id="parti_org_id" name="parti_org_id" type="hidden" value=<%=data1.parti_org_id%>>
     			<p class="p validation" style="visibility:hidden;">.</p>
     		</div>
     			
     		<!--투표자 존재시 수정불가능. 투표자 미존재시 수정가능-->
   			<div class="field">
-  				<div class="ui sub header">
+  				<div class="ui sub header tooltip">
   					 옵션선택
   				</div>
-  				<!--<div class="ui two column grid">-->
   				  <div class="column" style="margin-top:10px">
           		<div class="ui toggle checkbox">
-          		  <% if(data1.voteCount == 0) { %>
-                  <input type="checkbox" id="multi_chk" name="multi_chk" <%=data1.multiYnShow%> >
-                <% }else{ %>
-                  <input type="checkbox" id="multi_chk" name="multi_chk" disabled <%=data1.multiYnShow%> >
-                <% } %> 
-                  <input type="hidden" id="multi_yn" name="multi_yn" >
+          		  <input type="checkbox" id="multi_chk" name="multi_chk" <%=data1.multiYnShow%> >
+                <input type="hidden" id="multi_yn" name="multi_yn" >
                 <label>복수선택</label>
               </div>
-            </div>
+            </div> 
             <div class="column" style="margin-top:10px">
               <div class="ui toggle checkbox">
-                <% if(data1.voteCount == 0) { %>
-                  <input type="checkbox" id="secret_chk" name="secret_chk" <%=data1.secretYnShow%> >
-                <% }else{ %>
-                  <input type="checkbox" id="secret_chk" name="secret_chk" disabled <%=data1.secretYnShow%> >
-                <% } %> 
-                  <input type="hidden" id="secret_yn" name="secret_yn">
+                <input type="checkbox" id="secret_chk" name="secret_chk" <%=data1.secretYnShow%> >
+                <input type="hidden" id="secret_yn" name="secret_yn">
                 <label>익명투표</label>
               </div>
             </div>
-          <!--</div>-->
-  				<!--<div class="ui two column grid">-->
             <div class="column" style="margin-top:10px">
               <div class="ui toggle checkbox">
-                <% if(data1.voteCount == 0) { %>
-                  <input type="checkbox" id="add_item_chk" name="add_item_chk" <%=data1.addItemYnShow%>>
-                <% }else{ %>
-                  <input type="checkbox" id="add_item_chk" name="add_item_chk" disabled <%=data1.addItemYnShow%>>
-                <% } %> 
-                  <input type="hidden" id="add_item_yn" name="add_item_yn">
+                <input type="checkbox" id="add_item_chk" name="add_item_chk" <%=data1.addItemYnShow%>>
+                <input type="hidden" id="add_item_yn" name="add_item_yn">
                 <label>항목추가</label>
               </div>
             </div>
@@ -456,7 +431,7 @@
     		<div class="actions">
     		  <div class="ui two bottom attached buttons">
       		  <button class="ui submit button" id="submit" name="submit" style="background-color:#ee5252; color:white">확인</button>
-      		  <button class="ui button" style="color:white; background:grey" onclick="javascript:goDetail('<%=data1.vote_id%>')">취소</button>
+      		  <button class="ui button" id="cancel" style="color:white; background:grey" type="button" onclick="javascript:goDetail('<%=data1.vote_id%>')">취소</button>
       		  
     		  </div>
     	  </div>

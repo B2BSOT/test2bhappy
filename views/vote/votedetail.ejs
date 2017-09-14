@@ -590,12 +590,13 @@
     			<button class="small circular ui icon button" id ="add_item_button" style="background-color:#ee5252; color:white; margin-left:12px" onClick="javascript:show_modal()">
     			    <i class="icon plus"></i>항목추가
     			</button>
-				
+    			
 			</div>
 			
             <div class="ui right aligned segment" style="margin-top:30px">
+                <button class="ui primary button" id="list_button" onClick="javascript:goto_vote_main()" style="background-color:#2185D0; color:white; width:80px">  목록으로 </button>
                 <button class="ui primary button" id="update_button" onClick="javascript:goto_update_vote(<%= data.master_info.vote_id%>)" style="background-color:#ee5252; color:white; width:80px">  수정  </button>
-                <button class="ui button" id="delete_button" onClick="javascript:delete_vote(<%= data.master_info.vote_id%>)" style="background:grey; color:white; width:80px">  삭제  </button>
+                <button class="ui button" id="delete_button" onClick="javascript:delete_vote(<%= data.master_info.vote_id%>)" style="background:grey; color:white;width:80px">  삭제  </button>
             </div>
 
 			<!--항목추가 modal Start-->
@@ -619,8 +620,8 @@
                      </table>
             	</div>
                 <div class="actions">
-                    <div class="ui primary approve button" onClick="javascript:Check_duplicate_vote_item()" >항목추가 완료</div>
-                    <div class="ui primary approve button">취소</div>
+                    <div class="ui red approve button" onClick="javascript:Check_duplicate_vote_item()" style="width: 50px">완료</div>
+                    <div class="ui grey approve button" style="width: 50px">취소</div>
                 </div>
             </div>
 			<!--항목추가 modal End-->
@@ -633,34 +634,6 @@
             	<div class="scrolling content">
             	    <table class="unstackable ui definition table" id="vote_state_table">
                         <tr id="vote_state_table_tr" style='max-height:40px;'>
-                        
-                         	<!--	<div>-->
-                        		<!--    <span>미참여</span><br>-->
-                        		<!--    <span>김준범  </span>-->
-                        		<!--    <span>김준범  </span>-->
-                        		<!--    <span>김준범  </span>-->
-                        		<!--</div>-->
-                        		<!--<br>-->
-                        		<!--<div>-->
-                        		<!--    <span>미참여</span><br>-->
-                        		<!--    <span>김준범  </span>-->
-                        		<!--    <span>김준범  </span>-->
-                        		<!--    <span>김준범  </span>-->
-                        		<!--</div>-->
-                        		<!--<br>-->
-                        		<!--<div>-->
-                        		<!--    <span>미참여</span><br>-->
-                        		<!--    <span>김준범  </span>-->
-                        		<!--    <span>김준범  </span>-->
-                        		<!--    <span>김준범  </span>-->
-                        		<!--</div>-->
-                        		<!--<br>-->
-                        		<!--<div>-->
-                        		<!--    <span>미참여</span><br>-->
-                        		<!--    <span>김준범  </span>-->
-                        		<!--    <span>김준범  </span>-->
-                        		<!--    <span>김준범  </span>-->
-                        		<!--</div>-->
                         </tr>
                       </table>
             	</div>
