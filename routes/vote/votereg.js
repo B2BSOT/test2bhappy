@@ -12,7 +12,7 @@ module.exports = function(app, connectionPool) {
                 }else {
                     
                     connection.query('select vm.*, date_format(vm.reg_dtm, "%y/%m/%d") as regDtShow' 
-                                    + ' from vote_master vm where vm.reg_user_id = ?'
+                                    + ' from vote_master vm where vm.reg_user_id = ? and vm.state <> "N"'
                                     + ' order by vm.reg_dtm desc'
                                     + ' limit 5;', [req.session.user_id], function(error, rows2){
                         if(error){
@@ -48,7 +48,7 @@ module.exports = function(app, connectionPool) {
                     
                     else {
                         connection.query('select vm.*, date_format(vm.reg_dtm, "%y/%m/%d") as regDtShow' 
-                                    + ' from vote_master vm where vm.reg_user_id = ?'
+                                    + ' from vote_master vm where vm.reg_user_id = ? and vm.state <> "N"'
                                     + ' order by vm.reg_dtm desc'
                                     + ' limit 5;', [req.session.user_id], function(error, rows2){
                             
