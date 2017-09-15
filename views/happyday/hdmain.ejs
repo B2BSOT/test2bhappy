@@ -92,7 +92,7 @@
 		}
 		
 		#addcardcont {
-			display: table-cell;
+			display: table;
 			vertical-align: middle;
 		}
 		
@@ -112,13 +112,24 @@
 			<div class="ui link three stackable cards">
 				<div class="card" id="addcard" onclick="javascript:showHdReg()" style="padding:.5em;">
 					<div class="content" id="addcardcont">
-						<h2 class="ui icon header" style=" vertical-align: top; vertical-align: middle;">
-							<i class="massive yellow add circle icon"></i> 새 해피데이 등록
-							<div class="sub header" style="margin-top:.4em">
-								해피데이를 등록해주세요!
-							</div>
+						<!--<h2 class="ui icon header" style=" vertical-align: top; vertical-align: middle;">-->
+						<!--	<i class="massive yellow add circle icon"></i> 새 해피데이 등록-->
+						<!--	<div class="sub header" style="margin-top:.4em">-->
+						<!--		해피데이를 등록해주세요!-->
+						<!--	</div>-->
 
-						</h2>
+						<!--</h2>-->
+					<!--</div>-->
+						<div class="header">해피데이를 등록해주세요!</div>
+						<div class="description">
+							다양한 활동 등록이 가능합니다.
+						</div>
+					</div>
+					<div class="ui bottom attached button" style="background-color:#FBBD08;">
+						<span style="color:#fff;">
+						<i class="add icon"></i>
+						해피데이 등록
+						</span>
 					</div>
 				</div>
 				<% for (var i=0; i < data.length; i++) { %>
