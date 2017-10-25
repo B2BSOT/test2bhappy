@@ -7,10 +7,16 @@ module.exports = function(app, connectionPool) {
     /* GET home page. */
     app.get('/', function(req, res) {
         var sess = req.session
+        
+        //로그인 후 리턴을 위함
+        var redirURL = req.session.returnTo;
+        delete req.session.returnTo;
+        console.log("req.session.returnTo2 : " + req.session.returnTo);
+        
         if(sess.views) {
             res.redirect('/happyday/hdmain'); // /main url에서 다시 세션 존재 검사    
         }else {
-            res.render('index', { title: 'Happy App' });    
+            res.render('index', { title: 'Happy App', redirURL: redirURL });    
         }
         
     });
@@ -34,8 +40,15 @@ module.exports = function(app, connectionPool) {
                 req.session.user_id = req.user[0].id;
                 //KJB
                 req.session.happy_point = req.user[0].happy_point;
-
-                res.redirect('happyday/hdmain'); // /main url에서 다시 세션 존재 검사
+                
+                 console.log("req.session.returnTo3 : "+req.body.redir_url);
+                
+                if(req.body.redir_url){
+                    var redirURL = req.body.redir_url;
+                    res.redirect(redirURL);
+                }else{
+                    res.redirect('happyday/hdmain'); // /main url에서 다시 세션 존재 검사
+                }
               }
             });
         }else {

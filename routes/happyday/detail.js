@@ -18,6 +18,10 @@ module.exports = function(app, connectionPool) {
         
         /* session 없을 땐 로그인 화면으로*/
         if(!req.session.user_name) {
+            //로그인 후 리턴을 위함
+            // console.log('req.params.id : '+req.params.id);
+            req.session.returnTo = '/happyday/detail/'+req.params.id;
+            // console.log('req.session.returnTo1 : '+req.session.returnTo);
             res.redirect('/');
         }
     
@@ -104,7 +108,7 @@ module.exports = function(app, connectionPool) {
                                                                     else 
                                                                     {
                                                                         like_state = "N";
-                                                                        res.render('happyday/detail', {data : rows[0], userList : rows1, HD_like : hd_like_rows[0], hd_reply:hd_reply_rows, session : req.session, reg_state : reg_state, like_state : like_state});
+                                                                        res.render('happyday/detail', {data : rows[0], userList : rows1, HD_like : hd_like_rows[0], hd_reply:hd_reply_rows, session : req.session, reg_state : reg_state, like_state : like_state, ref_path : req.url});
                                                                         connection.release();
                                                                         //console.log(like_state);
                                                                     }

@@ -39,6 +39,8 @@ module.exports = function(app) {
         
         
         res.render('vote/votedetail', {data : data, session : req.session});
+        
+        
     
     });
 
@@ -160,6 +162,8 @@ module.exports = function(app) {
     function verifyVote(req, res, next) {
         /* session 없을 땐 로그인 화면으로 */
         if(!req.session.user_name) {
+            //로그인 후 리턴을 위함
+            req.session.returnTo = 'vote/votedetail/'+req.params.id;
             res.redirect('/');
         }
         
