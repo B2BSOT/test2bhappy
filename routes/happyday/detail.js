@@ -23,9 +23,7 @@ module.exports = function(app, connectionPool) {
             req.session.returnTo = '/happyday/detail/'+req.params.id;
             // console.log('req.session.returnTo1 : '+req.session.returnTo);
             res.redirect('/');
-        }
-    
-    
+        }else{
              connectionPool.getConnection(function(err, connection) {
                 connection.query('select u.*, hm.happyday_id, hm.happyday_name, hm.happyday_contents, hm.reg_user_id, hm.category_code' + 
                                  ', DATE_FORMAT(hm.reg_dtm, "%Y-%m-%d") AS reg_dtm, SUBSTR( _UTF8"일월화수목금토", DAYOFWEEK(hm.reg_dtm), 1) AS reg_week' + 
@@ -34,118 +32,119 @@ module.exports = function(app, connectionPool) {
                                  ', hm.req_point, hm.cal_point_text, hm.state, hm.ref_url, hm.num_participants, hm.place_name, hm.place_latitude, hm.place_longitude, hm.img_url, hm.point_rsn, hm.category_code, hm.category_code2, hm.category_code3' + 
                                  '  from happyday_master hm, user u where hm.reg_user_id = u.id and hm.happyday_id = ?;', req.params.id, function(error, rows) {
                 
-                if(error) {
-                    connection.release();
-                    throw error;
-                }else 
-                {
-                    if(rows.length > 0) 
-                    {
-                        connection.query('select t1.id AS user_id, t1.user_name, t1.phone_number, (select org_nm from com_org where org_id = t1.sm_id) AS sm_name, t1.user_img, rec_reg_dtm' + 
-                                         '  from user t1, (select b.happyday_id, b.user_id, case when b.modify_dtm is null then b.reg_dtm else b.modify_dtm end AS rec_reg_dtm from happyday_master a, happyday_user_hst b where a.happyday_id = b.happyday_id and b.happyday_id = ? and b.state = "y") t2'+ 
-                                         ' where t1.id = t2.user_id order by rec_reg_dtm;', req.params.id, function(error, rows1){
-                            
-                            if(error)
-                            {
-                                connection.release();
-                                throw error;
-                            }
-                            else 
-                            {
-                                if(rows1.length > 0)
-                                {
-                                    //해피데이에 로그인 사용자가 신청했는지 여부 
-                                    var reg_state = "N";
-                                    
-                                    for(var i=0; i<rows1.length; i++) {
-                                        var cur_user_id = rows1[i].user_id;
-                                        if(req.session.user_id == cur_user_id) {
-                                            reg_state = "Y";
-                                            break;
-                                        }
-                                    }
-                                    
-                                    //20170417KJB::해당 해피데이 댓글  select all (del_yn='n')
-                                    //TODO: 쿼리 수정
-                                    connection.query('select hdr.*, user.*, concat(left(hdr.update_dtm,4) ,"년",substring(hdr.update_dtm,5,2),"월",substring(hdr.update_dtm,7,2),"일 ",substring(hdr.update_dtm,9,2),":",substring(hdr.update_dtm,11,2)  ) as date from happyday_reply hdr,  user user where hdr.user_id = user.id and hdr.del_yn="n" and hdr.happyday_id = ?;', [req.params.id], function(error, hd_reply_rows) {
-                                        if(error) {
-                                           connection.release();
-                                             throw error;
-                                         }
-                                        else 
-                                        {
-                                            if(hd_reply_rows.length >= 0)
-                                            {
-                                               
-                                                  //20170412KJB::Happyday_like(해피데이 좋아요) select 쿼리
-                                                  //TODO : 쿼리 다시 짜기
-                                                  connection.query('select count(*) as like_cnt from happyday_like where happyday_id = ?;', [req.params.id], function(error, hd_like_rows) {
-                                                        if(error) {
-                                                           connection.release();
-                                                             throw error;
-                                                         }
-                                                        else 
-                                                        {
-                                                            if(hd_like_rows.length > 0)
-                                                            {
-                                                               
-                                                                var like_state = "N";
-                                                                //console.log(hd_reply_rows);
-                
-                                                                //이미 좋아요 누른 사람이 있을 경우
-                                                                connection.query('select * from happyday_like where happyday_id = ? and user_id = ?;', [req.params.id, req.session.user_id], function(error, hd_like_yn) {
-                                                                //TODO : 내가 눌렀는지 확인 하는 작업
-                                                                //TODO : 내가 눌렀으면 누른 state Y return, 아닐경우 N 리턴
-                                                                    if(hd_like_yn.length > 0) 
-                                                                    {
-                                                                        // console.log("cc");
-                                                                        like_state = "Y";
-                                                                        res.render('happyday/detail', {data : rows[0], userList : rows1, HD_like : hd_like_rows[0], hd_reply:hd_reply_rows, session : req.session, reg_state : reg_state, like_state : like_state});
-                                                                        connection.release();
-                                                                        //console.log(like_state);
-                                                                    }
-                                                                    //이미 좋아요 누른 사람이 없는경우 ,, (굳이 이렇게 로직을 짜야하나..)
-                                                                    else 
-                                                                    {
-                                                                        like_state = "N";
-                                                                        res.render('happyday/detail', {data : rows[0], userList : rows1, HD_like : hd_like_rows[0], hd_reply:hd_reply_rows, session : req.session, reg_state : reg_state, like_state : like_state, ref_path : req.url});
-                                                                        connection.release();
-                                                                        //console.log(like_state);
-                                                                    }
-                                                                });
-                                                                
-                                                            }
-                                                            else{
-                                                                res.redirect('/');
-                                                                connection.release(); 
-                                                            }
-                                                        }
-                                                    });
-                                            }
-                                            else{
-                                                res.redirect('/');
-                                                connection.release(); 
-                                            }
-                                        }
-                                    });
-                                }
-                             
-                                else {
-                                    res.redirect('/');
-                                    connection.release(); 
-                                }
-                            }
-                        });
-                                        
-                    }
-                    else 
-                    {
-                        res.redirect('/');
+                    if(error) {
                         connection.release();
-                    }    
-                }
+                        throw error;
+                    }else 
+                    {
+                        if(rows.length > 0) 
+                        {
+                            connection.query('select t1.id AS user_id, t1.user_name, t1.phone_number, (select org_nm from com_org where org_id = t1.sm_id) AS sm_name, t1.user_img, rec_reg_dtm' + 
+                                             '  from user t1, (select b.happyday_id, b.user_id, case when b.modify_dtm is null then b.reg_dtm else b.modify_dtm end AS rec_reg_dtm from happyday_master a, happyday_user_hst b where a.happyday_id = b.happyday_id and b.happyday_id = ? and b.state = "y") t2'+ 
+                                             ' where t1.id = t2.user_id order by rec_reg_dtm;', req.params.id, function(error, rows1){
+                                
+                                if(error)
+                                {
+                                    connection.release();
+                                    throw error;
+                                }
+                                else 
+                                {
+                                    if(rows1.length > 0)
+                                    {
+                                        //해피데이에 로그인 사용자가 신청했는지 여부 
+                                        var reg_state = "N";
+                                        
+                                        for(var i=0; i<rows1.length; i++) {
+                                            var cur_user_id = rows1[i].user_id;
+                                            if(req.session.user_id == cur_user_id) {
+                                                reg_state = "Y";
+                                                break;
+                                            }
+                                        }
+                                        
+                                        //20170417KJB::해당 해피데이 댓글  select all (del_yn='n')
+                                        //TODO: 쿼리 수정
+                                        connection.query('select hdr.*, user.*, concat(left(hdr.update_dtm,4) ,"년",substring(hdr.update_dtm,5,2),"월",substring(hdr.update_dtm,7,2),"일 ",substring(hdr.update_dtm,9,2),":",substring(hdr.update_dtm,11,2)  ) as date from happyday_reply hdr,  user user where hdr.user_id = user.id and hdr.del_yn="n" and hdr.happyday_id = ?;', [req.params.id], function(error, hd_reply_rows) {
+                                            if(error) {
+                                               connection.release();
+                                                 throw error;
+                                             }
+                                            else 
+                                            {
+                                                if(hd_reply_rows.length >= 0)
+                                                {
+                                                   
+                                                      //20170412KJB::Happyday_like(해피데이 좋아요) select 쿼리
+                                                      //TODO : 쿼리 다시 짜기
+                                                      connection.query('select count(*) as like_cnt from happyday_like where happyday_id = ?;', [req.params.id], function(error, hd_like_rows) {
+                                                            if(error) {
+                                                               connection.release();
+                                                                 throw error;
+                                                             }
+                                                            else 
+                                                            {
+                                                                if(hd_like_rows.length > 0)
+                                                                {
+                                                                   
+                                                                    var like_state = "N";
+                                                                    //console.log(hd_reply_rows);
+                    
+                                                                    //이미 좋아요 누른 사람이 있을 경우
+                                                                    connection.query('select * from happyday_like where happyday_id = ? and user_id = ?;', [req.params.id, req.session.user_id], function(error, hd_like_yn) {
+                                                                    //TODO : 내가 눌렀는지 확인 하는 작업
+                                                                    //TODO : 내가 눌렀으면 누른 state Y return, 아닐경우 N 리턴
+                                                                        if(hd_like_yn.length > 0) 
+                                                                        {
+                                                                            // console.log("cc");
+                                                                            like_state = "Y";
+                                                                            res.render('happyday/detail', {data : rows[0], userList : rows1, HD_like : hd_like_rows[0], hd_reply:hd_reply_rows, session : req.session, reg_state : reg_state, like_state : like_state});
+                                                                            connection.release();
+                                                                            //console.log(like_state);
+                                                                        }
+                                                                        //이미 좋아요 누른 사람이 없는경우 ,, (굳이 이렇게 로직을 짜야하나..)
+                                                                        else 
+                                                                        {
+                                                                            like_state = "N";
+                                                                            res.render('happyday/detail', {data : rows[0], userList : rows1, HD_like : hd_like_rows[0], hd_reply:hd_reply_rows, session : req.session, reg_state : reg_state, like_state : like_state, ref_path : req.url});
+                                                                            connection.release();
+                                                                            //console.log(like_state);
+                                                                        }
+                                                                    });
+                                                                    
+                                                                }
+                                                                else{
+                                                                    res.redirect('/');
+                                                                    connection.release(); 
+                                                                }
+                                                            }
+                                                        });
+                                                }
+                                                else{
+                                                    res.redirect('/');
+                                                    connection.release(); 
+                                                }
+                                            }
+                                        });
+                                    }
+                                 
+                                    else {
+                                        res.redirect('/');
+                                        connection.release(); 
+                                    }
+                                }
+                            });
+                                            
+                        }
+                        else 
+                        {
+                            res.redirect('/');
+                            connection.release();
+                        }    
+                    }
+                });
             });
-        });
+        }
     });
 
     

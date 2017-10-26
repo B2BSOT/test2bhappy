@@ -59,6 +59,14 @@
   
 $(document).ready(function() {
   
+  // 수정 검증 처리
+	var reg_user_id = "<%= data.reg_user_id %>";
+	if(reg_user_id != <%= session.user_id %>) {
+		alert("수정 권한이 없습니다.");
+		location.href = "/happyday/detail/"+<%=data.happyday_id%>;
+	}else { //"OK" 
+	}
+  
   //수정에서 출발날짜+시간 합치기 ->히든타입, db에만 저장(수정)
   $('#happydayupdate').submit(function() {
    

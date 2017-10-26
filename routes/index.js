@@ -17,6 +17,7 @@ module.exports = function(app, connectionPool) {
         if(sess.views) {
             res.redirect('/happyday/hdmain'); // /main url에서 다시 세션 존재 검사    
         }else {
+            console.log("sess.views22 : " + sess.views);
             res.render('index', { title: 'Happy App', redirURL: redirURL });    
         }
         
