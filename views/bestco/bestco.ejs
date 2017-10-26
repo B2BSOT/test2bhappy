@@ -8,7 +8,7 @@
 	<meta name="description" content="">
 	<meta name="author" content="">    
 
-	<title>베스트동료</title>
+	<title>베스트동료상</title>
 	
 	<script src="../javascripts/jquery.js"></script>
 	<script src="../javascripts/jquery.min.js"></script>
@@ -22,6 +22,12 @@
     <script type="text/javascript">
     $(document)
     .ready(function() {
+        
+        $('.shape').click(function() {
+            console.log($(this).attr("id") + " / " + this.id);
+            $('#'+this.id).shape('flip over');    
+        });
+        
         $(".ui.green.button").click(function() {
             // modal로 등록창 구현
             $('.ui.modal')
@@ -60,6 +66,10 @@
             margin-bottom: 1em;
         }
         
+        .ui.message {
+            padding: 2em;    
+        }
+        
     </style>
     
 </head>
@@ -69,77 +79,77 @@
 	<% include ../partials/navigation.ejs %>
     
     <div class="ui stackable grid container">
-        <div class="computer only row">
-            <div class="thirteen wide column">
-                <div class="ui message">
-                    <h1 class="ui huge header">
-                    Quiz Board!
-                    </h1>
+        <div class="thirteen wide column">
+            <div class="ui yellow message">
+                <div class="content">
+                    <div class="header">
+                    <h2>베스트 동료상</h2>
+                    </div>
                     <p class="lead">
-                    이 게시판은 B2B사업팀의 뇌섹남녀들을 위한 공간입니다. 
+                    베스트동료상 투표 및 수상 내역
                     </p>
                     <div class="ui hidden divider"></div>
-                    <div class="ui green button">
-                        <i class="edit icon"></i> Quiz 등록
+                    <div class="ui inverted red button">
+                        <b><i class="edit icon"></i> 투표등록</b>
                     </div>
-                </div>
-                <div class="ui hidden section divider"></div>
-                <div class="ui stackable grid">
-                    <div class="three column row">
-                        
-                        <% for(var i in data) { %>
-                            <div class="column">
-                                <h1 class="ui header">
-                                    <%= data[i].subject %>
-                                </h1>
-                                <p>
-                                <%= data[i].content %>
-                                </p>
-                                <div class="ui small basic button">
-                                상세보기 &raquo;
-                                </div>
-                            </div>
-                        <% } %>
-                        
-                    </div>           
+                    <div class="ui labeled button" tabindex="0">
+                      <div class="ui red button">
+                        <i class="check icon"></i> 투표하기
+                      </div>
+                      <a class="ui basic red left pointing label">
+                        10
+                      </a>
+                    </div>
                 </div>
             </div>
-        </div>
-        <div class="tablet mobile only row pushable">
-            <div class="ui basic segment pusher">
-                <div class="ui container">
-                    <div class="ui message">
-                        <h1 class="ui huge header">
-                        Quiz Board!
-                        </h1>
-                        <p class="lead">
-                        이 게시판은 B2B사업팀의 뇌섹남녀들을 위한 공간입니다. 
-                        </p>
-                        <div class="ui hidden divider"></div>
-                        <div class="ui green button">
-                            <i class="edit icon"></i> Quiz 등록
-                        </div>
-                    </div>
-                    <div class="ui hidden section divider"></div>
-                    <div class="ui stackable grid">
-                        <div class="three column row">
-                            <% for(var i in data) { %>
-                                <div class="column">
-                                    <h1 class="ui header">
-                                        <%= data[i].subject %>
-                                    </h1>
-                                    <p>
-                                    <%= data[i].content %>
-                                    </p>
-                                    <div class="ui small basic button">
-                                    상세보기 &raquo;
+            <div class="ui hidden section divider"></div>
+            <div class="ui stackable cards">
+                <div class="ui shape" id="1">
+                    <div class="sides">
+                        <div class="side">
+                            <div class="ui card">
+                                <div class="content">
+                                    <div class="header">Steve Jobes</div>
+                                        <div class="meta">
+                                            <a>Acquaintances</a>
+                                        </div>
+                                    <div class="description">
+                                        Steve Jobes is a fictional character designed to resemble someone familiar to readers.
                                     </div>
                                 </div>
-                            <% } %>
-                        </div>           
+                                <div class="extra content">
+                                    <span class="right floated">
+                                        Joined in 2014
+                                    </span>
+                                    <span>
+                                        <i class="user icon"></i>
+                                            151 Friends
+                                      </span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="side active">
+                            <div class="ui card">
+                                <div class="content">
+                                    <a class="header">Stevie Feliciano</a>
+                                    <div class="meta">
+                                        <span class="date">Joined in 2014</span>
+                                    </div>
+                                    <div class="description">
+                                        Stevie Feliciano is a library scientist living in New York City. She likes to spend her time reading, running, and writing.
+                                    </div>
+                                </div>
+                                <div class="extra content">
+                                    <a>
+                                        <i class="user icon"></i>
+                                        22 Friends
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </div>
-            </div>
+                </div> <!-- end div shape -->
+            </div> <!-- end div stackable cards -->
         </div>
     </div>
 </body>

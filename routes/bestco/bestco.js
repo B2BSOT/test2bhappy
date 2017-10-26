@@ -2,7 +2,7 @@ var models = require('../../models');
 var datetime = require('node-datetime');
 
 module.exports = function(app) {
-    app.get('/quizboard/quizboard', function(req, res, next) {
+    app.get('/bestco/bestco', function(req, res, next) {
         
         /* session 없을 땐 로그인 화면으로 */
         if(!req.session.user_name) {
@@ -11,7 +11,7 @@ module.exports = function(app) {
 
         models.quiz_board.findAll()
         .then(quizboards => {
-            res.render('quizboard/quizboard', {data : quizboards, session : req.session});    
+            res.render('bestco/bestco', {data : quizboards, session : req.session});    
         });
     });
     
@@ -46,6 +46,5 @@ module.exports = function(app) {
           res.redirect('/');
         });
 
-        
     });
 }
