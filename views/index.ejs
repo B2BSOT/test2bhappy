@@ -38,7 +38,9 @@
   </style>
 
   <script type="text/javascript">
+    // loginForm.prepage.value = escape(document.referrer);
     $(document).ready(function() {
+        
         $('.ui.large.form').form
         ({
           fields: 
@@ -80,6 +82,7 @@
         </div>
       </h2>
       <form class="ui large form" name="loginForm" action="/login" method="post">
+      <!--<input type="hidden" name="prepage">-->
         <div class="ui stacked segment">
           <div class="field">
             <div class="ui left icon input">
@@ -94,6 +97,7 @@
             </div>
           </div>
           <div class="ui fluid large brown submit button">로그인</div>
+          <input type="hidden" name="redir_url" value=<%=redirURL%>>
         </div>
 
         <div class="ui error message"></div>

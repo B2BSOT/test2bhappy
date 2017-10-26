@@ -5,46 +5,47 @@ module.exports = function(app, connectionPool) {
        
         /* session 없을 땐 로그인 화면으로*/
         if(!req.session.user_name) {
+            req.session.returnTo = '/vote/voteupdate/'+req.params.vote_id;
             res.redirect('/');
-        }
-        
-        connectionPool.getConnection(function(err, connection) {
-            //  console.log("aa");
-
-            connection.query('select vm.*, concat(left(vm.deadline,4),"/",substring(vm.deadline,5,2),"/",substring(vm.deadline,7,2))as deadlinedtShow'
-                            + ', concat(substring(vm.deadline,9,2),"시",substring(vm.deadline,11,2),"분") as deadlinetimeShow'
-                            + ', substring(vm.deadline,1,8) as deadlinedtDB'
-                            + ', substring(vm.deadline,9,4) as deadlinetimeDB'
-                            + ', case when vm.parti_org_id like "1%" then "Team" else "SM" end partiShow'
-                            + ', case when vm.multi_yn = "Y" then "checked" else "" end multiYnShow'
-                            + ', case when vm.secret_yn = "Y" then "checked" else "" end secretYnShow'
-                            + ', case when vm.add_item_yn = "Y" then "checked" else "" end addItemYnShow'
-//                            + ', case when vm.noti_yn = "Y" then "checked" else "" end notiYnShow'
-                            + ', (select count(*) from vote_detail vd where vd.vote_id = vm.vote_id) as voteCount'
-                            + ', case when vm.add_item_yn = "N" then "disabled" else "" end addItemButtonShow from vote_master vm where vm.vote_id = ?;'
-                            , [req.params.vote_id], function(error, rows1) {
-
-                if(error) {
-                    connection.release();
-                    throw error;
-                }else {
-                    connection.query('select * from vote_items where vote_id = ?;', [req.params.vote_id], function(error, rows2) {
-                        if(error) {
-                            connection.release();
-                            throw error;
-                        }else {
-                            if(rows1.length > 0) {
-                                res.render('vote/voteupdate', {data1 : rows1[0], data2 : rows2, session : req.session});
+        }else{
+            connectionPool.getConnection(function(err, connection) {
+                //  console.log("aa");
+    
+                connection.query('select vm.*, concat(left(vm.deadline,4),"/",substring(vm.deadline,5,2),"/",substring(vm.deadline,7,2))as deadlinedtShow'
+                                + ', concat(substring(vm.deadline,9,2),"시",substring(vm.deadline,11,2),"분") as deadlinetimeShow'
+                                + ', substring(vm.deadline,1,8) as deadlinedtDB'
+                                + ', substring(vm.deadline,9,4) as deadlinetimeDB'
+                                + ', case when vm.parti_org_id like "1%" then "Team" else "SM" end partiShow'
+                                + ', case when vm.multi_yn = "Y" then "checked" else "" end multiYnShow'
+                                + ', case when vm.secret_yn = "Y" then "checked" else "" end secretYnShow'
+                                + ', case when vm.add_item_yn = "Y" then "checked" else "" end addItemYnShow'
+    //                            + ', case when vm.noti_yn = "Y" then "checked" else "" end notiYnShow'
+                                + ', (select count(*) from vote_detail vd where vd.vote_id = vm.vote_id) as voteCount'
+                                + ', case when vm.add_item_yn = "N" then "disabled" else "" end addItemButtonShow from vote_master vm where vm.vote_id = ?;'
+                                , [req.params.vote_id], function(error, rows1) {
+    
+                    if(error) {
+                        connection.release();
+                        throw error;
+                    }else {
+                        connection.query('select * from vote_items where vote_id = ?;', [req.params.vote_id], function(error, rows2) {
+                            if(error) {
                                 connection.release();
+                                throw error;
                             }else {
-                                res.redirect('/');
-                                connection.release();
-                            }    
-                        }
-                    });
-                }
+                                if(rows1.length > 0) {
+                                    res.render('vote/voteupdate', {data1 : rows1[0], data2 : rows2, session : req.session});
+                                    connection.release();
+                                }else {
+                                    res.redirect('/');
+                                    connection.release();
+                                }    
+                            }
+                        });
+                    }
+                });
             });
-        });
+        }
     }); //get
     
     // 해피데이 등록 시 진행 될 사항

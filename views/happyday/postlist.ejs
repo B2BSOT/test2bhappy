@@ -112,7 +112,17 @@
     function PostReg(id) {
         $('.ui.modal.Reg').modal('show');
     }
-  $(document).ready(function() {  
+  $(document).ready(function() {
+    // 후기 검증 처리
+	var state = "<%= data.state %>";
+	if(state == "Y") {
+		alert("해피데이가 진행 중이므로 후기 화면으로 이동할 수 없습니다.");
+		location.href = "/happyday/detail/"+<%=data.happyday_id%>;
+	}else { //"OK" 
+	}
+      
+      
+      
    // 등록 모달에서 submit 하기 전에 해야 될 사항 -> 정합성 체크  
    $('.ui.modal.Reg').submit(function() {
     var post_name = $("#post_title").val(); // 후기 제목

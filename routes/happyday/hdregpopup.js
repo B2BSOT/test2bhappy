@@ -1,26 +1,31 @@
 
 module.exports = function(app, connectionPool) {
 
-    app.get('/happyday/hdregpopup', function(req, res) {
+    app.get('/happyday/hdregpopup', function(req, res, next) {
         
-        connectionPool.getConnection(function(err, connection) {
-            connection.query('select * from user where 1=1 and user_name = ? and emp_num = ?;', [req.session.user_name, req.session.emp_num], function(error, rows) {
-
-                if(error) {
-                    connection.release();
-                    throw error;
-                }else {
-                    if(rows.length > 0) {
-                        res.render('happyday/hdregpopup', {data : rows[0], session : req.session});
+        /* session 없을 땐 로그인 화면으로*/
+        if(!req.session.user_name) {
+            req.session.returnTo = '/happyday/hdregpopup';
+            res.redirect('/');
+        }else{
+            connectionPool.getConnection(function(err, connection) {
+                connection.query('select * from user where 1=1 and user_name = ? and emp_num = ?;', [req.session.user_name, req.session.emp_num], function(error, rows) {
+    
+                    if(error) {
                         connection.release();
+                        throw error;
                     }else {
-                        res.redirect('/');
-                        connection.release();
-                    }    
-                }
+                        if(rows.length > 0) {
+                            res.render('happyday/hdregpopup', {data : rows[0], session : req.session});
+                            connection.release();
+                        }else {
+                            res.redirect('/');
+                            connection.release();
+                        }    
+                    }
+                });
             });
-        });
-        
+        }
         
     });
     

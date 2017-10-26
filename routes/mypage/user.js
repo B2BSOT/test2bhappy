@@ -5,31 +5,32 @@ module.exports = function(app, connectionPool) {
         
         /* session 없을 땐 로그인 화면으로 */
         if(!req.session.user_name) {
+            req.session.returnTo = '/mypage/user';
             res.redirect('/');
-        }
-    
-        connectionPool.getConnection(function(err, connection) {
-            connection.query('select u.* '+
-                                ', (select org_nm from com_org where org_id = u.team_id) as team_name '+
-                                ', (select org_nm from com_org where org_id = u.sm_id) as sm_name '+
-                             'from user u '+
-                             'where u.id = ?;', req.session.user_id, function(error, rows) {
-                
-                if(error) {
-                    connection.release();
-                    throw error;
-                }else {
-                    if(rows.length > 0) {
-                        
-                        res.render('mypage/user', {data : rows[0], session : req.session});
+        }else{
+            connectionPool.getConnection(function(err, connection) {
+                connection.query('select u.* '+
+                                    ', (select org_nm from com_org where org_id = u.team_id) as team_name '+
+                                    ', (select org_nm from com_org where org_id = u.sm_id) as sm_name '+
+                                 'from user u '+
+                                 'where u.id = ?;', req.session.user_id, function(error, rows) {
+                    
+                    if(error) {
                         connection.release();
+                        throw error;
                     }else {
-                        res.redirect('/');
-                        connection.release();
-                    }    
-                }
+                        if(rows.length > 0) {
+                            
+                            res.render('mypage/user', {data : rows[0], session : req.session});
+                            connection.release();
+                        }else {
+                            res.redirect('/');
+                            connection.release();
+                        }    
+                    }
+                });
             });
-        });
+        }
     });
     
     app.post('/user', function(req, res, next) {
