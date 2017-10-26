@@ -9,15 +9,15 @@ module.exports = function(app, connectionPool) {
         var sess = req.session
         
         //로그인 후 리턴을 위함
+        console.log("redirURL1323 : " + redirURL);
         var redirURL = req.session.returnTo;
         delete req.session.returnTo;
         console.log("req.session.returnTo2 : " + req.session.returnTo);
         console.log("redirURL : " + redirURL);
-        console.log("sess.views : " + sess.views);
+
         if(sess.views) {
             res.redirect('/happyday/hdmain'); // /main url에서 다시 세션 존재 검사    
         }else {
-            console.log("sess.views22 : " + sess.views);
             res.render('index', { title: 'Happy App', redirURL: redirURL });    
         }
         
