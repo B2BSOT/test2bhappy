@@ -12,7 +12,8 @@ module.exports = function(app, connectionPool) {
         var redirURL = req.session.returnTo;
         delete req.session.returnTo;
         console.log("req.session.returnTo2 : " + req.session.returnTo);
-        
+        console.log("redirURL : " + redirURL);
+        console.log("sess.views : " + sess.views);
         if(sess.views) {
             res.redirect('/happyday/hdmain'); // /main url에서 다시 세션 존재 검사    
         }else {
@@ -45,6 +46,7 @@ module.exports = function(app, connectionPool) {
                 
                 if(req.body.redir_url){
                     var redirURL = req.body.redir_url;
+                    delete req.body.redir_url;
                     res.redirect(redirURL);
                 }else{
                     res.redirect('happyday/hdmain'); // /main url에서 다시 세션 존재 검사

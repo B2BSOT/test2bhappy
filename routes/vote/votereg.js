@@ -2,36 +2,43 @@
 module.exports = function(app, connectionPool) {
 
     app.get('/vote/votereg', function(req, res, next) {
-        
-        connectionPool.getConnection(function(err, connection) {
-            connection.query('select u.* , "N" as load_yn from user u where u.user_name = ? and u.emp_num = ?;', [req.session.user_name, req.session.emp_num], function(error, rows1) {
 
-                if(error) {
-                    connection.release();
-                    throw error;
-                }else {
-                    
-                    connection.query('select vm.*, date_format(vm.reg_dtm, "%y/%m/%d") as regDtShow' 
-                                    + ' from vote_master vm where vm.reg_user_id = ? and vm.state <> "N"'
-                                    + ' order by vm.reg_dtm desc'
-                                    + ' limit 5;', [req.session.user_id], function(error, rows2){
-                        if(error){
-                            connection.release();
-                            throw error;
+        /* session 없을 땐 로그인 화면으로*/
+        if(!req.session.user_name) {
+            req.session.returnTo = '/vote/votereg';
+            res.redirect('/');
+        }else{
+        
+            connectionPool.getConnection(function(err, connection) {
+                connection.query('select u.* , "N" as load_yn from user u where u.user_name = ? and u.emp_num = ?;', [req.session.user_name, req.session.emp_num], function(error, rows1) {
+    
+                    if(error) {
+                        connection.release();
+                        throw error;
+                    }else {
                         
-                        }else{
-                            if(rows1.length > 0) {
-                                res.render('vote/votereg', {data1 : rows1[0], data2 : rows2, session : req.session});
+                        connection.query('select vm.*, date_format(vm.reg_dtm, "%y/%m/%d") as regDtShow' 
+                                        + ' from vote_master vm where vm.reg_user_id = ? and vm.state <> "N"'
+                                        + ' order by vm.reg_dtm desc'
+                                        + ' limit 5;', [req.session.user_id], function(error, rows2){
+                            if(error){
                                 connection.release();
-                            }else {
-                                res.redirect('/');
-                                connection.release();
-                            }    
-                        }
-                    });
-                }
+                                throw error;
+                            
+                            }else{
+                                if(rows1.length > 0) {
+                                    res.render('vote/votereg', {data1 : rows1[0], data2 : rows2, session : req.session});
+                                    connection.release();
+                                }else {
+                                    res.redirect('/');
+                                    connection.release();
+                                }    
+                            }
+                        });
+                    }
+                });
             });
-        });
+        }
     });
     
 

@@ -5,6 +5,7 @@ module.exports = function(app, connectionPool) {
        
         /* session 없을 땐 로그인 화면으로*/
         if(!req.session.user_name) {
+            // req.session.returnTo = '/vote/voteupdate/'+req.params.id;
             res.redirect('/');
         }
         
