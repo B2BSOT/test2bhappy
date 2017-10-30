@@ -6,10 +6,11 @@ module.exports = function(app, connectionPool) {
         /* session 없을 땐 로그인 화면으로*/
         if(!req.session.user_name) {
             req.session.returnTo = '/happyday/detail/'+req.params.id+'/hduppopup';
+           // req.session.returnTo = req.path;
             res.redirect('/');
         }else{
             connectionPool.getConnection(function(err, connection) {
-                //  console.log("aa");
+                console.log("req.params.id : " + req.params.id);
                 connection.query('select a.*, b.*, concat(left(a.happyday_dt,4),"/",substring(a.happyday_dt,5,2),"/",substring(a.happyday_dt,7,2))as HDstartdtShow,  substring(a.happyday_dt,1,8) as HDstartdtDB, concat(substring(a.happyday_dt,9,2),"시",substring(a.happyday_dt,11,2),"분") as HDstarttimeShow, substring(a.happyday_dt,9,4) as HDstarttimeDB,  concat(left(a.dday_dt,4),"/",substring(a.dday_dt,5,2),"/",substring(a.dday_dt,7,2))as HDddaydtShow,  a.dday_dt as HDddaydtDB, concat_ws(",", a.category_code, case a.category_code2 when "" then NULL else a.category_code2 end, case a.category_code3 when "" then NULL else a.category_code3 end) as totalCategory, count(c.user_id) cur_users from happyday_master a, user b, happyday_user_hst c where a.reg_user_id = b.id and a.happyday_id = c.happyday_id and c.state="y" and a.happyday_id = ?;', [req.params.id], function(error, rows) {
                 
                 // connection.query('select *, concat(left(a.happyday_dt,4),"/",substring(a.happyday_dt,5,2),"/",substring(a.happyday_dt,7,2))as HDstartdtShow,  substring(a.happyday_dt,1,8) as HDstartdtDB, concat(substring(a.happyday_dt,9,2),"시",substring(a.happyday_dt,11,2),"분") as HDstarttimeShow, substring(a.happyday_dt,9,4) as HDstarttimeDB,  concat(left(a.dday_dt,4),"/",substring(a.dday_dt,5,2),"/",substring(a.dday_dt,7,2))as HDddaydtShow,  a.dday_dt as HDddaydtDB from happyday_master a, user b where a.reg_user_id = b.id and a.happyday_id = ?;', req.params.id, function(error, rows) {    
@@ -18,8 +19,8 @@ module.exports = function(app, connectionPool) {
                         connection.release();
                         throw error;
                     }else {
-                        if(rows.length > 0 && rows.happyday_id != null) {
-                        //    res.render('happyday/hduppopup', {data : rows[0], session : req.session});
+                        if(rows.length > 0 && rows[0].happyday_id != null) {
+                            res.render('happyday/hduppopup', {data : rows[0], session : req.session});
                             connection.release();
                         }else {
                             res.redirect('/');

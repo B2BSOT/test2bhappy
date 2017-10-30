@@ -6,6 +6,7 @@ module.exports = function(app, connectionPool) {
         /* session 없을 땐 로그인 화면으로*/
         if(!req.session.user_name) {
             req.session.returnTo = '/happyday/hdregpopup';
+           // req.session.returnTo = req.path;
             res.redirect('/');
         }else{
             connectionPool.getConnection(function(err, connection) {
