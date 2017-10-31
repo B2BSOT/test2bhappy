@@ -164,6 +164,7 @@ module.exports = function(app) {
         if(!req.session.user_name) {
             //로그인 후 리턴을 위함
             req.session.returnTo = 'vote/votedetail/'+req.params.id;
+            //req.session.returnTo = req.path;
             res.redirect('/');
         }
         

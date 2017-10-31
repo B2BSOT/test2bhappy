@@ -19,7 +19,6 @@ module.exports = function(app, connectionPool) {
         /* session 없을 땐 로그인 화면으로*/
         if(!req.session.user_name) {
             //로그인 후 리턴을 위함
-            // console.log('req.params.id : '+req.params.id);
             req.session.returnTo = '/happyday/detail/'+req.params.id;
             // console.log('req.session.returnTo1 : '+req.session.returnTo);
             res.redirect('/');
