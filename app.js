@@ -66,10 +66,10 @@ var connectionPool;
 
 /* 운영 DB */
 connectionPool = mysql.createPool({
-    user : 'admin',
-    password : 'tobehappy',
+    user : 'root',
+    password : '2bhappy',
     database : 'mysqldb',
-    host : 'b2bdb.csrn58xktwkr.ap-northeast-1.rds.amazonaws.com', //port빼고 end-point
+    host : 'ec2-13-125-246-85.ap-northeast-2.compute.amazonaws.com', //port빼고 end-point
     port : '3306',
     connectionLimit : 20,
     waitForConnections : false
