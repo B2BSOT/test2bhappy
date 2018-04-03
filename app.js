@@ -97,6 +97,7 @@ var voteupdate = require('./routes/vote/voteupdate')(app, connectionPool);
 var votedetail = require('./routes/vote/votedetail')(app);
 var quizboard = require('./routes/quizboard/quizboard')(app);
 var bestco = require('./routes/bestco/bestco')(app);
+var teamschedule = require("./routes/teamschedule/calendar")(app);
 
 var server = http.createServer(app)
 

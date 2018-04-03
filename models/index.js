@@ -5,10 +5,10 @@ var path = require('path')
 var Sequelize = require('sequelize');
 var sequelize = new Sequelize(
   'mysqldb', 
-  'admin', 
-  'tobehappy'
+  'root', 
+  '2bhappy'
   , {
-    host: 'b2bdb.csrn58xktwkr.ap-northeast-1.rds.amazonaws.com', //port빼고 end-point
+    host: 'ec2-13-125-246-85.ap-northeast-2.compute.amazonaws.com', //port빼고 end-point
     dialect: 'mysql',
   
     pool: {
